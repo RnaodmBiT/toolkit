@@ -1,0 +1,6 @@
+[submodule "core"]
+	path = core
+	url = git@github.com:RnaodmBiT/core.git
+[submodule "layout"]
+	path = layout
+	url = git@github.com:RnaodmBiT/layout.git
