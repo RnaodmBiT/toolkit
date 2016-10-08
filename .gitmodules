@@ -4,3 +4,6 @@
 [submodule "layout"]
 	path = layout
 	url = git@github.com:RnaodmBiT/layout.git
+[submodule "graphics"]
+	path = graphics
+	url = git@github.com:RnaodmBiT/graphics.git
