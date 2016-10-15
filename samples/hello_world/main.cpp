@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <SDL.h>
 #include <SDL_opengl.h>
+#include <graphics.hpp>
 
 int main(int argc, char** argv) {
 
@@ -16,6 +17,8 @@ int main(int argc, char** argv) {
                                           SDL_WINDOW_OPENGL);
 
     SDL_GLContext context = SDL_GL_CreateContext(window);
+
+    tk::graphics::initializeExtensions();
 
     bool running = true;
     while (running) {

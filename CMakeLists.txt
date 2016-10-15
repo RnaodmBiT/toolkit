@@ -1,12 +1,21 @@
 cmake_minimum_required(VERSION 3.2)
 
-project (toolkit)
+project(toolkit)
 
 option(TK_BUILD_SHARED "TK_BUILD_SHARED" ON)
+
+# Add the include directories
+include_directories(
+    core/include
+    layout/include
+    graphics/include
+)
 
 # Add toolkit libraries
 add_subdirectory(core)
 add_subdirectory(layout)
+add_subdirectory(graphics)
+
 
 # Add sample projects
 add_subdirectory(samples)
