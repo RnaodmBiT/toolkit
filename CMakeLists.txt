@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.2)
 
 project(toolkit)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+
 option(TK_BUILD_SHARED "TK_BUILD_SHARED" ON)
 
 # Add the include directories
