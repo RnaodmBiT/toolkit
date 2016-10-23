@@ -21,6 +21,8 @@ int main(int argc, char** argv) {
 
     tk::graphics::initializeExtensions();
 
+    tk::graphics::Shader shader("data/shaders/position.vert", "data/shaders/green.frag");
+
     tk::graphics::Array array(GL_TRIANGLES);
 
     tk::graphics::Buffer vertexBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW);
@@ -34,6 +36,7 @@ int main(int argc, char** argv) {
     vertexBuffer.setData(points, 3);
 
     array.addBuffer(vertexBuffer, GL_FLOAT, 3);
+    shader.apply();
 
     bool running = true;
     while (running) {

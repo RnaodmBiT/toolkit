@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.2)
 
 project(toolkit)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+set(BIN_DIR ${CMAKE_SOURCE_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
 
 option(TK_BUILD_SHARED "TK_BUILD_SHARED" ON)
 
