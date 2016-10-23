@@ -1,7 +1,8 @@
 #include <cstdio>
 #include <SDL.h>
-#include <SDL_opengl.h>
+
 #include <graphics.hpp>
+#include <core.hpp>
 
 int main(int argc, char** argv) {
 
@@ -20,6 +21,20 @@ int main(int argc, char** argv) {
 
     tk::graphics::initializeExtensions();
 
+    tk::graphics::Array array(GL_TRIANGLES);
+
+    tk::graphics::Buffer vertexBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW);
+
+    tk::core::Vector<float, 3> points[] = {
+        { 0, 0, 0 },
+        { 1, 0, 0 },
+        { 0, 1, 0 }
+    };
+
+    vertexBuffer.setData(points, 3);
+
+    array.addBuffer(vertexBuffer, GL_FLOAT, 3);
+
     bool running = true;
     while (running) {
         SDL_Event event;
@@ -30,6 +45,8 @@ int main(int argc, char** argv) {
         }
 
         glClear(GL_COLOR_BUFFER_BIT);
+
+        array.draw(0, 3);
 
         SDL_GL_SwapWindow(window);
     }
