@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.2)
 
 project(toolkit)
 
+set(CMAKE_CXX_STANDARD 11)
+
 set(BIN_DIR ${CMAKE_SOURCE_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
 
