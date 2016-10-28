@@ -29,14 +29,19 @@ int main(int argc, char** argv) {
 
     tk::core::Vector<float, 3> points[] = {
         { 0, 0, 0 },
-        { 1, 0, 0 },
-        { 0, 1, 0 }
+        { 100, 0, 0 },
+        { 0, 100, 0 }
     };
+
+    tk::core::Mat4f transform = tk::core::orthographic(0, 0, 1024, 576) *
+                                tk::core::transpose(100.0f, 0.0f, 0.0f) *
+                                tk::core::rotate((float)M_PI / 4, { 0, 0, 1 });
 
     vertexBuffer.setData(points, 3);
 
     array.addBuffer(vertexBuffer, GL_FLOAT, 3);
     shader.apply();
+    shader.setUniform("transform", transform);
 
     bool running = true;
     while (running) {
