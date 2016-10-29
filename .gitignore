@@ -1,4 +1,11 @@
 
 build/
-bin/
 *.swp
+
+
+bin/*
+!bin/**/
+!bin/*.*
+
+bin/Debug/
+bin/Release/
