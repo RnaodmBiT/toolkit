@@ -24,27 +24,46 @@ int main(int argc, char** argv) {
 
     tk::graphics::initializeExtensions();
 
-    tk::graphics::Shader shader("data/shaders/position.vert", "data/shaders/green.frag");
+    tk::graphics::Shader shader("data/shaders/positionUv.vert", "data/shaders/texture.frag");
 
     tk::graphics::Array array(GL_TRIANGLES);
 
     tk::graphics::Buffer vertexBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW);
+    tk::graphics::Buffer uvBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW);
 
-    tk::core::Vector<float, 3> points[] = {
+    tk::core::Vec3f points[] = {
         { 0, 0, 0 },
         { 100, 0, 0 },
         { 0, 100, 0 }
     };
 
-    tk::core::Mat4f transform = tk::core::orthographic(0, 0, 1024, 576) *
-                                tk::core::transpose(100.0f, 0.0f, 0.0f) *
-                                tk::core::rotate((float)M_PI / 4, { 0, 0, 1 });
+    tk::core::Vec2f uvs[] = {
+        { 0, 0 },
+        { 1, 0 },
+        { 0, 1 }
+    };
 
     vertexBuffer.setData(points, 3);
+    uvBuffer.setData(uvs, 3);
 
     array.addBuffer(vertexBuffer, GL_FLOAT, 3);
+    array.addBuffer(uvBuffer, GL_FLOAT, 2);
+
+    tk::core::Vector<unsigned char, 3> image[] = {
+        { 255, 0, 0 },{ 0, 0, 255 },
+        { 0, 255, 0 },{ 255, 0, 0 },
+    };
+
+    tk::graphics::Texture texture(GL_TEXTURE_2D);
+    texture.setData(image, 2, 2, GL_RGB, GL_UNSIGNED_BYTE);
+
+    tk::core::Mat4f transform = tk::core::orthographic(0, 0, 1024, 576) *
+        tk::core::transpose(100.0f, 0.0f, 0.0f) *
+        tk::core::rotate((float)M_PI / 4, { 0, 0, 1 });
+
     shader.apply();
     shader.setUniform("transform", transform);
+    shader.setUniform("image", texture);
 
     bool running = true;
     while (running) {
