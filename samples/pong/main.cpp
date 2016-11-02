@@ -28,13 +28,15 @@ int main(int argc, char** argv) {
 
     tk::graphics::initializeExtensions();
 
-    tk::graphics::Font caviar("data/fonts/caviar.ttf");
-    tk::graphics::Bitmap<uint8_t> textImage = caviar.renderText("PONG    | .      |", 40);
-
     tk::core::ResourceCollection resources;
     resources.load<tk::graphics::Shader>("shader",
         "data/shaders/positionUv.vert",
         "data/shaders/text.frag");
+
+    resources.load<tk::graphics::Font>("font",
+        "data/fonts/caviar.ttf");
+
+    tk::graphics::Bitmap<uint8_t> textImage = resources.get<tk::graphics::Font>("font")->renderText("PONG    | .      |", 40);
 
     tk::graphics::Array array(GL_TRIANGLES);
 
