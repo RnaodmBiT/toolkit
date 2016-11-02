@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.2)
 
-set(PROJECT_NAME hello_world)
+set(PROJECT_NAME pong)
 
 add_executable(${PROJECT_NAME} ${TK_CONSOLE} main.cpp)
 target_link_libraries(${PROJECT_NAME} SDL2 SDL2main tk-graphics ${OPENGL_gl_LIBRARY})

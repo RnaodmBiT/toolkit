@@ -12,3 +12,4 @@ find_package(OpenGL)
 
 # add all of the sample directories
 add_subdirectory(hello_world)
+add_subdirectory(pong)
