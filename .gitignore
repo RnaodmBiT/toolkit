@@ -10,3 +10,4 @@ bin/*
 bin/Debug/
 bin/Release/
 bin/*.trace
+bin/*.log

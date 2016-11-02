@@ -6,10 +6,9 @@
 
 int main(int argc, char** argv) {
 
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0) {
-        printf("Error: SDL_Init\n");
-        return 1;
-    }
+    tk::core::initLog("pong.log");
+
+    tk_assert(SDL_Init(SDL_INIT_EVERYTHING) == 0, "SDL_Init failed");
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
@@ -19,8 +18,10 @@ int main(int argc, char** argv) {
                                           SDL_WINDOWPOS_UNDEFINED,
                                           1024, 576,
                                           SDL_WINDOW_OPENGL);
+    tk_assert(window, "SDL_CreateWindow failed");
 
     SDL_GLContext context = SDL_GL_CreateContext(window);
+    tk_assert(context, "SDL_GL_CreateContext failed");
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glEnable(GL_BLEND);
@@ -28,6 +29,7 @@ int main(int argc, char** argv) {
 
     tk::graphics::initializeExtensions();
 
+    tk_info("Loading resources...");
     tk::core::ResourceCollection resources;
     resources.load<tk::graphics::Shader>("shader",
         "data/shaders/positionUv.vert",
@@ -35,6 +37,7 @@ int main(int argc, char** argv) {
 
     resources.load<tk::graphics::Font>("font",
         "data/fonts/caviar.ttf");
+    tk_info("Finished loading resources.");
 
     tk::graphics::Bitmap<uint8_t> textImage = resources.get<tk::graphics::Font>("font")->renderText("PONG    | .      |", 40);
 
