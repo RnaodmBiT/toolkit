@@ -27,3 +27,19 @@ add_subdirectory(samples)
 
 # Add thirdparty libraries
 add_subdirectory(thirdparty/SDL2-2.0.4)
+
+
+# Build the documentation
+find_package(Doxygen)
+option(BUILD_DOCUMENTATION "Build the Doxygen documentation for the libraries." ${DOXYGEN_FOUND})
+
+if (BUILD_DOCUMENTATION)
+    if (NOT DOXYGEN_FOUND)
+        message(FATA_ERROR "Doxygen is needed for the documentation")
+    endif()
+    
+    add_custom_target(doc ALL
+                      COMMAND doxygen docs/config
+                      COMMENT "Generating API documentation"
+                      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+endif()

@@ -11,3 +11,6 @@ bin/Debug/
 bin/Release/
 bin/*.trace
 bin/*.log
+
+docs/html
+docs/latex
