@@ -32,8 +32,8 @@ int main(int argc, char** argv) {
     tk_info("Loading resources...");
     tk::core::ResourceCollection resources;
     resources.load<tk::graphics::Shader>("shader",
-        "data/shaders/positionUv.vert",
-        "data/shaders/text.frag");
+        "data/shaders/shape.vert",
+        "data/shaders/shape.frag");
 
     resources.load<tk::graphics::Font>("font",
         "data/fonts/caviar.ttf");
@@ -41,51 +41,16 @@ int main(int argc, char** argv) {
 
     tk::graphics::Bitmap<uint8_t> textImage = resources.get<tk::graphics::Font>("font")->renderText("PONG    | .      |", 40);
 
-    tk::graphics::Array array(GL_TRIANGLES);
-
-    tk::graphics::Buffer vertexBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW);
-    tk::graphics::Buffer uvBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW);
-
-    tk::core::Vec3f points[] = {
-        { 0, 0, 0 },
-        { (float)textImage.getWidth(), 0, 0 },
-        { 0, (float)textImage.getHeight(), 0 },
-
-        { (float)textImage.getWidth(), 0, 0 },
-        { (float)textImage.getWidth(), (float)textImage.getHeight(), 0 },
-        { 0, (float)textImage.getHeight(), 0 },
-    };
-
-    tk::core::Vec2f uvs[] = {
-        { 0, 0 },
-        { 1, 0 },
-        { 0, 1 },
-
-        { 1, 0 },
-        { 1, 1 },
-        { 0, 1 },
-    };
-
-    vertexBuffer.setData(points, 6);
-    uvBuffer.setData(uvs, 6);
-
-    array.addBuffer(vertexBuffer, GL_FLOAT, 3);
-    array.addBuffer(uvBuffer, GL_FLOAT, 2);
-    
-    tk::core::Vector<unsigned char, 3> image[] = {
-        { 255, 0, 0 },{ 0, 0, 255 },
-        { 0, 255, 0 },{ 255, 0, 0 },
-    };
-
     tk::graphics::Texture texture(GL_TEXTURE_2D);
-    texture.setData(textImage.getData(), textImage.getWidth(), textImage.getHeight(), GL_RED, GL_RED, GL_UNSIGNED_BYTE);
+    texture.setData(textImage.getData(), textImage.getWidth(), textImage.getHeight(), GL_R8, GL_RED, GL_UNSIGNED_BYTE);
+    texture.useRedAsAlpha();
 
+    tk::graphics::Shape rect = tk::graphics::Shape::rectangle({ 100, 100 }, { (float)textImage.getWidth(), (float)textImage.getHeight() });
 
     tk::core::Mat4f transform = tk::core::orthographic(0, 0, 1024, 576);
 
     tk::graphics::Shader* shader = resources.get<tk::graphics::Shader>("shader");
     shader->apply();
-    shader->setUniform("transform", transform);
     shader->setUniform("image", texture);
 
     bool running = true;
@@ -99,7 +64,13 @@ int main(int argc, char** argv) {
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        array.draw(0, 6);
+        shader->setUniform("transform", transform);
+        shader->setUniform("tint", tk::core::Vec4f{ 1, 1, 0, 1 });
+        rect.draw();
+
+        shader->setUniform("transform", transform * tk::core::transpose(2.0f, -2.f, 0.0f));
+        shader->setUniform("tint", tk::core::Vec4f{ 1, 1, 1, 1 });
+        rect.draw();
 
         SDL_GL_SwapWindow(window);
     }
