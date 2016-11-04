@@ -52,6 +52,13 @@ int main(int argc, char** argv) {
     tk::graphics::Shader* shader = resources.get<tk::graphics::Shader>("shader");
     shader->apply();
     shader->setUniform("image", texture);
+    
+    tk::graphics::TranslateNode graph("root");
+    graph.addChild(new tk::graphics::TranslateNode("left"));
+    graph.addChild(new tk::graphics::TranslateNode("right"));
+
+    graph.draw();
+
 
     bool running = true;
     while (running) {
