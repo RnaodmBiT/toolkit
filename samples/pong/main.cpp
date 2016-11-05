@@ -45,20 +45,28 @@ int main(int argc, char** argv) {
     texture.setData(textImage.getData(), textImage.getWidth(), textImage.getHeight(), GL_R8, GL_RED, GL_UNSIGNED_BYTE);
     texture.useRedAsAlpha();
 
-    tk::graphics::Shape rect = tk::graphics::Shape::rectangle({ 100, 100 }, { (float)textImage.getWidth(), (float)textImage.getHeight() });
+    tk::graphics::Shape rect = tk::graphics::Shape::rectangle({ 0, 0 }, { (float)textImage.getWidth(), (float)textImage.getHeight() });
 
-    tk::core::Mat4f transform = tk::core::orthographic(0, 0, 1024, 576);
 
     tk::graphics::Shader* shader = resources.get<tk::graphics::Shader>("shader");
     shader->apply();
     shader->setUniform("image", texture);
     
-    tk::graphics::TranslateNode graph("root");
-    graph.addChild(new tk::graphics::TranslateNode("left"));
-    graph.addChild(new tk::graphics::TranslateNode("right"));
+    tk::graphics::TransformNode graph("root",
+                                      tk::core::orthographic(0, 0, 1024, 576));
 
-    graph.draw();
+    tk::graphics::TransformNode* object = new tk::graphics::TransformNode("object", tk::core::translate(100.0f, 100.0f, 0.0f));
 
+    tk::graphics::TransformNode* shadow = new tk::graphics::TransformNode("shadow", tk::core::translate(-2.0f, 2.0f, 0.0f));
+    shadow->addChild(new tk::graphics::ShapeNode("shadowShape", rect, { 0.3f, 0.3f, 0.3f, 1.0f }));
+
+    object->addChild(shadow);
+    object->addChild(new tk::graphics::ShapeNode("objectShape", rect));
+
+    graph.addChild(object);
+    
+    tk::graphics::RenderState state;
+    state.setShader(shader);
 
     bool running = true;
     while (running) {
@@ -71,13 +79,7 @@ int main(int argc, char** argv) {
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        shader->setUniform("transform", transform);
-        shader->setUniform("tint", tk::core::Vec4f{ 1, 1, 0, 1 });
-        rect.draw();
-
-        shader->setUniform("transform", transform * tk::core::transpose(2.0f, -2.f, 0.0f));
-        shader->setUniform("tint", tk::core::Vec4f{ 1, 1, 1, 1 });
-        rect.draw();
+        graph.draw(state);
 
         SDL_GL_SwapWindow(window);
     }
