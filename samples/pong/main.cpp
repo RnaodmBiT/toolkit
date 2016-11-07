@@ -27,6 +27,9 @@ int main(int argc, char** argv) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    uint8_t data[] = { 255, 255, 255, 255 };
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
     tk::graphics::initializeExtensions();
 
     tk_info("Loading resources...");
@@ -49,24 +52,25 @@ int main(int argc, char** argv) {
 
 
     tk::graphics::Shader* shader = resources.get<tk::graphics::Shader>("shader");
-    shader->apply();
-    shader->setUniform("image", texture);
     
-    tk::graphics::TransformNode graph("root",
-                                      tk::core::orthographic(0, 0, 1024, 576));
+    tk::core::Mat4f projection = tk::core::orthographic(0, 0, 1024, 576);
 
-    tk::graphics::TransformNode* object = new tk::graphics::TransformNode("object", tk::core::translate(100.0f, 100.0f, 0.0f));
+    tk::graphics::ShapeNode object = tk::graphics::ShapeNode("object", 
+                                                             rect,
+                                                             tk::core::translate(100.0f, 100.0f, 0.0f),
+                                                             shader,
+                                                             &texture, 
+                                                             { 1.0f, 1.0f, 1.0f, 1.0f });
 
-    tk::graphics::TransformNode* shadow = new tk::graphics::TransformNode("shadow", tk::core::translate(-2.0f, 2.0f, 0.0f));
-    shadow->addChild(new tk::graphics::ShapeNode("shadowShape", rect, { 0.3f, 0.3f, 0.3f, 1.0f }));
+    tk::graphics::ShapeNode shadow = tk::graphics::ShapeNode("shadow",
+                                                             rect,
+                                                             tk::core::translate(-2.0f, 2.0f, 0.0f),
+                                                             shader,
+                                                             &texture,
+                                                             { 0.3f, 0.3f, 0.3f, 1.0f });
 
-    object->addChild(shadow);
-    object->addChild(new tk::graphics::ShapeNode("objectShape", rect));
-
-    graph.addChild(object);
-    
-    tk::graphics::RenderState state;
-    state.setShader(shader);
+    object.setDrawOrder(true);
+    object.addChild(&shadow);
 
     bool running = true;
     while (running) {
@@ -79,7 +83,7 @@ int main(int argc, char** argv) {
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        graph.draw(state);
+        object.draw(projection);
 
         SDL_GL_SwapWindow(window);
     }
