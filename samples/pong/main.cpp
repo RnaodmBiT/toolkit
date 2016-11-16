@@ -4,6 +4,21 @@
 #include <graphics.hpp>
 #include <core.hpp>
 
+#include "game.hpp"
+
+void loadResources(ResourceCollection& resources) {
+    tk_info("Loading resources...");
+
+    resources.load<Shader>("shader",
+                           "data/shaders/shape.vert",
+                           "data/shaders/shape.frag");
+
+    resources.load<Font>("font",
+                         "data/fonts/caviar.ttf");
+
+    tk_info("Finished loading resources.");
+}
+
 int main(int argc, char** argv) {
 
     tk::core::initLog("pong.log");
@@ -23,54 +38,13 @@ int main(int argc, char** argv) {
     SDL_GLContext context = SDL_GL_CreateContext(window);
     tk_assert(context, "SDL_GL_CreateContext failed");
 
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    tk_assert(tk::graphics::initialize(), "Error initializing the graphics");
 
-    uint8_t data[] = { 255, 255, 255, 255 };
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-
-    tk::graphics::initializeExtensions();
-
-    tk_info("Loading resources...");
     tk::core::ResourceCollection resources;
-    resources.load<tk::graphics::Shader>("shader",
-        "data/shaders/shape.vert",
-        "data/shaders/shape.frag");
+    loadResources(resources);
 
-    resources.load<tk::graphics::Font>("font",
-        "data/fonts/caviar.ttf");
-    tk_info("Finished loading resources.");
-
-    tk::graphics::Bitmap<uint8_t> textImage = resources.get<tk::graphics::Font>("font")->renderText("PONG    | .      |", 40);
-
-    tk::graphics::Texture texture(GL_TEXTURE_2D);
-    texture.setData(textImage.getData(), textImage.getWidth(), textImage.getHeight(), GL_R8, GL_RED, GL_UNSIGNED_BYTE);
-    texture.useRedAsAlpha();
-
-    tk::graphics::Shape rect = tk::graphics::Shape::rectangle({ 0, 0 }, { (float)textImage.getWidth(), (float)textImage.getHeight() });
-
-
-    tk::graphics::Shader* shader = resources.get<tk::graphics::Shader>("shader");
-    
-    tk::core::Mat4f projection = tk::core::orthographic(0, 0, 1024, 576);
-
-    tk::graphics::ShapeNode object = tk::graphics::ShapeNode("object", 
-                                                             rect,
-                                                             tk::core::translate(100.0f, 100.0f, 0.0f),
-                                                             shader,
-                                                             &texture, 
-                                                             { 1.0f, 1.0f, 1.0f, 1.0f });
-
-    tk::graphics::ShapeNode shadow = tk::graphics::ShapeNode("shadow",
-                                                             rect,
-                                                             tk::core::translate(-2.0f, 2.0f, 0.0f),
-                                                             shader,
-                                                             &texture,
-                                                             { 0.3f, 0.3f, 0.3f, 1.0f });
-
-    object.setDrawOrder(true);
-    object.addChild(&shadow);
+    tk::core::State* state = new Game();
+    state->create(resources);
 
     bool running = true;
     while (running) {
@@ -83,7 +57,14 @@ int main(int argc, char** argv) {
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        object.draw(projection);
+        tk::core::State* newState = state->update();
+        if (newState) {
+            state->shutdown();
+            state = newState;
+            state->create(resources);
+        }
+
+        state->draw();
 
         SDL_GL_SwapWindow(window);
     }
