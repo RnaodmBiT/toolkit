@@ -14,13 +14,18 @@ class Game : public PongState {
 
     std::unique_ptr<DrawableNode> scene;
 
-    std::unique_ptr<TextNode> title;
+    std::unique_ptr<TextNode> title, score;
 
-    tk::graphics::Shape paddle;
+    tk::graphics::Shape paddle, circle;
     std::unique_ptr<ShapeNode> leftPaddle;
     std::unique_ptr<ShapeNode> rightPaddle;
+    std::unique_ptr<ShapeNode> ball;
 
-    Vec3f leftPosition, rightPosition;
+    Vec3f leftPosition, rightPosition, ballPosition, ballSpeed;
+
+    int leftScore, rightScore;
+
+    bool isBallTouchingPaddle(const Vec3f& paddle);
 
 public:
     void create(Global& global);
