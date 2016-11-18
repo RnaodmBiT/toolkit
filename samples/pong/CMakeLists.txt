@@ -4,6 +4,7 @@ set(PROJECT_NAME pong)
 
 set(SOURCES 
             main.cpp 
+            global.hpp
             game.hpp 
             game.cpp)
 

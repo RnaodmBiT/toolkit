@@ -4,7 +4,11 @@
 #include <graphics.hpp>
 #include <core.hpp>
 
+#include "global.hpp"
 #include "game.hpp"
+
+using namespace tk::core;
+using namespace tk::graphics;
 
 void loadResources(ResourceCollection& resources) {
     tk_info("Loading resources...");
@@ -21,7 +25,7 @@ void loadResources(ResourceCollection& resources) {
 
 int main(int argc, char** argv) {
 
-    tk::core::initLog("pong.log");
+    initLog("pong.log");
 
     tk_assert(SDL_Init(SDL_INIT_EVERYTHING) == 0, "SDL_Init failed");
 
@@ -40,28 +44,35 @@ int main(int argc, char** argv) {
 
     tk_assert(tk::graphics::initialize(), "Error initializing the graphics");
 
-    tk::core::ResourceCollection resources;
-    loadResources(resources);
+    Global global;
+    loadResources(global.resources);
 
-    tk::core::State* state = new Game();
-    state->create(resources);
+    PongState* state = new Game();
+    state->create(global);
 
     bool running = true;
     while (running) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
+            switch (event.type) {
+            case SDL_QUIT:
                 running = false;
+                break;
+            case SDL_KEYDOWN:
+            case SDL_KEYUP:
+                global.keyboard.handleEvent(event.key.keysym.sym, event.type == SDL_KEYDOWN);
+                break;
             }
         }
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        tk::core::State* newState = state->update();
+        PongState* newState = state->update();
         if (newState) {
             state->shutdown();
+            delete state;
             state = newState;
-            state->create(resources);
+            state->create(global);
         }
 
         state->draw();
