@@ -16,17 +16,18 @@ void Game::create(Global& g) {
     ballPosition = { 512.0f, 288.0f, 0.0f };
     ballSpeed = { -300.0f, -100.0f, 0.0f };
 
-    leftPaddle.reset(new ShapeNode("left", paddle, translate(leftPosition), shader));
+    leftPaddle.reset(new ShapeNode("left", paddle, shader));
     leftPaddle->setTint({ 1.0f, 0.0f, 0.0f, 1.0f });
 
-    rightPaddle.reset(new ShapeNode("right", paddle, translate(rightPosition), shader));
+    rightPaddle.reset(new ShapeNode("right", paddle, shader));
     rightPaddle->setTint({ 0.0f, 0.0f, 1.0f, 1.0f });
 
-    ball.reset(new ShapeNode("ball", circle, translate(ballPosition), shader));
+    ball.reset(new ShapeNode("ball", circle, shader));
     ball->setTint({ 0.0f, 1.0f, 0.0f, 1.0f });
 
-    title.reset(new TextNode("title", font, "PONG", 50, translate(10.0f, 10.0f, 0.0f), shader));
-    score.reset(new TextNode("score", font, "0 | 0", 40, translate(500.0f, 20.0f, 0.0f), shader));
+    title.reset(new TextNode("title", font, "PONG", 50, shader));
+    title->setTransform(translate(10.0f, 10.0f, 0.0f));
+    score.reset(new TextNode("score", font, "0 | 0", 40, shader));
 
     scene.reset(new DrawableNode("scene"));
     scene->addChild(leftPaddle.get());
