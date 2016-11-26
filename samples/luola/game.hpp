@@ -9,14 +9,10 @@
 using namespace tk::core;
 using namespace tk::graphics;
 
-class Title : public LuolaState {
+class Game : public LuolaState {
     Global* global;
 
     std::unique_ptr<DrawableNode> scene;
-
-    std::unique_ptr<TextNode> title;
-
-    Delegate<int> keyPress;
 
 public:
     void create(Global& global);

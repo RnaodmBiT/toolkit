@@ -23,7 +23,8 @@ void Game::create(Global& g) {
     rightPaddle.reset(new ShapeNode("right", &paddle));
     rightPaddle->setTint({ 0.0f, 0.0f, 1.0f, 1.0f });
 
-    ball.reset(new ShapeNode("ball", Shape::circle({ 0, 0 }, 10)));
+    Shape circle = Shape::circle({ 0, 0 }, 10);
+    ball.reset(new ShapeNode("ball", circle));
     ball->setTint({ 0.0f, 1.0f, 0.0f, 1.0f });
 
     title.reset(new TextNode("title", font, "PONG", 50));

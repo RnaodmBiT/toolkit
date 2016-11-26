@@ -5,8 +5,10 @@ set(PROJECT_NAME luola)
 set(SOURCES 
             main.cpp 
             global.hpp
-            title.hpp 
-            title.cpp)
+            title.hpp title.cpp
+            game.hpp game.cpp)
+
+
 
 add_executable(${PROJECT_NAME} ${TK_CONSOLE} ${SOURCES})
 target_link_libraries(${PROJECT_NAME} SDL2 SDL2main tk-graphics ${OPENGL_gl_LIBRARY})

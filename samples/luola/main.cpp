@@ -5,7 +5,7 @@
 #include <core.hpp>
 
 #include "global.hpp"
-#include "game.hpp"
+#include "title.hpp"
 
 using namespace tk::core;
 using namespace tk::graphics;
@@ -25,17 +25,20 @@ void loadResources(ResourceCollection& resources) {
 
 int main(int argc, char** argv) {
 
-    initLog("pong.log");
+    initLog("luola.log");
+
+    Global global;
+    global.resolution = Vec2i{ 1024, 576 };
 
     tk_assert(SDL_Init(SDL_INIT_EVERYTHING) == 0, "SDL_Init failed");
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 
-    SDL_Window* window = SDL_CreateWindow("Pong",
+    SDL_Window* window = SDL_CreateWindow("Luola",
                                           SDL_WINDOWPOS_UNDEFINED,
                                           SDL_WINDOWPOS_UNDEFINED,
-                                          1024, 576,
+                                          global.resolution.x, global.resolution.y,
                                           SDL_WINDOW_OPENGL);
     tk_assert(window, "SDL_CreateWindow failed");
 
@@ -44,10 +47,9 @@ int main(int argc, char** argv) {
 
     tk_assert(tk::graphics::initialize(), "Error initializing the graphics");
 
-    Global global;
     loadResources(global.resources);
 
-    PongState* state = new Game();
+    LuolaState* state = new Title();
     state->create(global);
 
     bool running = true;
@@ -67,7 +69,7 @@ int main(int argc, char** argv) {
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        PongState* newState = state->update();
+        LuolaState* newState = state->update();
         if (newState) {
             state->shutdown();
             delete state;
