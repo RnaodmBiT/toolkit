@@ -1,0 +1,30 @@
+{
+    "titlePage": {
+        "type": "group",
+        "style": "content",
+        
+        "children": {
+            "title": {
+                "type": "text",
+                "style": "title",
+                "text": "SNAKE TITLE",
+                "index": 0
+            },
+
+            "menu": {
+                "type": "panel",
+                "style": "menuBackground",
+                "size": [ 100, 100 ],
+                "index": 2,
+
+                "children": {
+                    "play": {
+                        "type": "text",
+                        "style": "menuButton",
+                        "text": "PLAY"
+                    }
+                }
+            }
+        }
+    }
+}

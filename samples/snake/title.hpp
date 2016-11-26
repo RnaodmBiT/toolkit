@@ -13,10 +13,12 @@ using namespace tk::layout;
 
 class Title : public SnakeState {
     Global* global;
+    UIFactory uiFactory;
 
     std::unique_ptr<DrawableNode> scene;
+    std::vector<std::unique_ptr<DrawableNode>> menu;
 
-    std::unique_ptr<TextNode> title, hello;
+    DrawableNode* createMenuNode(const std::string& name, const json& data);
 
 public:
     void create(Global& global);

@@ -1,6 +1,7 @@
 #include "game.hpp"
 #include <SDL.h>
 
+
 void Game::create(Global& g) {
     global = &g;
 
@@ -16,20 +17,22 @@ void Game::create(Global& g) {
     ballPosition = { 512.0f, 288.0f, 0.0f };
     ballSpeed = { -300.0f, -100.0f, 0.0f };
 
-    leftPaddle.reset(new ShapeNode("left", paddle, shader));
+    leftPaddle.reset(new ShapeNode("left", &paddle));
     leftPaddle->setTint({ 1.0f, 0.0f, 0.0f, 1.0f });
 
-    rightPaddle.reset(new ShapeNode("right", paddle, shader));
+    rightPaddle.reset(new ShapeNode("right", &paddle));
     rightPaddle->setTint({ 0.0f, 0.0f, 1.0f, 1.0f });
 
-    ball.reset(new ShapeNode("ball", circle, shader));
+    ball.reset(new ShapeNode("ball", Shape::circle({ 0, 0 }, 10)));
     ball->setTint({ 0.0f, 1.0f, 0.0f, 1.0f });
 
-    title.reset(new TextNode("title", font, "PONG", 50, shader));
+    title.reset(new TextNode("title", font, "PONG", 50));
     title->setTransform(translate(10.0f, 10.0f, 0.0f));
-    score.reset(new TextNode("score", font, "0 | 0", 40, shader));
+    score.reset(new TextNode("score", font, "0 | 0", 40));
 
     scene.reset(new DrawableNode("scene"));
+    scene->setShader(shader);
+
     scene->addChild(leftPaddle.get());
     scene->addChild(rightPaddle.get());
     scene->addChild(ball.get());
@@ -95,7 +98,7 @@ PongState* Game::update() {
 
 void Game::draw() {
     score->setText(format("%% | %%", leftScore, rightScore), 40);
-    const Vec2i& size = score->getSize();
+    const Vec2f& size = score->getSize();
     score->setTransform(translate(512.0f - float(size.x) / 2, 20.0f, 0.0f));
 
     leftPaddle->setTransform(translate(leftPosition));

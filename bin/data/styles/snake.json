@@ -1,19 +1,24 @@
 {
-  "content": {
-    "padding": [ 0, 0, 0, 0 ],
-    "color": "#222222",
-    "font": "caviar"
-  },
+    "content": {
+        "padding": [ 0, 0, 0, 0 ],
+        "color": "#222222",
+        "font": "caviar"
+    },
 
-  "title": {
-    "parent": "content",
-    "fontSize": 50,
-    "color": "#26AF84"
-  },
+    "title": {
+        "parent": "content",
+        "fontSize": 50,
+        "color": "#26AF84"
+    },
 
-  "menuButton" : {
-    "parent": "content",
-    "fontSize": 30,
-    "color": "#1A775A"
-  }
+    "menuButton" : {
+        "parent": "content",
+        "fontSize": 30,
+        "color": "#1A775A"
+    },
+
+    "menuBackground": {
+        "parent": "content",
+        "color": "#333333"
+    }
 }
