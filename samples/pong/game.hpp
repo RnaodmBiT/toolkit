@@ -29,7 +29,7 @@ class Game : public PongState {
 
 public:
     void create(Global& global);
-    PongState* update();
+    PongState* update(float dt);
     void draw();
     void shutdown();
 };

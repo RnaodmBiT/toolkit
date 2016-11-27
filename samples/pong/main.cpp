@@ -50,6 +50,8 @@ int main(int argc, char** argv) {
     PongState* state = new Game();
     state->create(global);
 
+    UpdateTimer updateTimer(60);
+
     bool running = true;
     while (running) {
         SDL_Event event;
@@ -67,12 +69,14 @@ int main(int argc, char** argv) {
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        PongState* newState = state->update();
-        if (newState) {
-            state->shutdown();
-            delete state;
-            state = newState;
-            state->create(global);
+        while (updateTimer.update()) {
+            PongState* newState = state->update(updateTimer.period());
+            if (newState) {
+                state->shutdown();
+                delete state;
+                state = newState;
+                state->create(global);
+            }
         }
 
         state->draw();

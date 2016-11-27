@@ -34,6 +34,7 @@ int main(int argc, char** argv) {
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 8);
 
     SDL_Window* window = SDL_CreateWindow("Luola",
                                           SDL_WINDOWPOS_UNDEFINED,
@@ -52,6 +53,8 @@ int main(int argc, char** argv) {
     LuolaState* state = new Title();
     state->create(global);
 
+    UpdateTimer updateTimer(60);
+
     bool running = true;
     while (running) {
         SDL_Event event;
@@ -69,12 +72,14 @@ int main(int argc, char** argv) {
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        LuolaState* newState = state->update();
-        if (newState) {
-            state->shutdown();
-            delete state;
-            state = newState;
-            state->create(global);
+        while (updateTimer.update()) {
+            LuolaState* newState = state->update(updateTimer.period());
+            if (newState) {
+                state->shutdown();
+                delete state;
+                state = newState;
+                state->create(global);
+            }
         }
 
         state->draw();

@@ -41,8 +41,8 @@ void Title::create(Global& g) {
 void Title::shutdown() {
 }
 
-SnakeState* Title::update() {
-    return SnakeState::update();
+SnakeState* Title::update(float dt) {
+    return SnakeState::update(dt);
 }
 
 void Title::draw() {

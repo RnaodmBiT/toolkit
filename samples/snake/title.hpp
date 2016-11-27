@@ -22,7 +22,7 @@ class Title : public SnakeState {
 
 public:
     void create(Global& global);
-    SnakeState* update();
+    SnakeState* update(float dt);
     void draw();
     void shutdown();
 };

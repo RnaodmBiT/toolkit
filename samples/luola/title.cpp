@@ -16,6 +16,7 @@ void Title::create(Global& g) {
     scene->addChild(title.get());
 
     keyPress.event = [this] (int key) {
+        tk_info("Moving to Game");
         setNextState(new Game);
     };
     global->keyboard.keyPress.attach(keyPress);
@@ -24,8 +25,8 @@ void Title::create(Global& g) {
 void Title::shutdown() {
 }
 
-LuolaState* Title::update() {
-    return LuolaState::update();
+LuolaState* Title::update(float dt) {
+    return LuolaState::update(dt);
 }
 
 void Title::draw() {

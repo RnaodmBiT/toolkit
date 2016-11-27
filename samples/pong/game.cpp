@@ -46,7 +46,7 @@ void Game::shutdown() {
 }
 
 
-PongState* Game::update() {
+PongState* Game::update(float dt) {
     if (global->keyboard.isKeyDown(SDLK_w)) {
         leftPosition.y -= 5.0f;
     }
@@ -93,7 +93,7 @@ PongState* Game::update() {
     }
 
 
-    return PongState::update();
+    return PongState::update(dt);
 }
 
 

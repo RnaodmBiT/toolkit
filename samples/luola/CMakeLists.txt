@@ -6,7 +6,9 @@ set(SOURCES
             main.cpp 
             global.hpp
             title.hpp title.cpp
-            game.hpp game.cpp)
+            game.hpp game.cpp
+            ship.hpp ship.cpp
+)
 
 
 

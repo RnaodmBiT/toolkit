@@ -20,7 +20,7 @@ class Title : public LuolaState {
 
 public:
     void create(Global& global);
-    LuolaState* update();
+    LuolaState* update(float dt);
     void draw();
     void shutdown();
 };
