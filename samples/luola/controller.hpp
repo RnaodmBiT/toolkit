@@ -13,7 +13,11 @@ public:
 
 
 class PlayerController : public Controller {
+    enum InputMode { Keyboard, Mouse };
+    InputMode input;
+    Delegate<int> inputToggle;
+
 public:
-    PlayerController(Ship& ship);
+    PlayerController(Global& global, Ship& ship);
     void update(Global& global, float dt);
 };

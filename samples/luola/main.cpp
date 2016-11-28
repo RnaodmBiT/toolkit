@@ -66,6 +66,13 @@ int main(int argc, char** argv) {
             case SDL_KEYUP:
                 global.keyboard.handleEvent(event.key.keysym.sym, event.type == SDL_KEYDOWN);
                 break;
+            case SDL_MOUSEBUTTONDOWN:
+            case SDL_MOUSEBUTTONUP:
+                global.mouse.handleEvent(event.button.button, event.type == SDL_MOUSEBUTTONDOWN);
+                break;
+            case SDL_MOUSEMOTION:
+                global.mouse.handleMove(event.motion.x, event.motion.y);
+                break;
             }
         }
 

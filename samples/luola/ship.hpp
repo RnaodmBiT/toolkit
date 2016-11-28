@@ -19,6 +19,8 @@ public:
     void update(float dt);
 
     Vec2f getDirection() const;
+    Vec2f getPosition() const;
+    float getAngle() const;
 
     void applyThrust(float thrust, float dt);
     void rotate(float speed, float dt);

@@ -10,7 +10,7 @@ Ship::Ship() { }
 
 Ship::Ship(Vec2f position, ShapeNode* shape, Vec4f color) : 
     position(position),
-    angle(pi / 2),
+    angle(-pi / 2),
     shape(shape) {
     shape->setTint(color);
 }
@@ -26,12 +26,20 @@ void Ship::update(float dt) {
 }
 
 void Ship::updateTransform() {
-    auto m = translate(position.x, position.y, 0.0f) * ::rotate(angle, { 0.0f, 0.0f, -1.0f });
+    auto m = translate(position.x, position.y, 0.0f) * ::rotate(angle, { 0.0f, 0.0f, 1.0f });
     shape->setTransform(m);
 }
 
 Vec2f Ship::getDirection() const {
-    return{ std::cos(angle), -std::sin(angle) };
+    return{ std::cos(angle), std::sin(angle) };
+}
+
+Vec2f Ship::getPosition() const {
+    return position;
+}
+
+float Ship::getAngle() const {
+    return angle;
 }
 
 void Ship::applyThrust(float strength, float dt) {

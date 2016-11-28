@@ -37,8 +37,8 @@ Game::Game(Global& global) : LuolaState(global) {
     ShapeNode* playerNode = new ShapeNode("player", &shapeShip);
     scene->addChild(playerNode);
 
-    player = Ship({ 100.0f, 100.0f }, playerNode, { 0.0f, 0.0f, 1.0f, 1.0f });
-    playerController.reset(new PlayerController(player));
+    player = Ship({ 400.0f, 100.0f }, playerNode, { 0.0f, 0.0f, 1.0f, 1.0f });
+    playerController.reset(new PlayerController(global, player));
 }
 
 void Game::shutdown() {
