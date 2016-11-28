@@ -17,4 +17,9 @@ public:
     Ship(Vec2f position, ShapeNode* shape, Vec4f color);
 
     void update(float dt);
+
+    Vec2f getDirection() const;
+
+    void applyThrust(float thrust, float dt);
+    void rotate(float speed, float dt);
 };

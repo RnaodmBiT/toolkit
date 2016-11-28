@@ -2,11 +2,9 @@
 #include "game.hpp"
 #include <SDL.h>
 
-void Title::create(Global& g) {
-    global = &g;
-
-    Font* font = global->resources.get<Font>("font");
-    Shader* shader = global->resources.get<Shader>("shader");
+Title::Title(Global& global) : LuolaState(global) {
+    Font* font = global.resources.get<Font>("font");
+    Shader* shader = global.resources.get<Shader>("shader");
 
     scene.reset(new DrawableNode("scene"));
     scene->setShader(shader);
@@ -16,10 +14,9 @@ void Title::create(Global& g) {
     scene->addChild(title.get());
 
     keyPress.event = [this] (int key) {
-        tk_info("Moving to Game");
-        setNextState(new Game);
+        setNextState(new Game(this->global));
     };
-    global->keyboard.keyPress.attach(keyPress);
+    global.keyboard.keyPress.attach(keyPress);
 }
 
 void Title::shutdown() {
@@ -30,7 +27,7 @@ LuolaState* Title::update(float dt) {
 }
 
 void Title::draw() {
-    Mat4f projection = orthographic(0.0f, 0.0f, (float)global->resolution.x, (float)global->resolution.y);
+    Mat4f projection = orthographic(0.0f, 0.0f, (float)global.resolution.x, (float)global.resolution.y);
     scene->draw(projection);
 }
 

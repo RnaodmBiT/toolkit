@@ -50,8 +50,7 @@ int main(int argc, char** argv) {
 
     loadResources(global.resources);
 
-    LuolaState* state = new Title();
-    state->create(global);
+    LuolaState* state = new Title(global);
 
     UpdateTimer updateTimer(60);
 
@@ -78,7 +77,6 @@ int main(int argc, char** argv) {
                 state->shutdown();
                 delete state;
                 state = newState;
-                state->create(global);
             }
         }
 

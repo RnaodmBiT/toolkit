@@ -25,11 +25,9 @@ void Game::createShip() {
     shapeShip = Shape::polygon(points, colors, uvs, sizeof_array(points));
 }
 
-void Game::create(Global& g) {
-    global = &g;
-
-    Font* font = global->resources.get<Font>("font");
-    Shader* shader = global->resources.get<Shader>("shader");
+Game::Game(Global& global) : LuolaState(global) {
+    Font* font = global.resources.get<Font>("font");
+    Shader* shader = global.resources.get<Shader>("shader");
 
     createShip();
 
@@ -40,19 +38,21 @@ void Game::create(Global& g) {
     scene->addChild(playerNode);
 
     player = Ship({ 100.0f, 100.0f }, playerNode, { 0.0f, 0.0f, 1.0f, 1.0f });
+    playerController.reset(new PlayerController(player));
 }
 
 void Game::shutdown() {
 }
 
 LuolaState* Game::update(float dt) {
+    playerController->update(global, dt);
     player.update(dt);
 
     return LuolaState::update(dt);
 }
 
 void Game::draw() {
-    Mat4f projection = orthographic(0.0f, 0.0f, (float)global->resolution.x, (float)global->resolution.y);
+    Mat4f projection = orthographic(0.0f, 0.0f, (float)global.resolution.x, (float)global.resolution.y);
     scene->draw(projection);
 }
 

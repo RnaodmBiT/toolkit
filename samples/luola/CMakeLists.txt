@@ -8,6 +8,7 @@ set(SOURCES
             title.hpp title.cpp
             game.hpp game.cpp
             ship.hpp ship.cpp
+            controller.hpp player.cpp
 )
 
 

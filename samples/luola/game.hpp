@@ -6,23 +6,23 @@
 
 #include "global.hpp"
 #include "ship.hpp"
+#include "controller.hpp"
 
 using namespace tk::core;
 using namespace tk::graphics;
 
 class Game : public LuolaState {
-    Global* global;
-
     std::unique_ptr<DrawableNode> scene;
 
     Shape shapeShip;
 
     Ship player;
+    std::unique_ptr<Controller> playerController;
 
     void createShip();
 
 public:
-    void create(Global& global);
+    Game(Global& global);
     LuolaState* update(float dt);
     void draw();
     void shutdown();

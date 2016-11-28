@@ -10,8 +10,6 @@ using namespace tk::core;
 using namespace tk::graphics;
 
 class Title : public LuolaState {
-    Global* global;
-
     std::unique_ptr<DrawableNode> scene;
 
     std::unique_ptr<TextNode> title;
@@ -19,7 +17,7 @@ class Title : public LuolaState {
     Delegate<int> keyPress;
 
 public:
-    void create(Global& global);
+    Title(Global& global);
     LuolaState* update(float dt);
     void draw();
     void shutdown();
