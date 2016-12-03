@@ -3,12 +3,14 @@
 
 #include <graphics.hpp>
 #include <core.hpp>
+#include <net.hpp>
 
 #include "global.hpp"
 #include "title.hpp"
 
 using namespace tk::core;
 using namespace tk::graphics;
+using namespace tk::net;
 
 void loadResources(ResourceCollection& resources) {
     tk_info("Loading resources...");
@@ -26,6 +28,23 @@ void loadResources(ResourceCollection& resources) {
 int main(int argc, char** argv) {
 
     initLog("luola.log");
+
+    // DEBUGGING NETWORK CODE
+
+    tk::net::initialize();
+    /*
+    Server<PlayerInfo> server({ "Server" });
+    server.start(25140);
+
+    Client<PlayerInfo> client({ "Client" });
+    client.connect("localhost", 25140);
+
+    while (true) {
+        client.pollEvents();
+        server.pollEvents();
+    }*/
+
+    // DONE DEBUGGING NETWORK CODE
 
     Global global;
     global.resolution = Vec2i{ 1024, 576 };

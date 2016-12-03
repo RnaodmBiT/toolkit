@@ -15,3 +15,6 @@ add_subdirectory(hello_world)
 add_subdirectory(pong)
 add_subdirectory(snake)
 add_subdirectory(luola)
+
+add_subdirectory(net_client)
+add_subdirectory(net_server)

@@ -12,7 +12,6 @@ using namespace tk::graphics;
 using namespace tk::layout;
 
 class Title : public SnakeState {
-    Global* global;
     UIFactory uiFactory;
 
     std::unique_ptr<DrawableNode> scene;
@@ -21,7 +20,7 @@ class Title : public SnakeState {
     DrawableNode* createMenuNode(const std::string& name, const json& data);
 
 public:
-    void create(Global& global);
+    Title(Global& global);
     SnakeState* update(float dt);
     void draw();
     void shutdown();

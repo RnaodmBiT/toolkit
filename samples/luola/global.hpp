@@ -1,6 +1,7 @@
 #pragma once
 
 #include <core.hpp>
+#include <string>
 
 
 struct Global {
@@ -11,3 +12,8 @@ struct Global {
 };
 
 typedef tk::core::State<Global> LuolaState;
+
+
+struct PlayerInfo {
+    std::string name;
+};

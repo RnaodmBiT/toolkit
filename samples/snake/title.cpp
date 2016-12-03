@@ -2,9 +2,9 @@
 #include <SDL.h>
 
 DrawableNode* Title::createMenuNode(const std::string& name, const json& data) {
-    StyleSheet* sheet = global->resources.get<StyleSheet>("style");
+    StyleSheet* sheet = global.resources.get<StyleSheet>("style");
     const Style& style = sheet->get(data["style"]);
-    DrawableNode* node = uiFactory.build(name, data, style, global->resources);
+    DrawableNode* node = uiFactory.build(name, data, style, global.resources);
 
     Mat4f transform = translate((float)style.getPadding().x, (float)style.getPadding().y, 0.0f);
 
@@ -25,12 +25,11 @@ DrawableNode* Title::createMenuNode(const std::string& name, const json& data) {
     return node;
 }
 
-void Title::create(Global& g) {
-    global = &g;
+Title::Title(Global& global) : SnakeState(global) {
     uiFactory.addDefaultTypes();
 
     scene.reset(new DrawableNode("scene"));
-    scene->setShader(global->resources.get<Shader>("shader"));
+    scene->setShader(global.resources.get<Shader>("shader"));
     json menu = json::parse(readFile("data/styles/snake_menu.json").c_str());
 
     for (auto it = menu.begin(); it != menu.end(); ++it) {
@@ -46,6 +45,6 @@ SnakeState* Title::update(float dt) {
 }
 
 void Title::draw() {
-    Mat4f projection = orthographic(0.0f, 0.0f, (float)global->resolution.x, (float)global->resolution.y);
+    Mat4f projection = orthographic(0.0f, 0.0f, (float)global.resolution.x, (float)global.resolution.y);
     scene->draw(projection);
 }

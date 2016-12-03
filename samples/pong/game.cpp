@@ -2,11 +2,9 @@
 #include <SDL.h>
 
 
-void Game::create(Global& g) {
-    global = &g;
-
-    Font* font = global->resources.get<Font>("font");
-    Shader* shader = global->resources.get<Shader>("shader");
+Game::Game(Global& global) : PongState(global) {
+    Font* font = global.resources.get<Font>("font");
+    Shader* shader = global.resources.get<Shader>("shader");
 
     Vec2f size{ 20, 100 };
     paddle = Shape::rectangle(-size / 2.0f, size);

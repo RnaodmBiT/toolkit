@@ -47,8 +47,7 @@ int main(int argc, char** argv) {
     Global global;
     loadResources(global.resources);
 
-    PongState* state = new Game();
-    state->create(global);
+    PongState* state = new Game(global);
 
     UpdateTimer updateTimer(60);
 
@@ -75,7 +74,6 @@ int main(int argc, char** argv) {
                 state->shutdown();
                 delete state;
                 state = newState;
-                state->create(global);
             }
         }
 

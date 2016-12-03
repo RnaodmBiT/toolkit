@@ -14,12 +14,14 @@ include_directories(
     core/include
     layout/include
     graphics/include
+    net/include
 )
 
 # Add toolkit libraries
 add_subdirectory(core)
 add_subdirectory(layout)
 add_subdirectory(graphics)
+add_subdirectory(net)
 
 
 # Add sample projects

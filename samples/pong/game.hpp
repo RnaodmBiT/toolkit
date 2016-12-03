@@ -28,7 +28,7 @@ class Game : public PongState {
     bool isBallTouchingPaddle(const Vec3f& paddle);
 
 public:
-    void create(Global& global);
+    Game(Global& global);
     PongState* update(float dt);
     void draw();
     void shutdown();
