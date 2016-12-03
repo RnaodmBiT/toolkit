@@ -7,3 +7,7 @@
 [submodule "graphics"]
 	path = graphics
 	url = git@github.com:RnaodmBiT/graphics.git
+[submodule "net"]
+	path = net
+	url = git@github.com:RnaodmBiT/net.git
+
