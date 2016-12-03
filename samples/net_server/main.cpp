@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
 
     tk::net::initialize();
 
-    Server<PlayerInfo> server({ "Server" });
+    Server<PlayerInfo> server;
     server.start(25140);
     tk_info("Server started");
 

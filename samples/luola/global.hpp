@@ -1,19 +1,27 @@
 #pragma once
 
 #include <core.hpp>
+#include <graphics.hpp>
+#include <net.hpp>
 #include <string>
+#include <memory>
+
+#include "player_info.hpp"
+#include "game_server.hpp"
+
+
+using namespace tk::core;
+using namespace tk::graphics;
+using namespace tk::net;
 
 
 struct Global {
-    tk::core::ResourceCollection resources;
-    tk::core::Keyboard keyboard;
-    tk::core::Mouse mouse;
-    tk::core::Vec2i resolution;
+    ResourceCollection resources;
+    Keyboard keyboard;
+    Mouse mouse;
+    Vec2i resolution;
+    Client<PlayerInfo> client;
+    GameServer server;
 };
 
-typedef tk::core::State<Global> LuolaState;
-
-
-struct PlayerInfo {
-    std::string name;
-};
+typedef State<Global> LuolaState;

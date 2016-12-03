@@ -6,15 +6,13 @@
 
 #include "global.hpp"
 
-using namespace tk::core;
-using namespace tk::graphics;
-
 class Title : public LuolaState {
     std::unique_ptr<DrawableNode> scene;
 
-    std::unique_ptr<TextNode> title;
+    std::unique_ptr<TextNode> title, instructions;
 
     Delegate<int> keyPress;
+    Delegate<> connectedToServer;
 
 public:
     Title(Global& global);

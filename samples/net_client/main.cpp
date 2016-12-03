@@ -18,8 +18,8 @@ int main(int argc, char** argv) {
 
     tk::net::initialize();
 
-    Client<PlayerInfo> client({ name });
-    client.connect("localhost", 25140);
+    Client<PlayerInfo> client;
+    client.connect("localhost", 25140, { name });
 
     while (1) {
         client.pollEvents();
@@ -32,6 +32,6 @@ void serialize(Blob& blob, const PlayerInfo& info) {
     serialize(blob, info.name);
 }
 
-void deserialize(Blob::iterator& it, PlayerInfo& info) {
+void deserialize(Blob::const_iterator& it, PlayerInfo& info) {
     deserialize(it, info.name);
 }

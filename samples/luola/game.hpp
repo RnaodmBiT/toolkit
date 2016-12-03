@@ -8,18 +8,18 @@
 #include "ship.hpp"
 #include "controller.hpp"
 
-using namespace tk::core;
-using namespace tk::graphics;
-
 class Game : public LuolaState {
     std::unique_ptr<DrawableNode> scene;
 
     Shape shapeShip;
 
-    Ship player;
-    std::unique_ptr<Controller> playerController;
+    std::vector<Ship> ships;
 
-    void createShip();
+    Delegate<const Host::Packet&> clientOnMessageReceived;
+
+    void createShipShape();
+
+    void updateShips(Host::Packet::const_iterator msg);
 
 public:
     Game(Global& global);

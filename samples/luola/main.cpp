@@ -29,22 +29,7 @@ int main(int argc, char** argv) {
 
     initLog("luola.log");
 
-    // DEBUGGING NETWORK CODE
-
     tk::net::initialize();
-    /*
-    Server<PlayerInfo> server({ "Server" });
-    server.start(25140);
-
-    Client<PlayerInfo> client({ "Client" });
-    client.connect("localhost", 25140);
-
-    while (true) {
-        client.pollEvents();
-        server.pollEvents();
-    }*/
-
-    // DONE DEBUGGING NETWORK CODE
 
     Global global;
     global.resolution = Vec2i{ 1024, 576 };
@@ -109,6 +94,11 @@ int main(int argc, char** argv) {
         state->draw();
 
         SDL_GL_SwapWindow(window);
+    }
+
+    if (state) {
+        state->shutdown();
+        delete state;
     }
 
     return 0;
