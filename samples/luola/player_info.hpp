@@ -11,12 +11,10 @@ struct PlayerInfo {
 
 namespace tk {
     namespace core {
-        static void serialize(Blob& blob, const PlayerInfo& info) {
-            serialize(blob, info.name);
-        }
+        template <>
+        void serialize(Blob& blob, const PlayerInfo& info);
 
-        static void deserialize(Blob::const_iterator& it, PlayerInfo& info) {
-            deserialize(it, info.name);
-        }
+        template <>
+        void deserialize(Blob::const_iterator& it, PlayerInfo& info);
     }
 }

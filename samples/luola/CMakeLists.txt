@@ -4,7 +4,8 @@ set(PROJECT_NAME luola)
 
 set(SOURCES 
             main.cpp 
-            global.hpp player_info.hpp messages.hpp
+            global.hpp messages.hpp
+            player_info.hpp player_info.cpp
             title.hpp title.cpp
             game_server.hpp game_server.cpp
             game.hpp game.cpp
