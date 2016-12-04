@@ -25,7 +25,8 @@ public:
 
     void operator=(Ship&& move) {
         std::swap(shape, move.shape);
-        std::swap(position, move.velocity);
+        std::swap(position, move.position);
+        std::swap(velocity, move.velocity);
         std::swap(angle, move.angle);
         std::swap(id, move.id);
     }

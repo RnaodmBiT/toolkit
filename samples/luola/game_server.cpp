@@ -37,7 +37,6 @@ void GameServer::update(float dt) {
 
 void GameServer::spawnShip(int player, Vec2f position, Vec4f color) {
     ships.emplace_back(player, position, color, nullptr);
-    tk_info("Spawned ship");
 }
 
 void GameServer::deleteShip(int player) {

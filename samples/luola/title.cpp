@@ -24,9 +24,11 @@ Title::Title(Global& global) : LuolaState(global) {
 
     keyPress.event = [&] (int key) {
         if (key == SDLK_j) {
+            global.isHost = false;
             global.client.connect("localhost", 25140, { "Client" });
         }
         if (key == SDLK_h) {
+            global.isHost = true;
             global.server.startServer(25140);
             global.client.connect("localhost", 25140, { "Server" });
             setNextState(new Game(global));

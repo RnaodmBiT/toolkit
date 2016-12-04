@@ -22,6 +22,7 @@ struct Global {
     Vec2i resolution;
     Client<PlayerInfo> client;
     GameServer server;
+    bool isHost;
 };
 
 typedef State<Global> LuolaState;

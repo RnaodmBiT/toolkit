@@ -34,7 +34,9 @@ void Game::shutdown() {
 }
 
 LuolaState* Game::update(float dt) {
-    global.server.update(dt);
+    if (global.isHost) {
+        global.server.update(dt);
+    }
     global.client.pollEvents();
 
     for (auto& ship : ships) {
@@ -66,7 +68,7 @@ void Game::updateShips(Host::Packet::const_iterator msg) {
             it->setPosition(position);
             it->setAngle(angle);
         } else {
-            ShapeNode* node = new ShapeNode("player", shapeShip);
+            ShapeNode* node = new ShapeNode("player", &shapeShip);
             scene->addChild(node);
             ships.emplace_back(id, position, Vec4f{ 0, 0, 1, 1 }, node);
         }
