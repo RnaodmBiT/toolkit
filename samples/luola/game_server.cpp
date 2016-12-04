@@ -1,7 +1,7 @@
 #include "messages.hpp"
 #include "game_server.hpp"
 
-GameServer::GameServer() : networkTick(10) {
+GameServer::GameServer() : networkTick(30) {
     onConnect.event = [&] (int id) {
         spawnShip(id, { 400, 100 }, { 0, 0, 1, 1 });
     };

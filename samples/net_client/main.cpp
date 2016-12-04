@@ -28,10 +28,17 @@ int main(int argc, char** argv) {
     return 0;
 }
 
-void serialize(Blob& blob, const PlayerInfo& info) {
-    serialize(blob, info.name);
-}
+namespace tk {
+    namespace core {
+        template <>
+        struct convert<PlayerInfo> {
+            void serialize(Blob& blob, const PlayerInfo& info) {
+                tk::core::serialize(blob, info.name);
+            }
 
-void deserialize(Blob::const_iterator& it, PlayerInfo& info) {
-    deserialize(it, info.name);
+            void deserialize(Blob::const_iterator& it, PlayerInfo& info) {
+                tk::core::deserialize(it, info.name);
+            }
+        };
+    }
 }
