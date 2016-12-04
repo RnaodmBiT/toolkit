@@ -1,9 +1,10 @@
 #pragma once
-#include <core.hpp>
-#include <net.hpp>
 
 #include "player_info.hpp"
 #include "ship.hpp"
+
+#include <core.hpp>
+#include <net.hpp>
 
 using namespace tk::core;
 using namespace tk::net;

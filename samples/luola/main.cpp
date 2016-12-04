@@ -1,12 +1,13 @@
 ﻿#include <cstdio>
 #include <SDL.h>
 
-#include <graphics.hpp>
-#include <core.hpp>
-#include <net.hpp>
 
 #include "global.hpp"
 #include "title.hpp"
+
+#include <graphics.hpp>
+#include <core.hpp>
+#include <net.hpp>
 
 using namespace tk::core;
 using namespace tk::graphics;

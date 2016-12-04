@@ -1,13 +1,13 @@
 #pragma once
 
+#include "player_info.hpp"
+#include "game_server.hpp"
+
 #include <core.hpp>
 #include <graphics.hpp>
 #include <net.hpp>
 #include <string>
 #include <memory>
-
-#include "player_info.hpp"
-#include "game_server.hpp"
 
 
 using namespace tk::core;

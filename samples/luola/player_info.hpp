@@ -1,7 +1,8 @@
 #pragma once
 
-#include <core.hpp>
+#include <blob.hpp>
 #include <string>
+#include <player_table.hpp>
 
 struct PlayerInfo {
     std::string name;
@@ -11,7 +12,15 @@ struct PlayerInfo {
 
 namespace tk {
     namespace core {
-        void serialize(Blob& blob, const PlayerInfo& info);
-        void deserialize(Blob::const_iterator& it, PlayerInfo& info);
+        template <>
+        struct convert<PlayerInfo> {
+            void serialize(Blob& blob, const PlayerInfo& info) {
+                tk::core::serialize(blob, info.name);
+            }
+
+            void deserialize(Blob::const_iterator& it, PlayerInfo& info) {
+                tk::core::deserialize(it, info.name);
+            }
+        };
     }
 }
