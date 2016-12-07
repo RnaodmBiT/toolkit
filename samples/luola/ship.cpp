@@ -21,6 +21,8 @@ Ship::Ship(int id, Vec2f position, Vec4f color, ShapeNode* shape) :
 Ship::~Ship() { }
 
 void Ship::update(float dt) {
+    updateInput(dt);
+
     velocity += gravity * dt;
     position += velocity * dt;
 
@@ -35,6 +37,31 @@ void Ship::update(float dt) {
     }
 
     updateTransform();
+}
+
+void Ship::updateInput(float dt) {
+    if (input.input & PlayerInput::Thrust) {
+        applyThrust(500, dt);
+    }
+
+    if (input.input & PlayerInput::Mouse) {
+        float delta = wrapAngle(input.angle - angle) / dt;
+        if (std::abs(delta) > 4) {
+            delta = sign(delta) * 4;
+        }
+        rotate(delta, dt);
+    } else {
+        if (input.input & PlayerInput::Left) {
+            rotate(-4, dt);
+        }
+        if (input.input & PlayerInput::Right) {
+            rotate(4, dt);
+        }
+    }
+}
+
+void Ship::setInput(const PlayerInput& playerInput) {
+    input = playerInput;
 }
 
 void Ship::updateTransform() {

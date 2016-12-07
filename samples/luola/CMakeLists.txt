@@ -11,6 +11,7 @@ set(SOURCES
             game.hpp game.cpp
             ship.hpp ship.cpp
             controller.hpp player.cpp
+            button.hpp
 )
 
 

@@ -14,12 +14,18 @@ class Game : public LuolaState {
     Shape shapeShip;
 
     std::vector<Ship> ships;
+    PlayerInput input;
 
+    Delegate<int> onKeyPress;
     Delegate<const Host::Packet&> clientOnMessageReceived;
 
     void createShipShape();
 
     void updateShips(Host::Packet::const_iterator msg);
+    void handleDeleteShip(Host::Packet::const_iterator msg);
+
+    void updatePlayerInput();
+    Ship* getShip(int id);
 
 public:
     Game(Global& global);

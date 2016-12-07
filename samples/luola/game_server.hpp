@@ -22,6 +22,8 @@ class GameServer {
     void spawnShip(int player, Vec2f position, Vec4f color);
     void deleteShip(int player);
 
+    void handleClientInput(int player, Host::Packet::const_iterator& it);
+
 public:
 
     GameServer();

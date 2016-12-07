@@ -3,4 +3,6 @@
 enum LuolaMessage {
     UpdateShips,
     DeleteShip,
+
+    ClientInput,
 };

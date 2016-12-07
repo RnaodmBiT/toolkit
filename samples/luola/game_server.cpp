@@ -10,8 +10,20 @@ GameServer::GameServer() : networkTick(30) {
         deleteShip(id);
     };
 
+    onReceive.event = [&] (int id, const Host::Packet& packet) {
+        uint8_t type;
+        Host::Packet::const_iterator it = packet.begin();
+        deserialize(it, type);
+        switch (type) {
+        case LuolaMessage::ClientInput:
+            handleClientInput(id, it);
+            break;
+        }
+    };
+
     server.onPlayerConnected.attach(onConnect);
     server.onPlayerDisconnected.attach(onDisconnect);
+    server.onMessageReceived.attach(onReceive);
 }
 
 void GameServer::startServer(int port) {
@@ -32,6 +44,17 @@ void GameServer::update(float dt) {
             serialize(update, ship.getID(), ship.getPosition(), ship.getAngle());
         }
         server.broadcast(false, update);
+    }
+}
+
+void GameServer::handleClientInput(int player, Host::Packet::const_iterator& it) {
+    PlayerInput input;
+    deserialize(it, input);
+    auto ship = std::find_if(ships.begin(), ships.end(), [&] (const Ship& ship) {
+        return ship.getID() == player;
+    });
+    if (ship != ships.end()) {
+        ship->setInput(input);
     }
 }
 

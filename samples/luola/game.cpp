@@ -21,11 +21,18 @@ Game::Game(Global& global) : LuolaState(global) {
             updateShips(it);
             break;
         case LuolaMessage::DeleteShip:
-            tk_info("Received delete ship command");
+            handleDeleteShip(it);
             break;
         }
     };
 
+    onKeyPress.event = [&] (int key) {
+        if (key == SDLK_SPACE) {
+            input.toggleMouse();
+        }
+    };
+
+    global.keyboard.keyPress.attach(onKeyPress);
     global.client.onMessageReceived.attach(clientOnMessageReceived);
 }
 
@@ -33,17 +40,51 @@ void Game::shutdown() {
     global.client.disconnect();
 }
 
+void Game::updatePlayerInput() {
+    Ship* player = getShip(global.client.id);
+    if (!player) {
+        return;
+    }
+
+    input.clear();
+    if (global.keyboard.isKeyDown(SDLK_w)) {
+        input.set(PlayerInput::Thrust);
+    }
+
+    if (input.input & PlayerInput::Mouse) {
+        Vec2f pos = player->getPosition();
+        input.angle = std::atan2((float)global.mouse.y - pos.y, (float)global.mouse.x - pos.x);
+    } else {
+        if (global.keyboard.isKeyDown(SDLK_a)) {
+            input.set(PlayerInput::Left);
+        }
+        if (global.keyboard.isKeyDown(SDLK_d)) {
+            input.set(PlayerInput::Right);
+        }
+    }
+
+    global.client.send(false, (uint8_t)LuolaMessage::ClientInput, input);
+}
+
 LuolaState* Game::update(float dt) {
     if (global.isHost) {
         global.server.update(dt);
     }
     global.client.pollEvents();
+    updatePlayerInput();
 
     for (auto& ship : ships) {
         ship.update(0);
     }
 
     return LuolaState::update(dt);
+}
+
+Ship* Game::getShip(int id) {
+    auto it = std::find_if(ships.begin(), ships.end(), [&] (const Ship& ship) {
+        return ship.getID() == id;
+    });
+    return it != ships.end() ? &(*it) : nullptr;
 }
 
 void Game::draw() {
@@ -72,6 +113,19 @@ void Game::updateShips(Host::Packet::const_iterator msg) {
             scene->addChild(node);
             ships.emplace_back(id, position, Vec4f{ 0, 0, 1, 1 }, node);
         }
+    }
+}
+
+void Game::handleDeleteShip(Host::Packet::const_iterator msg) {
+    int player;
+    deserialize(msg, player);
+    auto it = std::find_if(ships.begin(), ships.end(), [&] (const Ship& ship) {
+        return ship.getID() == player;
+    });
+
+    if (it != ships.end()) {
+        scene->removeChild(it->getNode());
+        ships.erase(it);
     }
 }
 
