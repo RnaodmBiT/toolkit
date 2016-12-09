@@ -2,17 +2,7 @@ cmake_minimum_required(VERSION 3.2)
 
 set(PROJECT_NAME luola)
 
-set(SOURCES 
-            main.cpp 
-            global.hpp messages.hpp
-            player_info.hpp player_info.cpp
-            title.hpp title.cpp
-            game_server.hpp game_server.cpp
-            game.hpp game.cpp
-            ship.hpp ship.cpp
-            controller.hpp player.cpp
-            button.hpp
-)
+file(GLOB_RECURSE SOURCES *.cpp *.hpp)
 
 
 

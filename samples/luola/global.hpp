@@ -1,28 +1,38 @@
 #pragma once
 
-#include "player_info.hpp"
-#include "game_server.hpp"
-
 #include <core.hpp>
 #include <graphics.hpp>
 #include <net.hpp>
-#include <string>
-#include <memory>
 
+#include "input_manager.hpp"
 
 using namespace tk::core;
 using namespace tk::graphics;
 using namespace tk::net;
 
-
-struct Global {
-    ResourceCollection resources;
-    Keyboard keyboard;
-    Mouse mouse;
+struct Settings {
     Vec2i resolution;
-    Client<PlayerInfo> client;
-    GameServer server;
-    bool isHost;
 };
 
-typedef State<Global> LuolaState;
+struct Global {
+    Settings settings;
+    ResourceCollection cache;
+    InputManager input;
+
+    bool running;
+
+    // Alias to certain variables
+    int &width, &height;
+
+    Global() :
+        width(settings.resolution.x),
+        height(settings.resolution.y),
+        running(true) { }
+
+    void quit() {
+        running = false;
+    }
+};
+
+
+typedef State<Global> GameState;

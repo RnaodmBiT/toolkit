@@ -3,7 +3,7 @@
 
 
 #include "global.hpp"
-#include "title.hpp"
+#include "playground.hpp"
 
 #include <graphics.hpp>
 #include <core.hpp>
@@ -33,7 +33,9 @@ int main(int argc, char** argv) {
     tk::net::initialize();
 
     Global global;
-    global.resolution = Vec2i{ 1024, 576 };
+    global.settings = {
+        Vec2i{ 1024, 576 }
+    };
 
     tk_assert(SDL_Init(SDL_INIT_EVERYTHING) == 0, "SDL_Init failed");
 
@@ -44,7 +46,7 @@ int main(int argc, char** argv) {
     SDL_Window* window = SDL_CreateWindow("Luola",
                                           SDL_WINDOWPOS_UNDEFINED,
                                           SDL_WINDOWPOS_UNDEFINED,
-                                          global.resolution.x, global.resolution.y,
+                                          global.width, global.height,
                                           SDL_WINDOW_OPENGL);
     tk_assert(window, "SDL_CreateWindow failed");
 
@@ -53,30 +55,29 @@ int main(int argc, char** argv) {
 
     tk_assert(tk::graphics::initialize(), "Error initializing the graphics");
 
-    loadResources(global.resources);
+    loadResources(global.cache);
 
-    LuolaState* state = new Title(global);
+    GameState* state = new Playground(global);
 
     UpdateTimer updateTimer(60);
 
-    bool running = true;
-    while (running) {
+    while (global.running) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
             case SDL_QUIT:
-                running = false;
+                global.running = false;
                 break;
             case SDL_KEYDOWN:
             case SDL_KEYUP:
-                global.keyboard.handleEvent(event.key.keysym.sym, event.type == SDL_KEYDOWN);
+                global.input.handleKeyboard(event.key.keysym.sym, event.type == SDL_KEYDOWN);
                 break;
             case SDL_MOUSEBUTTONDOWN:
             case SDL_MOUSEBUTTONUP:
-                global.mouse.handleEvent(event.button.button, event.type == SDL_MOUSEBUTTONDOWN);
+                global.input.handleMouse(event.button.button, event.type == SDL_MOUSEBUTTONDOWN);
                 break;
             case SDL_MOUSEMOTION:
-                global.mouse.handleMove(event.motion.x, event.motion.y);
+                global.input.handleMotion(event.motion.x, event.motion.y);
                 break;
             }
         }
@@ -84,7 +85,7 @@ int main(int argc, char** argv) {
         glClear(GL_COLOR_BUFFER_BIT);
 
         while (updateTimer.update()) {
-            LuolaState* newState = state->update(updateTimer.period());
+            GameState* newState = state->update(updateTimer.period());
             if (newState) {
                 state->shutdown();
                 delete state;
