@@ -37,7 +37,3 @@ void Playground::draw() {
 void Playground::shutdown() {
 
 }
-
-void Playground::printPosition(PositionComponent* p) {
-    printf("(%f, %f)\n", p->position.x, p->position.y);
-}
