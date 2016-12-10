@@ -1,9 +1,10 @@
 #pragma once
 
 #include "global.hpp"
+#include "entity.hpp"
 
 class Playground : public GameState {
-
+    EntityCollection entities;
 public:
 
     Playground(Global& global);

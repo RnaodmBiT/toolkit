@@ -13,8 +13,8 @@ class Entity {
 public:
 
     template <class T, class ...Args>
-    void add(const Args& ...args) {
-        components.emplace_back(new T(args...));
+    void add(Args&& ...args) {
+        components.emplace_back(new T(std::forward<Args>(args)...));
     }
 
     template <class T>
@@ -41,18 +41,20 @@ public:
 
 
 class EntityCollection {
-    std::vector<Entity*> entities;
+    std::vector<Entity> entities;
 public:
-    void add(Entity& e) {
-        entities.push_back(&e);
+
+    Entity& create() {
+        entities.emplace_back();
+        return entities[entities.size() - 1];
     }
 
     template <class ...Types>
     std::vector<Entity*> filter() {
         std::vector<Entity*> list;
-        for (auto e : entities) {
-            if (e->has<Types...>()) {
-                list.push_back(e);
+        for (auto& e : entities) {
+            if (e.has<Types...>()) {
+                list.push_back(&e);
             }
         }
         return list;
@@ -60,9 +62,9 @@ public:
 
     template <class ...Types>
     void map(std::function<void(Types*...)> func) {
-        for (auto e : entities) {
-            if (e->has<Types...>()) {
-                func(e->get<Types>()...);
+        for (auto& e : entities) {
+            if (e.has<Types...>()) {
+                func(e.get<Types>()...);
             }
         }
     }
