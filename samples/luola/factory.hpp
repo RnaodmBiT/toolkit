@@ -18,10 +18,11 @@ public:
     }
 
     template <class ...Values>
-    T build(const std::string& type, Args&... args, Values&... values) {
+    T build(const std::string& type, Args&... args, const Values&... values) {
         Blob blob;
         serialize(blob, values...);
-        return buildFromData(type, std::forward<Args>(args)..., blob.begin());
+        Blob::const_iterator it = blob.begin();
+        return buildFromData(type, args..., it);
     }
 
     void addType(const std::string& type, Builder func) {
