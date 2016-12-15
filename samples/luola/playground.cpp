@@ -8,37 +8,37 @@
 using namespace std::placeholders;
 
 Playground::Playground(Global& global) : GameState(global) {
+    addGameTypes();
 
-    Entity& a = entities.create();
-    a.add<PositionComponent>(Vec2f{ 100, 100 });
-    a.add<DrawableComponent>(Shape::rectangle({ 0, 0 }, { 100, 100 }),
-                             global.cache.get<Shader>("shader"),
-                             nullptr);
-    a.add<PhysicsComponent>();
+    factory.build("thing", entities, Vec2f{ 200, 100 });
 }
 
 GameState* Playground::update(float dt) {
 
-    entities.map<PositionComponent, PhysicsComponent>(
-        std::function<void(PositionComponent*, PhysicsComponent*)>([&] (PositionComponent* pos, PhysicsComponent* phys) {
-        pos->position += phys->velocity * dt;
-        phys->velocity.y += 100 * dt;
-    }));
+    physics.update(dt, entities);
 
     return GameState::update(dt);
 }
 
 void Playground::draw() {
     Mat4f projection = orthographic(0, 0, (float)global.width, (float)global.height);
-
-    entities.map<PositionComponent, DrawableComponent>(
-        std::function<void(PositionComponent*, DrawableComponent*)>([&](PositionComponent* p, DrawableComponent* d) {
-        d->shader->apply();
-        d->shader->setUniform("transform", projection * translate(p->position.x, p->position.y, 0.0f));
-        d->shape.draw();
-    }));
+    rendering.render(entities, projection);
 }
 
 void Playground::shutdown() {
 
+}
+
+void Playground::addGameTypes() {
+    factory.addType("thing", EntityFactory::Builder([&] (EntityCollection& collection, Blob::const_iterator& blob) {
+        Vec2f position;
+        deserialize(blob, position);
+
+        Entity& e = collection.create();
+        e.add<PositionComponent>(position);
+        e.add<PhysicsComponent>();
+        e.add<DrawableComponent>(Shape::rectangle({ 0, 0 }, { 100, 100 }),
+                                 global.cache.get<Shader>("shader"),
+                                 nullptr);
+    }));
 }

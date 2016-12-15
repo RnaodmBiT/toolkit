@@ -4,6 +4,7 @@
 #include <map>
 #include <core.hpp>
 #include "components/component.hpp"
+#include "factory.hpp"
 
 using namespace tk::core;
 
@@ -39,7 +40,6 @@ public:
     }
 };
 
-
 class EntityCollection {
     std::vector<Entity> entities;
 public:
@@ -69,3 +69,5 @@ public:
         }
     }
 };
+
+typedef Factory<void, EntityCollection> EntityFactory;
