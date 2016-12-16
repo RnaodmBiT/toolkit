@@ -16,6 +16,8 @@ class Playground : public GameState {
 
     void addGameTypes();
 
+    void updatePlayerInput();
+
 public:
 
     Playground(Global& global);

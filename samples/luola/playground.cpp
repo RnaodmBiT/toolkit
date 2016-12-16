@@ -16,26 +16,7 @@ Playground::Playground(Global& global) : GameState(global) {
 }
 
 GameState* Playground::update(float dt) {
-
-    entities.map((std::function<void(ShipControl*)>)[&](ShipControl* control) {
-        control->input.thrust = global.input.isKeyDown(SDLK_w);
-        control->input.left = global.input.isKeyDown(SDLK_a);
-        control->input.right = global.input.isKeyDown(SDLK_d);
-    });
-
-    entities.map((std::function<void(ShipControl*, PhysicsComponent*, PositionComponent*)>)
-        [&](ShipControl* control, PhysicsComponent* physics, PositionComponent* position) {
-        if (control->input.thrust) {
-            physics->velocity += Vec2f{ std::cos(position->rotation), std::sin(position->rotation) } * 500.0f * dt;
-        }
-        if (control->input.left) {
-            position->rotation -= 4 * dt;
-        }
-        if (control->input.right) {
-            position->rotation += 4 * dt;
-        }
-    });
-
+    updatePlayerInput();
     physics.update(dt, entities);
 
     return GameState::update(dt);
@@ -63,5 +44,16 @@ void Playground::addGameTypes() {
                                  global.cache.get<Shader>("shader"),
                                  nullptr);
         e.add<ShipControl>();
+        e.addTag("player"); // TODO: Fix this hack
     }));
+}
+
+void Playground::updatePlayerInput() {
+    std::vector<Entity*> players = entities.filter<ShipControl>("player");
+    for (auto player : players) {
+        ShipInput& input = player->get<ShipControl>()->input;
+        input.thrust = global.input.isKeyDown(SDLK_w);
+        input.left = global.input.isKeyDown(SDLK_a);
+        input.right = global.input.isKeyDown(SDLK_d);
+    }
 }
