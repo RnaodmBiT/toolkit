@@ -5,6 +5,7 @@
 #include "components/position.hpp"
 #include "components/drawable.hpp"
 #include "components/physics.hpp"
+#include "components/ship_control.hpp"
 
 using namespace std::placeholders;
 
@@ -15,6 +16,25 @@ Playground::Playground(Global& global) : GameState(global) {
 }
 
 GameState* Playground::update(float dt) {
+
+    entities.map<ShipControl>((std::function<void(ShipControl*)>)[&](ShipControl* control) {
+        control->input.thrust = global.input.isKeyDown(SDLK_w);
+        control->input.left = global.input.isKeyDown(SDLK_a);
+        control->input.right = global.input.isKeyDown(SDLK_d);
+    });
+
+    entities.map<ShipControl, PhysicsComponent, PositionComponent>((std::function<void(ShipControl*, PhysicsComponent*, PositionComponent*)>)
+        [&](ShipControl* control, PhysicsComponent* physics, PositionComponent* position) {
+        if (control->input.thrust) {
+            physics->velocity += Vec2f{ std::cos(position->rotation), std::sin(position->rotation) } * 500.0f * dt;
+        }
+        if (control->input.left) {
+            position->rotation -= 4 * dt;
+        }
+        if (control->input.right) {
+            position->rotation += 4 * dt;
+        }
+    });
 
     physics.update(dt, entities);
 
@@ -42,5 +62,6 @@ void Playground::addGameTypes() {
         e.add<DrawableComponent>(createShipShape(color),
                                  global.cache.get<Shader>("shader"),
                                  nullptr);
+        e.add<ShipControl>();
     }));
 }
