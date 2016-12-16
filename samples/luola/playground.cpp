@@ -1,6 +1,7 @@
 #include "playground.hpp"
 
 #include "entity.hpp"
+#include "shapes.hpp"
 #include "components/position.hpp"
 #include "components/drawable.hpp"
 #include "components/physics.hpp"
@@ -10,7 +11,7 @@ using namespace std::placeholders;
 Playground::Playground(Global& global) : GameState(global) {
     addGameTypes();
 
-    factory.build("thing", entities, Vec2f{ 200, 100 });
+    factory.build("ship", entities, Vec2f{ 200, 100 }, Vec4f{ 0, 0, 1, 1 });
 }
 
 GameState* Playground::update(float dt) {
@@ -30,14 +31,15 @@ void Playground::shutdown() {
 }
 
 void Playground::addGameTypes() {
-    factory.addType("thing", EntityFactory::Builder([&] (EntityCollection& collection, Blob::const_iterator& blob) {
+    factory.addType("ship", EntityFactory::Builder([&] (EntityCollection& collection, Blob::const_iterator& blob) {
         Vec2f position;
-        deserialize(blob, position);
+        Vec4f color;
+        deserialize(blob, position, color);
 
         Entity& e = collection.create();
-        e.add<PositionComponent>(position);
+        e.add<PositionComponent>(position, -pi / 2);
         e.add<PhysicsComponent>();
-        e.add<DrawableComponent>(Shape::rectangle({ 0, 0 }, { 100, 100 }),
+        e.add<DrawableComponent>(createShipShape(color),
                                  global.cache.get<Shader>("shader"),
                                  nullptr);
     }));

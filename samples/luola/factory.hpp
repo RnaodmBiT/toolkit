@@ -21,8 +21,7 @@ public:
     T build(const std::string& type, Args&... args, const Values&... values) {
         Blob blob;
         serialize(blob, values...);
-        Blob::const_iterator it = blob.begin();
-        return buildFromData(type, args..., it);
+        return buildFromData(type, args..., ((const Blob&)blob).begin());
     }
 
     void addType(const std::string& type, Builder func) {
