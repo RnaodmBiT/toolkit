@@ -9,8 +9,7 @@ namespace {
 }
 
 void PhysicsSystem::update(float dt, EntityCollection& entities) {
-    entities.map<PositionComponent, PhysicsComponent>(
-        std::function<void(PositionComponent*, PhysicsComponent*)>([&] (PositionComponent* pos, PhysicsComponent* phys) {
+    entities.map(std::function<void(PositionComponent*, PhysicsComponent*)>([&] (PositionComponent* pos, PhysicsComponent* phys) {
         pos->position += phys->velocity * dt;
         phys->velocity += gravity * dt;
 

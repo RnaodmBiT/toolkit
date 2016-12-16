@@ -17,13 +17,13 @@ Playground::Playground(Global& global) : GameState(global) {
 
 GameState* Playground::update(float dt) {
 
-    entities.map<ShipControl>((std::function<void(ShipControl*)>)[&](ShipControl* control) {
+    entities.map((std::function<void(ShipControl*)>)[&](ShipControl* control) {
         control->input.thrust = global.input.isKeyDown(SDLK_w);
         control->input.left = global.input.isKeyDown(SDLK_a);
         control->input.right = global.input.isKeyDown(SDLK_d);
     });
 
-    entities.map<ShipControl, PhysicsComponent, PositionComponent>((std::function<void(ShipControl*, PhysicsComponent*, PositionComponent*)>)
+    entities.map((std::function<void(ShipControl*, PhysicsComponent*, PositionComponent*)>)
         [&](ShipControl* control, PhysicsComponent* physics, PositionComponent* position) {
         if (control->input.thrust) {
             physics->velocity += Vec2f{ std::cos(position->rotation), std::sin(position->rotation) } * 500.0f * dt;
