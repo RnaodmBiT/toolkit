@@ -50,20 +50,36 @@ public:
 };
 
 class EntityCollection {
-    std::vector<Entity> entities;
+    std::unordered_map<int, Entity> entities;
+    int nextFreeID;
 public:
+    EntityCollection() : nextFreeID(0) { }
 
-    Entity& create() {
-        entities.emplace_back();
-        return entities[entities.size() - 1];
+    int getFreeID() {
+        while (entities.count(nextFreeID)) {
+            nextFreeID++;
+        }
+
+        return nextFreeID++;
+    }
+
+    Entity& create(int id) {
+        tk_assert(entities.count(id) == 0, "Entity with that ID already exists");
+        entities[id] = Entity();
+        return entities[id];
+    }
+
+    Entity& get(int id) {
+        tk_assert(entities.count(id) > 0, "Entity does not exist");
+        return entities[id];
     }
 
     template <class ...Types>
     std::vector<Entity*> filter() {
         std::vector<Entity*> list;
         for (auto& e : entities) {
-            if (e.has<Types...>()) {
-                list.push_back(&e);
+            if (e.second.has<Types...>()) {
+                list.push_back(&e.second);
             }
         }
         return list;
@@ -73,8 +89,8 @@ public:
     std::vector<Entity*> filter(const std::string& tag) {
         std::vector<Entity*> list;
         for (auto& e : entities) {
-            if (e.has<Types...>() && e.hasTag(tag)) {
-                list.push_back(&e);
+            if (e.second.has<Types...>() && e.second.hasTag(tag)) {
+                list.push_back(&e.second);
             }
         }
         return list;
@@ -83,11 +99,11 @@ public:
     template <class ...Types>
     void map(std::function<void(Types*...)> func) {
         for (auto& e : entities) {
-            if (e.has<Types...>()) {
-                func(e.get<Types>()...);
+            if (e.second.has<Types...>()) {
+                func(e.second.get<Types>()...);
             }
         }
     }
 };
 
-typedef Factory<void, EntityCollection> EntityFactory;
+typedef Factory<int, EntityCollection> EntityFactory;

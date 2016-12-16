@@ -12,7 +12,8 @@ using namespace std::placeholders;
 Playground::Playground(Global& global) : GameState(global) {
     addGameTypes();
 
-    factory.build("ship", entities, Vec2f{ 200, 100 }, Vec4f{ 0, 0, 1, 1 });
+    int id = factory.build("ship", entities, entities.getFreeID(), Vec2f{ 200, 100 }, Vec4f{ 0, 0, 1, 1 });
+    entities.get(id).addTag("player");
 }
 
 GameState* Playground::update(float dt) {
@@ -33,18 +34,19 @@ void Playground::shutdown() {
 
 void Playground::addGameTypes() {
     factory.addType("ship", EntityFactory::Builder([&] (EntityCollection& collection, Blob::const_iterator& blob) {
+        int id;
         Vec2f position;
         Vec4f color;
-        deserialize(blob, position, color);
+        deserialize(blob, id, position, color);
 
-        Entity& e = collection.create();
+        Entity& e = collection.create(id);
         e.add<PositionComponent>(position, -pi / 2);
         e.add<PhysicsComponent>();
         e.add<DrawableComponent>(createShipShape(color),
                                  global.cache.get<Shader>("shader"),
                                  nullptr);
         e.add<ShipControl>();
-        e.addTag("player"); // TODO: Fix this hack
+        return id;
     }));
 }
 
