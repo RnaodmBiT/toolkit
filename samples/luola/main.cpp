@@ -4,6 +4,7 @@
 
 #include "global.hpp"
 #include "playground.hpp"
+#include "game_server.hpp"
 
 #include <graphics.hpp>
 #include <core.hpp>
@@ -56,6 +57,14 @@ int main(int argc, char** argv) {
     tk_assert(tk::graphics::initialize(), "Error initializing the graphics");
 
     loadResources(global.cache);
+
+    if (argc == 1) {
+        // No address provided, host the game
+        global.server.reset(new GameServer(global));
+    } else {
+        // Address provided, join that address
+        global.remote = argv[1];
+    }
 
     GameState* state = new Playground(global);
 

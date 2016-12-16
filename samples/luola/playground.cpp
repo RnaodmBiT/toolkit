@@ -6,18 +6,25 @@
 #include "components/drawable.hpp"
 #include "components/physics.hpp"
 #include "components/ship_control.hpp"
+#include "messages.hpp"
 
 using namespace std::placeholders;
 
 Playground::Playground(Global& global) : GameState(global) {
-    addGameTypes();
+    addGameTypes(factory, global, false);
+    client.connect(global.remote, 25140, { "Player" });
 
-    int id = factory.build("ship", entities, entities.getFreeID(), Vec2f{ 200, 100 }, Vec4f{ 0, 0, 1, 1 });
-    entities.get(id).addTag("player");
+    client.onMessageReceived.attach(onMessageReceived, [this] (const Host::Packet& data) {
+        handleMessage(data);
+    });
 }
 
 GameState* Playground::update(float dt) {
-    updatePlayerInput();
+    if (global.server) {
+        global.server->update(dt);
+    }
+
+    client.pollEvents();
     physics.update(dt, entities);
 
     return GameState::update(dt);
@@ -32,30 +39,19 @@ void Playground::shutdown() {
 
 }
 
-void Playground::addGameTypes() {
-    factory.addType("ship", EntityFactory::Builder([&] (EntityCollection& collection, Blob::const_iterator& blob) {
-        int id;
-        Vec2f position;
-        Vec4f color;
-        deserialize(blob, id, position, color);
-
-        Entity& e = collection.create(id);
-        e.add<PositionComponent>(position, -pi / 2);
-        e.add<PhysicsComponent>();
-        e.add<DrawableComponent>(createShipShape(color),
-                                 global.cache.get<Shader>("shader"),
-                                 nullptr);
-        e.add<ShipControl>();
-        return id;
-    }));
+void Playground::handleMessage(const Host::Packet& data) {
+    Host::Packet::const_iterator it = data.begin();
+    uint8_t type;
+    deserialize(it, type);
+    switch (type) {
+    case CreateEntity:
+        handleCreateEntity(it);
+        break;
+    }
 }
 
-void Playground::updatePlayerInput() {
-    std::vector<Entity*> players = entities.filter<ShipControl>("player");
-    for (auto player : players) {
-        ShipInput& input = player->get<ShipControl>()->input;
-        input.thrust = global.input.isKeyDown(SDLK_w);
-        input.left = global.input.isKeyDown(SDLK_a);
-        input.right = global.input.isKeyDown(SDLK_d);
-    }
+void Playground::handleCreateEntity(Host::Packet::const_iterator& it) {
+    std::string type;
+    deserialize(it, type);
+    factory.buildFromData(type, entities, it);
 }

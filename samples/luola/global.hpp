@@ -3,8 +3,10 @@
 #include <core.hpp>
 #include <graphics.hpp>
 #include <net.hpp>
+#include <memory>
 
 #include "input_manager.hpp"
+#include "game_server.hpp"
 
 using namespace tk::core;
 using namespace tk::graphics;
@@ -19,6 +21,9 @@ struct Global {
     ResourceCollection cache;
     InputManager input;
 
+    std::string remote;
+    std::unique_ptr<GameServer> server;
+
     bool running;
 
     // Alias to certain variables
@@ -27,7 +32,8 @@ struct Global {
     Global() :
         width(settings.resolution.x),
         height(settings.resolution.y),
-        running(true) { }
+        running(true),
+        remote("localhost") { }
 
     void quit() {
         running = false;
