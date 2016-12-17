@@ -7,6 +7,8 @@
 class Playground : public GameState {
     Client<PlayerInfo> client;
 
+    UpdateTimer playerInputTimer;
+
     ShipManager ships;
     ProjectileManager projectiles;
 

@@ -6,6 +6,7 @@ using namespace std::placeholders;
 
 Playground::Playground(Global& global) : 
     GameState(global),
+    playerInputTimer(30),
     ships(global),
     projectiles(global) {
     client.connect(global.remote, 2514, { "Player" });
@@ -24,7 +25,9 @@ GameState* Playground::update(float dt) {
     ships.update(dt);
     projectiles.update(dt);
 
-    handlePlayerInput();
+    while (playerInputTimer.update()) {
+        handlePlayerInput();
+    }
 
     return GameState::update(dt);
 }

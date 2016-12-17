@@ -27,12 +27,12 @@ namespace tk {
     namespace core {
         template <>
         struct convert<Projectile> {
-            void serialize(Blob& blob, const Projectile& ship) {
-                tk::core::serialize(blob, ship.position, ship.velocity, ship.drag, ship.mass);
+            void serialize(Blob& blob, const Projectile& p) {
+                tk::core::serialize(blob, p.position, p.velocity);
             }
 
-            void deserialize(Blob::const_iterator& it, Projectile& ship) {
-                tk::core::deserialize(it, ship.position, ship.velocity, ship.drag, ship.mass);
+            void deserialize(Blob::const_iterator& it, Projectile& p) {
+                tk::core::deserialize(it, p.position, p.velocity);
             }
         };
     }

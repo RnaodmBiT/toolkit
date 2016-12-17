@@ -52,22 +52,28 @@ namespace tk {
         template <>
         struct convert<Ship> {
             void serialize(Blob& blob, const Ship& ship) {
-                tk::core::serialize(blob, ship.position, ship.velocity, ship.rotation, ship.drag, ship.mass, ship.input);
+                tk::core::serialize(blob, ship.position, ship.velocity, ship.rotation, ship.input);
             }
 
             void deserialize(Blob::const_iterator& it, Ship& ship) {
-                tk::core::deserialize(it, ship.position, ship.velocity, ship.rotation, ship.drag, ship.mass, ship.input);
+                tk::core::deserialize(it, ship.position, ship.velocity, ship.rotation, ship.input);
             }
         };
 
         template <>
         struct convert<ShipInput> {
             void serialize(Blob& blob, const ShipInput& input) {
-                tk::core::serialize(blob, input.thrust, input.left, input.right, input.shoot);
+                uint8_t bitfield = (input.thrust ? 1 : 0) | (input.left ? 2 : 0) | (input.right ? 4 : 0) | (input.shoot ? 8 : 0);
+                tk::core::serialize(blob, bitfield);
             }
 
             void deserialize(Blob::const_iterator& it, ShipInput& input) {
-                tk::core::deserialize(it, input.thrust, input.left, input.right, input.shoot);
+                uint8_t bitfield;
+                tk::core::deserialize(it, bitfield);
+                input.thrust = (bitfield & 1) > 0;
+                input.left = (bitfield & 2) > 0;
+                input.right = (bitfield & 4) > 0;
+                input.shoot = (bitfield & 8) > 0;
             }
         };
     }

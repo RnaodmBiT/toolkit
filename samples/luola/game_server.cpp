@@ -4,7 +4,7 @@
 
 GameServer::GameServer(Global& global) : 
     global(global), 
-    updateTimer(30),
+    updateTimer(20),
     ships(global),
     projectiles(global) {
     server.start(2514);
@@ -29,7 +29,7 @@ void GameServer::update(float dt) {
     projectiles.update(dt);
 
     shootBullets();
-
+    
     while (updateTimer.update()) {
         // Broadcast the game state to all clients
         server.broadcast(false, (uint8_t)ShipUpdate, ships);
