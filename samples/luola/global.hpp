@@ -5,7 +5,7 @@
 #include <net.hpp>
 #include <memory>
 
-#include "input_manager.hpp"
+#include "managers/input_manager.hpp"
 #include "game_server.hpp"
 
 using namespace tk::core;

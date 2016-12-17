@@ -3,7 +3,7 @@ Remove the elements from this list as they are implemented.
 
 ## Things that need doing
 
-- User Interface
+- User Interface - In Progress
 
   This would be some kind of menu type thing. I have envisioned a list of buttons (Host, Join, Options, Quit) on the bottom left and these pop out windows/panels with all the appropriate options on them.
 

@@ -1,6 +1,6 @@
 #include "playground.hpp"
-#include "shapes.hpp"
-#include "messages.hpp"
+#include "../shapes.hpp"
+#include "../messages.hpp"
 
 using namespace std::placeholders;
 

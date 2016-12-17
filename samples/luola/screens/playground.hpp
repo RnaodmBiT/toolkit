@@ -1,8 +1,8 @@
 #pragma once
 
-#include "global.hpp"
-#include "managers/ship_manager.hpp"
-#include "managers/projectile_manager.hpp"
+#include "../global.hpp"
+#include "../managers/ship_manager.hpp"
+#include "../managers/projectile_manager.hpp"
 
 class Playground : public GameState {
     Client<PlayerInfo> client;
