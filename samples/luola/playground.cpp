@@ -20,7 +20,7 @@ GameState* Playground::update(float dt) {
     }
     client.pollEvents();
 
-    // ships.update(dt); // NETWORK TEST
+    ships.update(dt);
 
     handlePlayerInput();
 
