@@ -14,7 +14,7 @@ foreach(FILE ${SOURCES})
     source_group("${GROUP}" FILES "${FILE}")
 endforeach()
 
-add_executable(${PROJECT_NAME} ${TK_CONSOLE} ${SOURCES})
+add_executable(${PROJECT_NAME} ${TK_CONSOLE} ${SOURCES} todo.md)
 target_link_libraries(${PROJECT_NAME}
                       SDL2 SDL2main
                       tk-core tk-graphics tk-net
