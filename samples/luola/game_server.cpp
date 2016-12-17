@@ -1,11 +1,11 @@
 #include "game_server.hpp"
-#include "types.hpp"
 #include "messages.hpp"
 #include "global.hpp"
 
-GameServer::GameServer(Global& global) : global(global) {
-    addGameTypes(factory, global, true);
-
+GameServer::GameServer(Global& global) : 
+    global(global), 
+    updateTimer(30),
+    ships(global) {
     server.start(25140);
     
     server.onMessageReceived.attach(onMessageReceived, [this] (int id, const Host::Packet& data) {
@@ -23,20 +23,22 @@ GameServer::GameServer(Global& global) : global(global) {
 
 void GameServer::update(float dt) {
     server.pollEvents();
-    physics.update(dt, entities);
+    ships.update(dt);
+
+    while (updateTimer.update()) {
+        // Broadcast the game state to all clients
+        server.broadcast(false, (uint8_t)ShipUpdate, ships);
+    }
 }
 
 void GameServer::handleMessage(int id, const Host::Packet& data) {
-
 }
 
 void GameServer::handlePlayerConnect(int id) {
-    int entity = entities.getFreeID();
-    Vec2f position = { (float)global.width / 2, (float)global.height / 2 };
-    Vec4f color = { 0, 0, 1, 1 };
-
-    factory.build("ship", entities, entity, position, color);
-    server.broadcast(true, (uint8_t)CreateEntity, std::string("ship"), entity, position, color);
+    int ship = ships.spawn({ (float)global.width / 2, 100 }, -pi / 2);
+    PlayerInfo* player = server.getPlayer(id);
+    player->ship = ship;
+    server.updatePlayerTable(); // this pushes the updates player info to all players
 }
 
 void GameServer::handlePlayerDisconnect(int id) {

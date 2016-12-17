@@ -1,8 +1,8 @@
 #pragma once
+#include <core.hpp>
 #include <net.hpp>
 #include "player_info.hpp"
-#include "entity.hpp"
-#include "systems/physics.hpp"
+#include "managers/ship_manager.hpp"
 
 using namespace tk::core;
 using namespace tk::net;
@@ -13,11 +13,9 @@ class GameServer {
     Global& global;
 
     Server<PlayerInfo> server;
+    UpdateTimer updateTimer;
 
-    EntityFactory factory;
-    EntityCollection entities;
-
-    PhysicsSystem physics;
+    ShipManager ships;
 
     Delegate<int, const Host::Packet&> onMessageReceived;
     Delegate<int> onPlayerConnected, onPlayerDisconnected;
