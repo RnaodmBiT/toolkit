@@ -2,4 +2,5 @@
 
 enum Message {
     ShipUpdate,
+    PlayerInput,
 };

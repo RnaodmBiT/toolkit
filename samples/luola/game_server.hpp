@@ -24,6 +24,8 @@ class GameServer {
     void handlePlayerConnect(int id);
     void handlePlayerDisconnect(int id);
 
+    void handlePlayerInput(int id, Host::Packet::const_iterator& it);
+
 public:
 
     GameServer(Global& global);

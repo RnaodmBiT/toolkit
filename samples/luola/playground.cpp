@@ -22,6 +22,8 @@ GameState* Playground::update(float dt) {
 
     // ships.update(dt); // NETWORK TEST
 
+    handlePlayerInput();
+
     return GameState::update(dt);
 }
 
@@ -50,7 +52,11 @@ void Playground::handleShipUpdate(Host::Packet::const_iterator& it) {
 }
 
 void Playground::handlePlayerInput() {
-    Ship* ship = ships.get(player);
+    PlayerInfo* info = client.getPlayer();
+    if (!info) {
+        return;
+    }
+    Ship* ship = ships.get(info->ship);
     if (!ship) {
         return;
     }
@@ -60,5 +66,5 @@ void Playground::handlePlayerInput() {
     input.left = global.input.isKeyDown(SDLK_a);
     input.right = global.input.isKeyDown(SDLK_d);
 
-    ship->setInput(input);
+    client.send(false, (uint8_t)PlayerInput, input);
 }

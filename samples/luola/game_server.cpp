@@ -32,6 +32,14 @@ void GameServer::update(float dt) {
 }
 
 void GameServer::handleMessage(int id, const Host::Packet& data) {
+    Host::Packet::const_iterator it = data.begin();
+    uint8_t type;
+    deserialize(it, type);
+    switch (type) {
+    case PlayerInput:
+        handlePlayerInput(id, it);
+        break;
+    }
 }
 
 void GameServer::handlePlayerConnect(int id) {
@@ -43,4 +51,15 @@ void GameServer::handlePlayerConnect(int id) {
 
 void GameServer::handlePlayerDisconnect(int id) {
 
+}
+
+void GameServer::handlePlayerInput(int id, Host::Packet::const_iterator& it) {
+    PlayerInfo* player = server.getPlayer(id);
+    tk_assert(player, "Invalid player ID received from client");
+    Ship* ship = ships.get(player->ship);
+    if (ship) {
+        ShipInput input;
+        deserialize(it, input);
+        ship->setInput(input);
+    }
 }
