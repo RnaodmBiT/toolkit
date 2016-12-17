@@ -26,6 +26,7 @@ void Ship::update(float dt) {
         rotate(4, dt);
     }
 
+    reloadTime -= dt;
     velocity += gravity * dt;
     position += velocity * dt;
 
@@ -54,10 +55,34 @@ Vec2f Ship::getDirection() const {
     return{ std::cos(rotation), std::sin(rotation) };
 }
 
+float Ship::getRotation() const {
+    return rotation;
+}
+
+Vec2f Ship::getPosition() const {
+    return position;
+}
+
+Vec2f Ship::getVelocity() const {
+    return velocity;
+}
+
+ShipInput Ship::getInput() const {
+    return input;
+}
+
 void Ship::thrust(float strength, float dt) {
     velocity += getDirection() * (strength * dt / mass);
 }
 
 void Ship::rotate(float speed, float dt) {
     rotation += speed * dt;
+}
+
+bool Ship::canShoot() const {
+    return reloadTime <= 0;
+}
+
+void Ship::resetReloadTime() {
+    reloadTime = 0.2f; // 5 Hz
 }

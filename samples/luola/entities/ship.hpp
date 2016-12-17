@@ -8,17 +8,18 @@ using namespace tk::graphics;
 struct Global;
 
 struct ShipInput {
-    bool thrust, left, right;
+    bool thrust, left, right, shoot;
 
     ShipInput() :
         thrust(false),
         left(false),
-        right(false) { }
+        right(false),
+        shoot(false) { }
 };
 
 class Ship {
     Vec2f position, velocity;
-    float rotation, drag, mass;
+    float rotation, drag, mass, reloadTime;
     ShipInput input;
 
     Shape shape;
@@ -34,9 +35,16 @@ public:
 
     Mat4f getTransform() const;
     Vec2f getDirection() const;
+    float getRotation() const;
+    Vec2f getPosition() const;
+    Vec2f getVelocity() const;
+    ShipInput getInput() const;
 
     void thrust(float strength, float dt);
     void rotate(float speed, float dt);
+
+    bool canShoot() const;
+    void resetReloadTime();
 };
 
 namespace tk {
@@ -55,11 +63,11 @@ namespace tk {
         template <>
         struct convert<ShipInput> {
             void serialize(Blob& blob, const ShipInput& input) {
-                tk::core::serialize(blob, input.thrust, input.left, input.right);
+                tk::core::serialize(blob, input.thrust, input.left, input.right, input.shoot);
             }
 
             void deserialize(Blob::const_iterator& it, ShipInput& input) {
-                tk::core::deserialize(it, input.thrust, input.left, input.right);
+                tk::core::deserialize(it, input.thrust, input.left, input.right, input.shoot);
             }
         };
     }

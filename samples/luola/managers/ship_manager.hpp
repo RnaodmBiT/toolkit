@@ -12,6 +12,8 @@ class ShipManager {
     friend tk::core::convert<ShipManager>;
 public:
 
+    typedef std::unordered_map<int, Ship>::iterator iterator;
+
     ShipManager(Global& global);
 
     int spawn(const Vec2f& position, float rotation);
@@ -21,6 +23,9 @@ public:
 
     void update(float dt);
     void render(const Mat4f& projection);
+
+    iterator begin();
+    iterator end();
 };
 
 namespace tk {

@@ -28,3 +28,11 @@ void ShipManager::render(const Mat4f& projection) {
         pair.second.render(projection);
     }
 }
+
+ShipManager::iterator ShipManager::begin() {
+    return ships.begin();
+}
+
+ShipManager::iterator ShipManager::end() {
+    return ships.end();
+}

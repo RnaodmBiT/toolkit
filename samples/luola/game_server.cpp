@@ -5,7 +5,8 @@
 GameServer::GameServer(Global& global) : 
     global(global), 
     updateTimer(30),
-    ships(global) {
+    ships(global),
+    projectiles(global) {
     server.start(2514);
     
     server.onMessageReceived.attach(onMessageReceived, [this] (int id, const Host::Packet& data) {
@@ -23,11 +24,16 @@ GameServer::GameServer(Global& global) :
 
 void GameServer::update(float dt) {
     server.pollEvents();
+
     ships.update(dt);
+    projectiles.update(dt);
+
+    shootBullets();
 
     while (updateTimer.update()) {
         // Broadcast the game state to all clients
         server.broadcast(false, (uint8_t)ShipUpdate, ships);
+        server.broadcast(false, (uint8_t)ProjectileUpdate, projectiles);
     }
 }
 
@@ -61,5 +67,16 @@ void GameServer::handlePlayerInput(int id, Host::Packet::const_iterator& it) {
         ShipInput input;
         deserialize(it, input);
         ship->setInput(input);
+    }
+}
+
+void GameServer::shootBullets() {
+    for (auto& pair : ships) {
+        Ship& ship = pair.second;
+        if (ship.getInput().shoot && ship.canShoot()) {
+            ship.resetReloadTime();
+
+            projectiles.spawn(ship.getPosition(), ship.getVelocity(), ship.getRotation());
+        }
     }
 }

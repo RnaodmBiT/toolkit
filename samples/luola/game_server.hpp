@@ -3,6 +3,7 @@
 #include <net.hpp>
 #include "player_info.hpp"
 #include "managers/ship_manager.hpp"
+#include "managers/projectile_manager.hpp"
 
 using namespace tk::core;
 using namespace tk::net;
@@ -16,6 +17,7 @@ class GameServer {
     UpdateTimer updateTimer;
 
     ShipManager ships;
+    ProjectileManager projectiles;
 
     Delegate<int, const Host::Packet&> onMessageReceived;
     Delegate<int> onPlayerConnected, onPlayerDisconnected;
@@ -25,6 +27,8 @@ class GameServer {
     void handlePlayerDisconnect(int id);
 
     void handlePlayerInput(int id, Host::Packet::const_iterator& it);
+
+    void shootBullets();
 
 public:
 
