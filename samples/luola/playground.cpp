@@ -7,7 +7,7 @@ using namespace std::placeholders;
 Playground::Playground(Global& global) : 
     GameState(global),
     ships(global) {
-    client.connect(global.remote, 25140, { "Player" });
+    client.connect(global.remote, 2514, { "Player" });
 
     client.onMessageReceived.attach(onMessageReceived, [this] (const Host::Packet& data) {
         handleMessage(data);

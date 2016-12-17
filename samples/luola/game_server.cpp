@@ -6,7 +6,7 @@ GameServer::GameServer(Global& global) :
     global(global), 
     updateTimer(30),
     ships(global) {
-    server.start(25140);
+    server.start(2514);
     
     server.onMessageReceived.attach(onMessageReceived, [this] (int id, const Host::Packet& data) {
         handleMessage(id, data);
