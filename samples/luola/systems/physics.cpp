@@ -1,6 +1,7 @@
 #include "physics.hpp"
 #include "../components/position.hpp"
 #include "../components/physics.hpp"
+#include "../components/projectile.hpp"
 
 namespace {
     const Vec2f gravity = { 0, 200 };
@@ -22,4 +23,19 @@ void PhysicsSystem::update(float dt, EntityCollection& entities) {
             phys->velocity.y = 0;
         }
     }));
+
+	entities.map<PositionComponent, ProjectileComponent>(
+		std::function<void(PositionComponent*, ProjectileComponent*)>([&](PositionComponent* pos, ProjectileComponent* proj) {
+		pos->position += proj->velocity * dt;
+		proj->velocity += gravity * dt;
+
+		float force = proj->velocity.lengthSquared() * drag;
+		proj->velocity -= proj->velocity.normalized() * (force * dt / mass);
+		pos->rotation = atan2f(proj->velocity.y,proj->velocity.x);
+
+		if (pos->position.y > 500) {
+			pos->position.y = 500;
+			proj->velocity.y = 0;
+		}
+	}));
 }

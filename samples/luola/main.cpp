@@ -28,7 +28,7 @@ void loadResources(ResourceCollection& resources) {
 
 int main(int argc, char** argv) {
 
-    initLog("luola.log");
+	initLog("luola.log");
 
     tk::net::initialize();
 
