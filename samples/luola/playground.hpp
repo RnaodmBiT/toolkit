@@ -1,20 +1,20 @@
 #pragma once
 
 #include "global.hpp"
-#include "entity.hpp"
-#include "systems/physics.hpp"
-#include "systems/rendering.hpp"
-
+#include "managers/ship_manager.hpp"
 
 class Playground : public GameState {
-    EntityCollection entities;
-    EntityFactory factory;
+    Client<PlayerInfo> client;
 
-    PhysicsSystem physics;
-    RenderingSystem rendering;
+    ShipManager ships;
+    int player;
 
+    Delegate<const Host::Packet&> onMessageReceived;
 
-    void addGameTypes();
+    void handleMessage(const Host::Packet& data);
+    void handleShipUpdate(Host::Packet::const_iterator& data);
+
+    void handlePlayerInput();
 
 public:
 
