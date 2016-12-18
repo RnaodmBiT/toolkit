@@ -12,6 +12,7 @@ class InputManager {
 
 public:
 
+    Event<int> onKeyDown, onKeyUp;
 
     // Handle input events from the OS
     void handleKeyboard(int key, bool press);

@@ -19,16 +19,15 @@ void Ship::update(float dt) {
     if (input.thrust) {
         thrust(500, dt);
     }
-	if (input.mode == 0) {
+	if (input.keyboard) {
 		if (input.left) {
 			rotate(-4, dt);
 		}
 		if (input.right) {
 			rotate(4, dt);
 		}
-	}
-	else {
-		float delta = wrapAngle(input.target_rotation - getRotation()) / dt;
+	} else {
+		float delta = wrapAngle(input.targetRotation - getRotation()) / dt;
 		if (std::abs(delta) > 4) {
 			delta = sign(delta) * 4;
 		}
