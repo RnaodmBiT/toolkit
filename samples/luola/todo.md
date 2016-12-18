@@ -19,7 +19,7 @@ Remove the elements from this list as they are implemented.
 
   Ships need to have different colours. It would also be sweet to see names over ships
 
-- Controls
+- Controls //Finished
 
   Players should be able to toggle between keyboard/mouse aiming
 
