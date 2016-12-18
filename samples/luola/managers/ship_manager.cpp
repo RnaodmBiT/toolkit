@@ -9,7 +9,7 @@ int ShipManager::spawn(const Vec2f& position, float rotation) {
 
 Ship* ShipManager::spawnWithID(int id, const Vec2f& position, float rotation) {
     tk_assert(ships.count(id) == 0, "Ship with ID already exists!");
-    ships.insert({ id, Ship(global, position, rotation) });
+    ships.emplace(id, Ship(global, position, rotation));
     return &ships.at(id);
 }
 
