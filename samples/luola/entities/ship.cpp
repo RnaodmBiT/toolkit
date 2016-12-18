@@ -2,12 +2,12 @@
 #include "../shapes.hpp"
 #include "../physics.hpp"
 
-Ship::Ship(Global& global, const Vec2f& position, float rotation) :
+Ship::Ship(Global& global, const Vec2f& position, float rotation, Vec4f color) :
     position(position), 
     rotation(rotation),
     drag(0.005f),
     mass(1),
-    shape(Shapes::createShipShape({ 0, 0, 1, 1 })) {
+    shape(Shapes::createShipShape(color)) {
     shader = global.cache.get<Shader>("shader");
 }
 

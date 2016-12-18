@@ -33,7 +33,17 @@ GameState* Playground::update(float dt) {
 }
 
 void Playground::draw() {
-    Mat4f projection = orthographic(0, 0, (float)global.width, (float)global.height);
+	static float shiftx = 0;
+	static float shifty = 0;
+	PlayerInfo* info = client.getPlayer();
+	if (info) {
+		Ship* ship = ships.get(info->ship);
+		if (ship) {
+			shiftx = (shiftx * 0.7f) + 0.3f * (ship->getPosition().x + ship->getVelocity().x / 2);
+			shifty = (shifty * 0.7f) + 0.3f * (ship->getPosition().y + ship->getVelocity().y / 2);
+		}
+	}
+	Mat4f projection = orthographic(shiftx - (float)global.width/2, shifty - (float)global.height/2, (float)global.width/2+shiftx, (float)global.height/2+shifty);
     ships.render(projection);
     projectiles.render(projection);
 }

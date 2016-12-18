@@ -26,7 +26,7 @@ class Ship {
     Shader* shader;
     friend tk::core::convert<Ship>;
 public:
-    Ship(Global& global, const Vec2f& position, float rotation);
+    Ship(Global& global, const Vec2f& position, float rotation, Vec4f color);
 
     void setInput(const ShipInput& input);
 

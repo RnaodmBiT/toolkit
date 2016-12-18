@@ -8,7 +8,7 @@ class ShipManager {
     Global& global;
     std::unordered_map<int, Ship> ships;
     int id;
-
+	std::vector<Vec4f> colors;
     friend tk::core::convert<ShipManager>;
 public:
 
