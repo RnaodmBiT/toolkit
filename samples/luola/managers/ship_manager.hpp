@@ -22,7 +22,7 @@ public:
     Ship* get(int id);
 
     void update(float dt);
-    void render(const Mat4f& projection);
+    void draw(const Mat4f& projection);
 
     iterator begin();
     iterator end();

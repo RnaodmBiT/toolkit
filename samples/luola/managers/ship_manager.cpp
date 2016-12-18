@@ -23,9 +23,9 @@ void ShipManager::update(float dt) {
     }
 }
 
-void ShipManager::render(const Mat4f& projection) {
+void ShipManager::draw(const Mat4f& projection) {
     for (auto& pair : ships) {
-        pair.second.render(projection);
+        pair.second.draw(projection);
     }
 }
 

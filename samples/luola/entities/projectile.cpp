@@ -27,7 +27,7 @@ void Projectile::update(float dt) {
     }
 }
 
-void Projectile::render(const Mat4f& projection) {
+void Projectile::draw(const Mat4f& projection) {
     shader->apply();
     shader->setUniform("transform", projection * getTransform());
     shape.draw();

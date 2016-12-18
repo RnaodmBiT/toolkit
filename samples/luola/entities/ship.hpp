@@ -31,7 +31,7 @@ public:
     void setInput(const ShipInput& input);
 
     void update(float dt);
-    void render(const Mat4f& projection);
+    void draw(const Mat4f& projection);
 
     Mat4f getTransform() const;
     Vec2f getDirection() const;

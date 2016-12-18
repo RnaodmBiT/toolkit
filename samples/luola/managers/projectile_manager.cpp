@@ -23,8 +23,8 @@ void ProjectileManager::update(float dt) {
     }
 }
 
-void ProjectileManager::render(const Mat4f& projection) {
+void ProjectileManager::draw(const Mat4f& projection) {
     for (auto& pair : projectiles) {
-        pair.second.render(projection);
+        pair.second.draw(projection);
     }
 }

@@ -41,7 +41,7 @@ void Ship::update(float dt) {
     }
 }
 
-void Ship::render(const Mat4f& projection) {
+void Ship::draw(const Mat4f& projection) {
     shader->apply();
     shader->setUniform("transform", projection * getTransform());
     shape.draw();

@@ -18,7 +18,7 @@ public:
     Projectile(Global& global, const Vec2f& position, const Vec2f& velocity, float rotation);
 
     void update(float dt);
-    void render(const Mat4f& projection);
+    void draw(const Mat4f& projection);
 
     Mat4f getTransform() const;
 };

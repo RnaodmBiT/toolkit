@@ -34,8 +34,8 @@ GameState* Playground::update(float dt) {
 
 void Playground::draw() {
     Mat4f projection = orthographic(0, 0, (float)global.width, (float)global.height);
-    ships.render(projection);
-    projectiles.render(projection);
+    ships.draw(projection);
+    projectiles.draw(projection);
 }
 
 void Playground::shutdown() {
