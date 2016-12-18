@@ -8,15 +8,23 @@ Title::Title(Global& global) :
                  { 50, 50 },
                  "LUOLA", 50);
 
-    menu.addButton("Play", 20).onClick = [] () {
-        tk_info("Play");
+    menu.addButton("Join", 20).onClick = [] () {
+        tk_info("Join");
+    };
+
+    menu.addButton("Host", 20).onClick = [] () {
+        tk_info("Host");
+    };
+
+    menu.addButton("Options", 20).onClick = [] () {
+        tk_info("Options");
     };
 
     menu.addButton("Quit", 20).onClick = [&] () {
         global.quit();
     };
 
-    menu.setPosition({ 50, (float)global.height - 200 });
+    menu.setPosition({ 50, (float)global.height - 50 - menu.getSize().y });
 
     global.input.onMouseUp.attach(onRelease, [&] (int button, Vec2i position) {
         if (button == SDL_BUTTON_LEFT) {

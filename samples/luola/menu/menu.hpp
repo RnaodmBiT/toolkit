@@ -66,11 +66,9 @@ public:
     void mouseUp(Vec2i mouse) {
         Vec2f p = Vec2f{ (float)mouse.x, (float)mouse.y } - position;
         for (Button& btn : buttons) {
-            if (btn.isInside(p)) {
+            if (btn.state == Button::Down) {
                 btn.onClick();
                 btn.state = Button::Over;
-            } else {
-                btn.state = Button::Up;
             }
         }
     }
@@ -92,5 +90,15 @@ public:
             }
             btn.label.draw(proj);
         }
+    }
+
+    Vec2f getSize() {
+        Vec2f size;
+        for (Button& btn : buttons) {
+            Vec2f bottomRight= btn.label.getPosition() + btn.label.getSize();
+            size.x = std::max(size.x, bottomRight.x);
+            size.y = std::max(size.y, bottomRight.y);
+        }
+        return size;
     }
 };
