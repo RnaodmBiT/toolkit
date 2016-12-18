@@ -9,7 +9,7 @@ int ProjectileManager::spawn(const Vec2f& position, const Vec2f& shipVelocity, f
 
 Projectile* ProjectileManager::spawnWithID(int id, const Vec2f& position, const Vec2f& shipVelocity, float rotation) {
     tk_assert(projectiles.count(id) == 0, "Projectile with ID already exists!");
-    projectiles.insert({ id, Projectile(global, position, shipVelocity, rotation) });
+    projectiles.emplace(id, Projectile(global, position, shipVelocity, rotation));
     return &projectiles.at(id);
 }
 
