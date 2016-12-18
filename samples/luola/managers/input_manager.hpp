@@ -11,7 +11,8 @@ class InputManager {
     Vec2i mousePosition;
 
 public:
-
+    Event<int, Vec2i> onMouseDown, onMouseUp;
+    Event<Vec2i> onMouseMove;
 
     // Handle input events from the OS
     void handleKeyboard(int key, bool press);

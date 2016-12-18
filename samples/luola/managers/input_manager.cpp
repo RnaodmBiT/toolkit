@@ -6,10 +6,16 @@ void InputManager::handleKeyboard(int key, bool press) {
 
 void InputManager::handleMouse(int button, bool press) {
     buttons[button] = press;
+    if (press) {
+        onMouseDown(button, mousePosition);
+    } else {
+        onMouseUp(button, mousePosition);
+    }
 }
 
 void InputManager::handleMotion(int x, int y) {
     mousePosition = { x, y };
+    onMouseMove(mousePosition);
 }
 
 const Vec2i& InputManager::getMousePosition() const {
