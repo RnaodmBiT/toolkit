@@ -3,7 +3,7 @@
 #include "../physics.hpp"
 
 Ship::Ship(Global& global, const Vec2f& position, float rotation, Vec4f color) :
-    position(position), 
+    position(position),
     rotation(rotation),
     drag(0.005f),
     mass(1),
@@ -19,21 +19,21 @@ void Ship::update(float dt) {
     if (input.thrust) {
         thrust(500, dt);
     }
-	if (input.mode == 0) {
-		if (input.left) {
-			rotate(-4, dt);
-		}
-		if (input.right) {
-			rotate(4, dt);
-		}
-	}
-	else {
-		float delta = wrapAngle(input.target_rotation - getRotation()) / dt;
-		if (std::abs(delta) > 4) {
-			delta = sign(delta) * 4;
-		}
-		rotate(delta, dt);
-	}
+    if (input.mode == 0) {
+        if (input.left) {
+            rotate(-4, dt);
+        }
+        if (input.right) {
+            rotate(4, dt);
+        }
+    }
+    else {
+        float delta = wrapAngle(input.target_rotation - getRotation()) / dt;
+        if (std::abs(delta) > 4) {
+            delta = sign(delta) * 4;
+        }
+        rotate(delta, dt);
+    }
 
     reloadTime -= dt;
     velocity += gravity * dt;

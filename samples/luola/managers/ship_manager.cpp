@@ -1,11 +1,6 @@
 #include "ship_manager.hpp"
 
-ShipManager::ShipManager(Global& global) : global(global), id(0) {
-	colors.push_back(Vec4f{ 1,0,0,1 });
-	colors.push_back(Vec4f{ 0,1,0,1 });
-	colors.push_back(Vec4f{ 0,0,1,1 });
-	colors.push_back(Vec4f{ 1,1,0,1 });
-}
+ShipManager::ShipManager(Global& global) : global(global), id(0) {}
 
 int ShipManager::spawn(const Vec2f& position, float rotation) {
     spawnWithID(id, position, rotation);
@@ -14,7 +9,8 @@ int ShipManager::spawn(const Vec2f& position, float rotation) {
 
 Ship* ShipManager::spawnWithID(int id, const Vec2f& position, float rotation) {
     tk_assert(ships.count(id) == 0, "Ship with ID already exists!");
-    ships.emplace(id, Ship(global, position, rotation, colors[id]));
+    Vec4f color = Vec4f{ (float)(id + 1 & 4),(float)(id + 1 & 2), (float)(id + 1 & 1), 1 };
+    ships.emplace(id, Ship(global, position, rotation, color));
     return &ships.at(id);
 }
 

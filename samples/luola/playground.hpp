@@ -11,9 +11,9 @@ class Playground : public GameState {
 
     ShipManager ships;
     ProjectileManager projectiles;
-	bool mouse_mode, space_state;
+    bool mouse_mode, space_state;
 
-	Vec2f screen_position;
+    Vec2f screen_position;
     Delegate<const Host::Packet&> onMessageReceived;
 
     void handleMessage(const Host::Packet& data);

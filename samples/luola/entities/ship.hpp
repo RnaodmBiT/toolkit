@@ -9,15 +9,15 @@ struct Global;
 
 struct ShipInput {
     bool thrust, left, right, shoot, mode;
-	float target_rotation;
+    float target_rotation;
 
     ShipInput() :
         thrust(false),
         left(false),
         right(false),
         shoot(false),
-		mode(false)
-		{ }
+        mode(false)
+    { }
 };
 
 class Ship {
@@ -72,14 +72,14 @@ namespace tk {
 
             void deserialize(Blob::const_iterator& it, ShipInput& input) {
                 uint8_t bitfield;
-				float target_rotation;
+                float target_rotation;
                 tk::core::deserialize(it, bitfield, target_rotation);
                 input.thrust = (bitfield & 1) > 0;
                 input.left = (bitfield & 2) > 0;
                 input.right = (bitfield & 4) > 0;
                 input.shoot = (bitfield & 8) > 0;
-				input.mode = (bitfield & 16) > 0;
-				input.target_rotation = target_rotation;
+                input.mode = (bitfield & 16) > 0;
+                input.target_rotation = target_rotation;
             }
         };
     }
