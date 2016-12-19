@@ -9,11 +9,18 @@ Playground::Playground(Global& global) :
     playerInputTimer(30),
     ships(global),
     projectiles(global) {
+
     client.connect(global.remote, 2514, { "Player" });
-    space_state = false;
-    mouse_mode = false;
-    client.onMessageReceived.attach(onMessageReceived, [this](const Host::Packet& data) {
+    client.onMessageReceived.attach(onMessageReceived, [this] (const Host::Packet& data) {
         handleMessage(data);
+    });
+
+    camera.size = Vec2f{ (float)global.width, (float)global.height };
+
+    global.input.onKeyDown.attach(onKeyDown, [&] (int key) {
+        if (key == SDLK_SPACE) {
+            playerInput.keyboard = !playerInput.keyboard;
+        }
     });
 }
 
@@ -30,18 +37,12 @@ GameState* Playground::update(float dt) {
         handlePlayerInput();
     }
 
+    updateCamera(dt);
     return GameState::update(dt);
 }
 
 void Playground::draw() {
-    PlayerInfo* info = client.getPlayer();
-    if (info) {
-        Ship* ship = ships.get(info->ship);
-        if (ship) {
-            screen_position = (screen_position * 0.7f) + (ship->getPosition() + (ship->getVelocity() * 0.5f)) * 0.3f;
-        }
-    }
-    Mat4f projection = orthographic(screen_position.x - (float)global.width / 2, screen_position.y - (float)global.height / 2, (float)global.width / 2 + screen_position.x, (float)global.height / 2 + screen_position.y);
+    Mat4f projection = camera.projection();
     ships.render(projection);
     projectiles.render(projection);
 }
@@ -85,19 +86,23 @@ void Playground::handlePlayerInput() {
         return;
     }
 
-    ShipInput input;
-    input.thrust = global.input.isKeyDown(SDLK_w);
-    input.shoot = global.input.isButtonDown(SDL_BUTTON_LEFT);
-    Vec2f ship_screen_pos = Vec2f{ (float)global.width / 2, (float)global.height / 2 } -ship->getVelocity() * 0.5f;
-    input.target_rotation = std::atan2((float)global.input.getMousePosition().y - ship_screen_pos.y, (float)global.input.getMousePosition().x - ship_screen_pos.x);
-    input.left = global.input.isKeyDown(SDLK_a);
-    input.right = global.input.isKeyDown(SDLK_d);
+    playerInput.thrust = global.input.isKeyDown(SDLK_w);
+    playerInput.left = global.input.isKeyDown(SDLK_a);
+    playerInput.right = global.input.isKeyDown(SDLK_d);
+    playerInput.shoot = global.input.isButtonDown(SDL_BUTTON_LEFT);
 
-    if (global.input.isKeyDown(SDLK_SPACE) && space_state == false) {
-        mouse_mode = !mouse_mode;
+    Vec2f mousePosition = camera.screenToWorld(global, { (float)global.input.getMousePosition().x, (float)global.input.getMousePosition().y });
+    playerInput.targetRotation = angleBetween(mousePosition, ship->getPosition());
+
+    client.send(false, (uint8_t)PlayerInput, playerInput);
+}
+
+void Playground::updateCamera(float dt) {
+    PlayerInfo* player = client.getPlayer();
+    if (player) {
+        Ship* ship = ships.get(player->ship);
+        if (ship) {
+            camera.lerpTo(ship->getPosition() + ship->getVelocity() * 0.5f, 0.99f, dt);
+        }
     }
-    input.mode = mouse_mode;
-    space_state = global.input.isKeyDown(SDLK_SPACE);
-
-    client.send(false, (uint8_t)PlayerInput, input);
 }

@@ -2,6 +2,11 @@
 
 void InputManager::handleKeyboard(int key, bool press) {
     keys[key] = press;
+    if (press) {
+        onKeyDown(key);
+    } else {
+        onKeyUp(key);
+    }
 }
 
 void InputManager::handleMouse(int button, bool press) {

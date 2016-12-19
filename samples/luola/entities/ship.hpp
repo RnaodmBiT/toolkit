@@ -8,16 +8,17 @@ using namespace tk::graphics;
 struct Global;
 
 struct ShipInput {
-    bool thrust, left, right, shoot, mode;
-    float target_rotation;
+
+    bool thrust, left, right, shoot, keyboard;
+    float targetRotation;
 
     ShipInput() :
         thrust(false),
         left(false),
         right(false),
         shoot(false),
-        mode(false)
-    { }
+        keyboard(false) { }
+
 };
 
 class Ship {
@@ -66,20 +67,19 @@ namespace tk {
         template <>
         struct convert<ShipInput> {
             void serialize(Blob& blob, const ShipInput& input) {
-                uint8_t bitfield = (input.thrust ? 1 : 0) | (input.left ? 2 : 0) | (input.right ? 4 : 0) | (input.shoot ? 8 : 0) | (input.mode ? 16 : 0);
-                tk::core::serialize(blob, bitfield, input.target_rotation);
+                uint8_t bitfield = (input.thrust ? 1 : 0) | (input.left ? 2 : 0) | (input.right ? 4 : 0) | (input.shoot ? 8 : 0) | (input.keyboard ? 16 : 0);
+                tk::core::serialize(blob, bitfield, input.targetRotation);
             }
 
             void deserialize(Blob::const_iterator& it, ShipInput& input) {
                 uint8_t bitfield;
-                float target_rotation;
-                tk::core::deserialize(it, bitfield, target_rotation);
+
+                tk::core::deserialize(it, bitfield, input.targetRotation);
                 input.thrust = (bitfield & 1) > 0;
                 input.left = (bitfield & 2) > 0;
                 input.right = (bitfield & 4) > 0;
                 input.shoot = (bitfield & 8) > 0;
-                input.mode = (bitfield & 16) > 0;
-                input.target_rotation = target_rotation;
+                input.keyboard = (bitfield & 16) > 0;
             }
         };
     }
