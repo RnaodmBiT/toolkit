@@ -1,6 +1,9 @@
 #pragma once
 #include "../global.hpp"
 #include "element.hpp"
+#include "text.hpp"
+#include "button.hpp"
+#include "textInput.hpp"
 #include <memory>
 
 class Panel {
@@ -59,6 +62,16 @@ public:
         elements.emplace_back(new Text(font, shader, offset, label, size));
         offset.y += elements.back()->getSize().y + spacing;
         return (Text*)elements.back().get();
+    }
+
+    TextInput* addTextInput(int size) {
+        elements.emplace_back(new TextInput(global, offset, size));
+        offset.y += elements.back()->getSize().y + spacing;
+        return (TextInput*)elements.back().get();
+    }
+
+    void addSpace(float size) {
+        offset.y += size;
     }
 
     void mouseMove(Vec2f mouse) {

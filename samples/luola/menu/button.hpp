@@ -1,3 +1,4 @@
+#pragma once
 #include "../global.hpp"
 #include "element.hpp"
 #include "text.hpp"
@@ -23,16 +24,16 @@ public:
 
     void mouseMove(Vec2f mouse) {
         if (isInside(mouse)) {
-            if (state == Button::Up) {
-                state = Button::Over;
-            } else if (state == Button::DownAndOut) {
-                state = Button::Down;
+            if (state == Up) {
+                state = Over;
+            } else if (state == DownAndOut) {
+                state = Down;
             }
         } else {
-            if (state == Button::Down) {
-                state = Button::DownAndOut;
-            } else if (state == Button::Over) {
-                state = Button::Up;
+            if (state == Down) {
+                state = DownAndOut;
+            } else if (state == Over) {
+                state = Up;
             }
         }
 
@@ -40,29 +41,29 @@ public:
 
     void mouseDown(Vec2f mouse) {
         if (isInside(mouse)) {
-            state = Button::Down;
+            state = Down;
         }
     }
 
     void mouseUp(Vec2f mouse) {
-        if (state == Button::Down) {
+        if (state == Down) {
             if (onClick) {
                 onClick();
             }
-            state = Button::Over;
+            state = Over;
         }
     }
 
     void draw(const Mat4f& projection) {
         switch (state) {
-        case Button::Up:
-        case Button::DownAndOut:
+        case Up:
+        case DownAndOut:
             label.setColor(colors.up);
             break;
-        case Button::Over:
+        case Over:
             label.setColor(colors.over);
             break;
-        case Button::Down:
+        case Down:
             label.setColor(colors.down);
             break;
         }

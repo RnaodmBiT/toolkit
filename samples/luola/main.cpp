@@ -80,6 +80,9 @@ int main(int argc, char** argv) {
             case SDL_MOUSEMOTION:
                 global.input.handleMotion(event.motion.x, event.motion.y);
                 break;
+            case SDL_TEXTINPUT:
+                global.input.handleText(event.text.text);
+                break;
             }
         }
 

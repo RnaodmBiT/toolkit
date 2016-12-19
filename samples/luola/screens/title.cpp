@@ -83,8 +83,14 @@ void Title::buildMenu() {
 
 void Title::buildJoinPanel() {
     join.create("Join Game", { 170, 150 });
-    join.addText(">This is text<", 15);
-    join.addButton("THINGY", 20);
+
+    join.addSpace(20);
+    join.addText("> Player Name", 15);
+    join.addTextInput(18);
+
+    join.addSpace(20);
+    join.addText("> Host Address", 15);
+    join.addTextInput(18);
 }
 
 void Title::buildHostPanel() {
