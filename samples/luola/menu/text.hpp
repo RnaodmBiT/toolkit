@@ -1,7 +1,8 @@
 #pragma once
-#include "global.hpp"
+#include "../global.hpp"
+#include "element.hpp"
 
-class Text {
+class Text : public Element {
     Font* font;
     Shader* shader;
     Texture texture;
@@ -23,11 +24,11 @@ public:
         position = pos;
     }
 
-    const Vec2f& getPosition() const {
+    Vec2f getPosition() const {
         return position;
     }
 
-    const Vec2f& getSize() const {
+    Vec2f getSize() const {
         return bounds;
     }
 
