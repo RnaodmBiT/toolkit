@@ -5,6 +5,7 @@
 #include "global.hpp"
 #include "screens/title.hpp"
 #include "game_server.hpp"
+#include "menu/cursor.hpp"
 
 #include <graphics.hpp>
 #include <core.hpp>
@@ -55,6 +56,7 @@ int main(int argc, char** argv) {
     tk_assert(context, "SDL_GL_CreateContext failed");
 
     SDL_StartTextInput();
+    Cursor::initialize();
 
     tk_assert(tk::graphics::initialize(), "Error initializing the graphics");
 

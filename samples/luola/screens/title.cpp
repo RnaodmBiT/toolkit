@@ -1,5 +1,6 @@
 #include "title.hpp"
 #include "playground.hpp"
+#include "../menu/cursor.hpp"
 
 Title::Title(Global& global) : 
     GameState(global),
@@ -14,6 +15,7 @@ Title::Title(Global& global) :
                  "LUOLA", 50);
 
     buildMenu();
+    Cursor::set(Cursor::Arrow);
 
     global.input.onMouseUp.attach(onRelease, [&] (int button, Vec2i position) {
         if (button == SDL_BUTTON_LEFT) {
@@ -63,21 +65,10 @@ void Title::buildMenu() {
     buildHostPanel();
     buildOptionsPanel();
 
-    menu.addButton("Join", 20)->onClick = [&] () {
-        activePanel = activePanel == &join ? nullptr : &join;
-    };
-
-    menu.addButton("Host", 20)->onClick = [&] () {
-        activePanel = activePanel == &host ? nullptr : &host;
-    };
-
-    menu.addButton("Options", 20)->onClick = [&] () {
-        activePanel = activePanel == &options ? nullptr : &options;
-    };
-
-    menu.addButton("Quit", 20)->onClick = [&] () {
-        global.quit();
-    };
+    menu.addButton("Join", 20)->onClick = [&] () { showPanel(join); };
+    menu.addButton("Host", 20)->onClick = [&] () { showPanel(host); };
+    menu.addButton("Options", 20)->onClick = [&] () { showPanel(options); };
+    menu.addButton("Quit", 20)->onClick = [&] () { global.quit(); };
 
     menu.setPosition({ 50, (float)global.height - 50 - menu.getSize().y });
 }
@@ -120,4 +111,12 @@ void Title::buildHostPanel() {
 
 void Title::buildOptionsPanel() {
     options.create("Options", { 170, 150 });
+}
+
+void Title::showPanel(Panel& panel) {
+    if (activePanel == &panel) {
+        activePanel = nullptr;
+    } else {
+        activePanel = &panel;
+    }
 }

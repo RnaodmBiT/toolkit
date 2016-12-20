@@ -2,6 +2,7 @@
 #include "../global.hpp"
 #include "element.hpp"
 #include "text.hpp"
+#include "cursor.hpp"
 
 class TextInput : public Element {
     Shader* shader;
@@ -14,8 +15,8 @@ class TextInput : public Element {
     Delegate<int> onKeyDown;
     Delegate<const std::string&> onTextInput;
 
-    struct Colors { Vec4f off, over, active; } colors;
-    enum State { Off, Over, Active, ActiveAndOver } state;
+    enum State { Off, Over, Down, DownAndOut, Active, ActiveAndOut } state;
+    std::map<State, Vec4f> colors;
 
 public:
     TextInput() { }
@@ -28,9 +29,12 @@ public:
         text.setColor({ 0, 0, 0, 1 });
         background = Shape::rectangle({ 0, 0 }, { 200, (float)size + 2 });
 
-        colors.off= { 0.5f, 0.5f, 0.5f, 1.0f };
-        colors.active = { 0.7f, 0.7f, 0.7f, 1.0f };
-        colors.over = { 1.0f, 1.0f, 1.0f, 1.0f };
+        colors[Off] = { 0.5f, 0.5f, 0.5f, 1.0f };
+        colors[Active] = { 0.7f, 0.7f, 0.7f, 1.0f };
+        colors[Over] = { 1.0f, 1.0f, 1.0f, 1.0f };
+        colors[Down] = { 0.3f, 0.3f, 0.3f, 1.0f };
+        colors[ActiveAndOut] = colors[Active];
+        colors[DownAndOut] = colors[Off];
 
         global.input.onTextInput.attach(onTextInput, [&] (const std::string& text) {
             if (isActive()) {
@@ -67,19 +71,6 @@ public:
             Mat4f transform = projection * translate(position.x, position.y, 0.0f);
 
             std::string display = field;
-            Vec4f color;
-            switch (state) {
-            case Active:
-                color = colors.active;
-                break;
-            case Over:
-            case ActiveAndOver:
-                color = colors.over;
-                break;
-            default:
-                color = colors.off;
-                break;
-            }
 
             if (isActive()) {
                 display += "_";
@@ -87,7 +78,7 @@ public:
 
             shader->apply();
             shader->setUniform("transform", transform);
-            shader->setUniform("tint", color);
+            shader->setUniform("tint", colors[state]);
             shader->clearTexture("image");
             background.draw();
 
@@ -96,35 +87,43 @@ public:
         }
     }
 
-    void mouseMove(Vec2f mouse) {
-        if (isInside(mouse)) {
-            if (state == Active) {
-                state = ActiveAndOver;
-            } else if (state == Off) {
-                state = Over;
-            }
-        } else {
-            if (state == ActiveAndOver) {
-                state = Active;
-            } else if (state == Over) {
-                state = Off;
-            }
-        }
+    bool isActive() const {
+        return state == Active || state == ActiveAndOut;
     }
 
-    void mouseDown(Vec2f mouse) {
+    void onEnter() {
+        if (state == Off) {
+            state = Over;
+        } else if (state == ActiveAndOut) {
+            state = Active;
+        } else if (state == DownAndOut) {
+            state = Down;
+        }
+        Cursor::set(Cursor::IBeam);
+    }
+
+    void onLeave() {
         if (state == Over) {
-            state = ActiveAndOver;
+            state = Off;
+        } else if (state == Active) {
+            state = ActiveAndOut;
+        } else if (state == Down) {
+            state = DownAndOut;
+        }
+        Cursor::set(Cursor::Arrow);
+    }
+
+    void onPress(bool inside) {
+        if (inside) {
+            state = Down;
         }
     }
 
-    void mouseUp(Vec2f mouse) {
-        if (state == Active) {
+    void onRelease(bool inside) {
+        if (state == Down) {
+            state = Active;
+        } else {
             state = Off;
         }
-    }
-
-    bool isActive() const {
-        return state == Active || state == ActiveAndOver;
     }
 };

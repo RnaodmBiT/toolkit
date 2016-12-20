@@ -84,14 +84,14 @@ public:
     void mouseDown(Vec2f mouse) {
         mouse -= position;
         for (auto& element : elements) {
-            element->mouseDown(mouse);
+            element->mouseDown();
         }
     }
 
     void mouseUp(Vec2f mouse) {
         mouse -= position;
         for (auto& element : elements) {
-            element->mouseUp(mouse);
+            element->mouseUp();
         }
     }
 };

@@ -2,6 +2,7 @@
 #include "../shapes.hpp"
 #include "../messages.hpp"
 #include "title.hpp"
+#include "../menu/cursor.hpp"
 
 using namespace std::placeholders;
 
@@ -11,6 +12,8 @@ Playground::Playground(Global& global) :
     ships(global),
     projectiles(global) {
     client.connect(global.remote, 2514, { global.playerName });
+
+    Cursor::set(Cursor::Crosshair);
 
     client.onMessageReceived.attach(onMessageReceived, [this] (const Host::Packet& data) {
         handleMessage(data);

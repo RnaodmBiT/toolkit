@@ -33,14 +33,14 @@ public:
     void mouseDown(Vec2f mouse) {
         mouse -= position;
         for (Button& button : buttons) {
-            button.mouseDown(mouse);
+            button.mouseDown();
         }
     }
 
     void mouseUp(Vec2f mouse) {
         mouse -= position;
         for (Button& button : buttons) {
-            button.mouseUp(mouse);
+            button.mouseUp();
         }
     }
 

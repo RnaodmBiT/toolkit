@@ -2,10 +2,11 @@
 #include "../global.hpp"
 #include "element.hpp"
 #include "text.hpp"
+#include <map>
 
 class Button : public Element {
     enum State { Up, Over, Down, DownAndOut } state;
-    struct Colors { Vec4f up, over, down; } colors;
+    std::map<State, Vec4f> colors;
     Text label;
 
 public:
@@ -17,56 +18,14 @@ public:
                      position,
                      text, size);
 
-        colors.down = { 0.5f, 0.5f, 0.5f, 1.0f };
-        colors.up = { 0.7f, 0.7f, 0.7f, 1.0f };
-        colors.over = { 1.0f, 1.0f, 1.0f, 1.0f };
-    }
-
-    void mouseMove(Vec2f mouse) {
-        if (isInside(mouse)) {
-            if (state == Up) {
-                state = Over;
-            } else if (state == DownAndOut) {
-                state = Down;
-            }
-        } else {
-            if (state == Down) {
-                state = DownAndOut;
-            } else if (state == Over) {
-                state = Up;
-            }
-        }
-
-    }
-
-    void mouseDown(Vec2f mouse) {
-        if (isInside(mouse)) {
-            state = Down;
-        }
-    }
-
-    void mouseUp(Vec2f mouse) {
-        if (state == Down) {
-            if (onClick) {
-                onClick();
-            }
-            state = Over;
-        }
+        colors[Down] = { 0.5f, 0.5f, 0.5f, 1.0f };
+        colors[Up] = { 0.7f, 0.7f, 0.7f, 1.0f };
+        colors[Over] = { 1.0f, 1.0f, 1.0f, 1.0f };
+        colors[DownAndOut] = colors[Up];
     }
 
     void draw(const Mat4f& projection) {
-        switch (state) {
-        case Up:
-        case DownAndOut:
-            label.setColor(colors.up);
-            break;
-        case Over:
-            label.setColor(colors.over);
-            break;
-        case Down:
-            label.setColor(colors.down);
-            break;
-        }
+        label.setColor(colors[state]);
         label.draw(projection);
     }
 
@@ -76,5 +35,37 @@ public:
 
     Vec2f getPosition() const {
         return label.getPosition();
+    }
+
+    void onEnter() {
+        if (state == Up) {
+            state = Over;
+        } else if (state == DownAndOut) {
+            state = Down;
+        }
+    }
+
+    void onLeave() {
+        if (state == Over) {
+            state = Up;
+        } else if (state == Down) {
+            state = DownAndOut;
+        }
+    }
+
+    void onPress(bool inside) {
+        if (inside) {
+            state = Down;
+        }
+    }
+
+    void onRelease(bool inside) {
+        if (inside && state == Down) {
+            onClick();
+            state = Over;
+        }
+        if (!inside) {
+            state = Up;
+        }
     }
 };

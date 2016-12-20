@@ -5,6 +5,7 @@
 #include "../menu/panel.hpp"
 #include "../menu/text.hpp"
 
+
 class Title : public GameState {
     Text title;
     Menu menu;
@@ -19,6 +20,8 @@ class Title : public GameState {
     void buildJoinPanel();
     void buildHostPanel();
     void buildOptionsPanel();
+
+    void showPanel(Panel& panel);
 
 public:
 
