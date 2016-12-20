@@ -106,20 +106,17 @@ public:
                 state = Off;
             }
         }
-
     }
 
     void mouseDown(Vec2f mouse) {
         if (state == Over) {
             state = ActiveAndOver;
-            SDL_StartTextInput();
         }
     }
 
     void mouseUp(Vec2f mouse) {
         if (state == Active) {
             state = Off;
-            SDL_StopTextInput();
         }
     }
 

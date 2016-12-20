@@ -54,6 +54,8 @@ int main(int argc, char** argv) {
     SDL_GLContext context = SDL_GL_CreateContext(window);
     tk_assert(context, "SDL_GL_CreateContext failed");
 
+    SDL_StartTextInput();
+
     tk_assert(tk::graphics::initialize(), "Error initializing the graphics");
 
     loadResources(global.cache);
