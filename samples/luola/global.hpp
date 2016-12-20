@@ -21,6 +21,7 @@ struct Global {
     ResourceCollection cache;
     InputManager input;
 
+    std::string playerName;
     std::string remote;
     std::unique_ptr<GameServer> server;
 

@@ -12,6 +12,7 @@ class Playground : public GameState {
     ShipManager ships;
     ProjectileManager projectiles;
 
+    Delegate<int> onKeyDown;
     Delegate<const Host::Packet&> onMessageReceived;
 
     void handleMessage(const Host::Packet& data);

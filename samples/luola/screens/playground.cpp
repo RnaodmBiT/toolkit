@@ -1,6 +1,7 @@
 #include "playground.hpp"
 #include "../shapes.hpp"
 #include "../messages.hpp"
+#include "title.hpp"
 
 using namespace std::placeholders;
 
@@ -9,10 +10,16 @@ Playground::Playground(Global& global) :
     playerInputTimer(30),
     ships(global),
     projectiles(global) {
-    client.connect(global.remote, 2514, { "Player" });
+    client.connect(global.remote, 2514, { global.playerName });
 
     client.onMessageReceived.attach(onMessageReceived, [this] (const Host::Packet& data) {
         handleMessage(data);
+    });
+
+    global.input.onKeyDown.attach(onKeyDown, [&] (int key) {
+        if (key == SDLK_ESCAPE) {
+            setNextState(new Title(global));
+        }
     });
 }
 

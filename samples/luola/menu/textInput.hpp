@@ -58,6 +58,10 @@ public:
         return{ 200, (float)size + 2 };
     }
 
+    const std::string& getText() const {
+        return field;
+    }
+
     void draw(const Mat4f& projection) {
         if (shader) {
             Mat4f transform = projection * translate(position.x, position.y, 0.0f);

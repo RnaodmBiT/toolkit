@@ -1,4 +1,5 @@
 #include "title.hpp"
+#include "playground.hpp"
 
 Title::Title(Global& global) : 
     GameState(global),
@@ -86,15 +87,35 @@ void Title::buildJoinPanel() {
 
     join.addSpace(20);
     join.addText("> Player Name", 15);
-    join.addTextInput(18);
+    TextInput* name = join.addTextInput(18);
 
     join.addSpace(20);
     join.addText("> Host Address", 15);
-    join.addTextInput(18);
+    TextInput* address = join.addTextInput(18);
+
+    join.addSpace(20);
+    join.addButton("Connect", 20)->onClick = [&, name, address] () {
+        global.playerName = name->getText();
+        global.remote = address->getText();
+        setNextState(new Playground(global));
+    };
 }
 
 void Title::buildHostPanel() {
     host.create("Host Game", { 170, 150 });
+
+    host.addSpace(20);
+    host.addText("> Player Name", 15);
+    TextInput* name = host.addTextInput(18);
+
+    host.addSpace(20);
+    host.addButton("Start", 20)->onClick = [&, name] () {
+        global.playerName = name->getText();
+        global.remote = "127.0.0.1";
+
+        global.server.reset(new GameServer(global));
+        setNextState(new Playground(global));
+    };
 }
 
 void Title::buildOptionsPanel() {
