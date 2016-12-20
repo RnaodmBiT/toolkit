@@ -30,24 +30,22 @@ public:
         }
     }
 
-    void mouseDown(Vec2f mouse) {
-        mouse -= position;
+    void mouseDown() {
         for (Button& button : buttons) {
             button.mouseDown();
         }
     }
 
-    void mouseUp(Vec2f mouse) {
-        mouse -= position;
+    void mouseUp() {
         for (Button& button : buttons) {
             button.mouseUp();
         }
     }
 
     void draw(const Mat4f& projection) {
-        Mat4f proj = projection * translate(position.x, position.y, 0.0f);
+        Mat4f transform = translate(position.x, position.y, 0.0f);
         for (Button& button : buttons) {
-            button.draw(proj);
+            button.draw(projection, transform);
         }
     }
 

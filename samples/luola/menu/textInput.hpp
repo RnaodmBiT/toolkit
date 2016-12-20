@@ -66,9 +66,9 @@ public:
         return field;
     }
 
-    void draw(const Mat4f& projection) {
+    void draw(const Mat4f& projection, const Mat4f& transform = Mat4f()) {
         if (shader) {
-            Mat4f transform = projection * translate(position.x, position.y, 0.0f);
+            Mat4f trans = transform * translate(position.x, position.y, 0.0f);
 
             std::string display = field;
 
@@ -76,14 +76,19 @@ public:
                 display += "_";
             }
 
+            Vec4f transformedPosition = trans * Vec4f{ 0, 0, 0, 1 };
+            clipRectangle({ transformedPosition.x, transformedPosition.y }, getSize());
+
             shader->apply();
-            shader->setUniform("transform", transform);
+            shader->setUniform("transform", projection * trans);
             shader->setUniform("tint", colors[state]);
             shader->clearTexture("image");
             background.draw();
 
             text.setText(display, size);
-            text.draw(transform);
+            text.draw(projection, trans);
+
+            clearClip();
         }
     }
 

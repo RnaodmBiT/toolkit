@@ -24,9 +24,9 @@ public:
         colors[DownAndOut] = colors[Up];
     }
 
-    void draw(const Mat4f& projection) {
+    void draw(const Mat4f& projection, const Mat4f& transform = Mat4f()) {
         label.setColor(colors[state]);
-        label.draw(projection);
+        label.draw(projection, transform);
     }
 
     Vec2f getSize() const {

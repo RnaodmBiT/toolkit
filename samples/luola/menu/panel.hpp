@@ -36,17 +36,17 @@ public:
     }
 
     void draw(const Mat4f& projection) {
-        Mat4f transform = projection * translate(position.x, position.y, 0.0f);
+        Mat4f transform = translate(position.x, position.y, 0.0f);
         shader->apply();
-        shader->setUniform("transform", transform);
+        shader->setUniform("transform", projection * transform);
         shader->setUniform("tint", color);
         shader->clearTexture("image");
         background.draw();
 
-        title.draw(transform);
+        title.draw(projection, transform);
 
         for (auto& element : elements) {
-            element->draw(transform);
+            element->draw(projection, transform);
         }
     }
 
@@ -81,15 +81,13 @@ public:
         }
     }
 
-    void mouseDown(Vec2f mouse) {
-        mouse -= position;
+    void mouseDown() {
         for (auto& element : elements) {
             element->mouseDown();
         }
     }
 
-    void mouseUp(Vec2f mouse) {
-        mouse -= position;
+    void mouseUp() {
         for (auto& element : elements) {
             element->mouseUp();
         }

@@ -10,7 +10,7 @@ public:
 
     virtual Vec2f getPosition() const { return{ 0, 0 }; }
     virtual Vec2f getSize() const { return{ 0, 0 }; }
-    virtual void draw(const Mat4f& projection) { }
+    virtual void draw(const Mat4f& projection, const Mat4f& transform = Mat4f()) { }
 
     void mouseMove(Vec2f mouse) {
         bool inside = isInside(mouse);

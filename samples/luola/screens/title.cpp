@@ -19,18 +19,18 @@ Title::Title(Global& global) :
 
     global.input.onMouseUp.attach(onRelease, [&] (int button, Vec2i position) {
         if (button == SDL_BUTTON_LEFT) {
-            menu.mouseUp({ (float)position.x, (float)position.y });
+            menu.mouseUp();
             if (activePanel) {
-                activePanel->mouseUp({ (float)position.x, (float)position.y });
+                activePanel->mouseUp();
             }
         }
     });
 
     global.input.onMouseDown.attach(onClick, [&] (int button, Vec2i position) {
         if (button == SDL_BUTTON_LEFT) {
-            menu.mouseDown({ (float)position.x, (float)position.y });
+            menu.mouseDown();
             if (activePanel) {
-                activePanel->mouseDown({ (float)position.x, (float)position.y });
+                activePanel->mouseDown();
             }
         }
     });
