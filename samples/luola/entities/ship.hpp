@@ -8,25 +8,29 @@ using namespace tk::graphics;
 struct Global;
 
 struct ShipInput {
-    bool thrust, left, right, shoot;
+
+    bool thrust, left, right, shoot, keyboard;
+    float targetRotation;
 
     ShipInput() :
         thrust(false),
         left(false),
         right(false),
-        shoot(false) { }
+        shoot(false),
+        keyboard(false) { }
+
 };
 
 class Ship {
     Vec2f position, velocity;
     float rotation, drag, mass, reloadTime;
     ShipInput input;
-
+    int team;
     Shape shape;
     Shader* shader;
     friend tk::core::convert<Ship>;
 public:
-    Ship(Global& global, const Vec2f& position, float rotation);
+    Ship(Global& global, const Vec2f& position, float rotation, int team, Vec4f color);
 
     void setInput(const ShipInput& input);
 
@@ -39,6 +43,7 @@ public:
     Vec2f getPosition() const;
     Vec2f getVelocity() const;
     ShipInput getInput() const;
+    int getTeam() const;
 
     void thrust(float strength, float dt);
     void rotate(float speed, float dt);
@@ -52,28 +57,30 @@ namespace tk {
         template <>
         struct convert<Ship> {
             void serialize(Blob& blob, const Ship& ship) {
-                tk::core::serialize(blob, ship.position, ship.velocity, ship.rotation, ship.input);
+                tk::core::serialize(blob, ship.position, ship.velocity, ship.rotation, ship.input, ship.team);
             }
 
             void deserialize(Blob::const_iterator& it, Ship& ship) {
-                tk::core::deserialize(it, ship.position, ship.velocity, ship.rotation, ship.input);
+                tk::core::deserialize(it, ship.position, ship.velocity, ship.rotation, ship.input, ship.team);
             }
         };
 
         template <>
         struct convert<ShipInput> {
             void serialize(Blob& blob, const ShipInput& input) {
-                uint8_t bitfield = (input.thrust ? 1 : 0) | (input.left ? 2 : 0) | (input.right ? 4 : 0) | (input.shoot ? 8 : 0);
-                tk::core::serialize(blob, bitfield);
+                uint8_t bitfield = (input.thrust ? 1 : 0) | (input.left ? 2 : 0) | (input.right ? 4 : 0) | (input.shoot ? 8 : 0) | (input.keyboard ? 16 : 0);
+                tk::core::serialize(blob, bitfield, input.targetRotation);
             }
 
             void deserialize(Blob::const_iterator& it, ShipInput& input) {
                 uint8_t bitfield;
-                tk::core::deserialize(it, bitfield);
+
+                tk::core::deserialize(it, bitfield, input.targetRotation);
                 input.thrust = (bitfield & 1) > 0;
                 input.left = (bitfield & 2) > 0;
                 input.right = (bitfield & 4) > 0;
                 input.shoot = (bitfield & 8) > 0;
+                input.keyboard = (bitfield & 16) > 0;
             }
         };
     }

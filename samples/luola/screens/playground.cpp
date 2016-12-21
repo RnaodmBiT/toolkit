@@ -4,9 +4,7 @@
 #include "title.hpp"
 #include "../menu/cursor.hpp"
 
-using namespace std::placeholders;
-
-Playground::Playground(Global& global) : 
+Playground::Playground(Global& global) :
     GameState(global),
     playerInputTimer(30),
     ships(global),
@@ -15,6 +13,7 @@ Playground::Playground(Global& global) :
 
     Cursor::set(Cursor::Crosshair);
 
+    client.connect(global.remote, 2514, { "Player" });
     client.onMessageReceived.attach(onMessageReceived, [this] (const Host::Packet& data) {
         handleMessage(data);
     });
@@ -22,8 +21,12 @@ Playground::Playground(Global& global) :
     global.input.onKeyDown.attach(onKeyDown, [&] (int key) {
         if (key == SDLK_ESCAPE) {
             setNextState(new Title(global));
+        } else if (key == SDLK_SPACE) {
+            playerInput.keyboard = !playerInput.keyboard;
         }
     });
+
+    camera.size = Vec2f{ (float)global.width, (float)global.height };
 }
 
 GameState* Playground::update(float dt) {
@@ -39,11 +42,12 @@ GameState* Playground::update(float dt) {
         handlePlayerInput();
     }
 
+    updateCamera(dt);
     return GameState::update(dt);
 }
 
 void Playground::draw() {
-    Mat4f projection = orthographic(0, 0, (float)global.width, (float)global.height);
+    Mat4f projection = camera.projection();
     ships.draw(projection);
     projectiles.draw(projection);
 }
@@ -87,11 +91,23 @@ void Playground::handlePlayerInput() {
         return;
     }
 
-    ShipInput input;
-    input.thrust = global.input.isKeyDown(SDLK_w);
-    input.left = global.input.isKeyDown(SDLK_a);
-    input.right = global.input.isKeyDown(SDLK_d);
-    input.shoot = global.input.isButtonDown(SDL_BUTTON_LEFT);
+    playerInput.thrust = global.input.isKeyDown(SDLK_w);
+    playerInput.left = global.input.isKeyDown(SDLK_a);
+    playerInput.right = global.input.isKeyDown(SDLK_d);
+    playerInput.shoot = global.input.isButtonDown(SDL_BUTTON_LEFT);
 
-    client.send(false, (uint8_t)PlayerInput, input);
+    Vec2f mousePosition = camera.screenToWorld(global, { (float)global.input.getMousePosition().x, (float)global.input.getMousePosition().y });
+    playerInput.targetRotation = angleBetween(mousePosition, ship->getPosition());
+
+    client.send(false, (uint8_t)PlayerInput, playerInput);
+}
+
+void Playground::updateCamera(float dt) {
+    PlayerInfo* player = client.getPlayer();
+    if (player) {
+        Ship* ship = ships.get(player->ship);
+        if (ship) {
+            camera.lerpTo(ship->getPosition() + ship->getVelocity() * 0.5f, 0.99f, dt);
+        }
+    }
 }

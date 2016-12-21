@@ -8,7 +8,6 @@ class ShipManager {
     Global& global;
     std::unordered_map<int, Ship> ships;
     int id;
-
     friend tk::core::convert<ShipManager>;
 public:
 

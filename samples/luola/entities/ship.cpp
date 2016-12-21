@@ -2,12 +2,13 @@
 #include "../shapes.hpp"
 #include "../physics.hpp"
 
-Ship::Ship(Global& global, const Vec2f& position, float rotation) :
-    position(position), 
+Ship::Ship(Global& global, const Vec2f& position, float rotation, int team, Vec4f color) :
+    position(position),
     rotation(rotation),
     drag(0.005f),
     mass(1),
-    shape(Shapes::createShipShape({ 0, 0, 1, 1 })) {
+    team(team),
+    shape(Shapes::createShipShape(color)) {
     shader = global.cache.get<Shader>("shader");
 }
 
@@ -19,11 +20,20 @@ void Ship::update(float dt) {
     if (input.thrust) {
         thrust(500, dt);
     }
-    if (input.left) {
-        rotate(-4, dt);
+    if (input.keyboard) {
+        if (input.left) {
+            rotate(-4, dt);
+        }
+        if (input.right) {
+            rotate(4, dt);
+        }
     }
-    if (input.right) {
-        rotate(4, dt);
+    else {
+        float delta = wrapAngle(input.targetRotation - getRotation()) / dt;
+        if (std::abs(delta) > 4) {
+            delta = sign(delta) * 4;
+        }
+        rotate(delta, dt);
     }
 
     reloadTime -= dt;
@@ -65,6 +75,10 @@ Vec2f Ship::getPosition() const {
 
 Vec2f Ship::getVelocity() const {
     return velocity;
+}
+
+int Ship::getTeam() const {
+    return team;
 }
 
 ShipInput Ship::getInput() const {

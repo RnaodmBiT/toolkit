@@ -1,16 +1,20 @@
 #pragma once
 
+
 #include "../global.hpp"
 #include "../managers/ship_manager.hpp"
 #include "../managers/projectile_manager.hpp"
+#include "../camera.hpp"
 
 class Playground : public GameState {
     Client<PlayerInfo> client;
 
-    UpdateTimer playerInputTimer;
-
+    Camera camera;
     ShipManager ships;
     ProjectileManager projectiles;
+
+    ShipInput playerInput;
+    UpdateTimer playerInputTimer;
 
     Delegate<int> onKeyDown;
     Delegate<const Host::Packet&> onMessageReceived;
@@ -20,6 +24,8 @@ class Playground : public GameState {
     void handleProjectileUpdate(Host::Packet::const_iterator& data);
 
     void handlePlayerInput();
+
+    void updateCamera(float dt);
 
 public:
 
