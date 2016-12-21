@@ -3,7 +3,7 @@ Remove the elements from this list as they are implemented.
 
 ## Things that need doing
 
-- User Interface - In Progress
+- User Interface
   
   The main menu has been implemented. Now The options page needs to be filled out. This would also mean saving the game options to a file, probably a JSON file. The join and host pages have player names and remote address entry. The host page should have game options as they become available and the join page should get some form of server memory or lists.
 

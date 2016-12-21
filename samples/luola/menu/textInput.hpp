@@ -29,10 +29,10 @@ public:
         text.setColor({ 0, 0, 0, 1 });
         background = Shape::rectangle({ 0, 0 }, { 200, (float)size + 2 });
 
-        colors[Off] = { 0.5f, 0.5f, 0.5f, 1.0f };
-        colors[Active] = { 0.7f, 0.7f, 0.7f, 1.0f };
+        colors[Off] = { 0.8f, 0.8f, 0.8f, 0.4f };
+        colors[Active] = { 0.9f, 0.9f, 0.9f, 1.0f };
         colors[Over] = { 1.0f, 1.0f, 1.0f, 1.0f };
-        colors[Down] = { 0.3f, 0.3f, 0.3f, 1.0f };
+        colors[Down] = { 0.7f, 0.7f, 0.7f, 1.0f };
         colors[ActiveAndOut] = colors[Active];
         colors[DownAndOut] = colors[Off];
 

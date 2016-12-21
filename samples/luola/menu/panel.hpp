@@ -28,7 +28,7 @@ public:
         shader = global.cache.get<Shader>("shader");
         background = Shape::rectangle(Vec2f(), { (float)global.width - position.x - 50,
                                                  (float)global.height - position.y - 50 });
-        color = { 0.03f, 0.03f, 0.03f, 1.0f };
+        color = { 0, 0, 0, 0.1f };
         title = Text(global.cache.get<Font>("font"), shader,
                      { 20, 20 }, heading, 30);
 

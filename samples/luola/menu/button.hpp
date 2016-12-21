@@ -18,8 +18,8 @@ public:
                      position,
                      text, size);
 
-        colors[Down] = { 0.5f, 0.5f, 0.5f, 1.0f };
-        colors[Up] = { 0.7f, 0.7f, 0.7f, 1.0f };
+        colors[Down] = { 0.8f, 0.8f, 0.8f, 1.0f };
+        colors[Up] = { 0.9f, 0.9f, 0.9f, 1.0f };
         colors[Over] = { 1.0f, 1.0f, 1.0f, 1.0f };
         colors[DownAndOut] = colors[Up];
     }
