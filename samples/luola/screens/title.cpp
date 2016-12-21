@@ -8,6 +8,7 @@ Title::Title(Global& global) :
     join(global),
     host(global),
     options(global),
+    background(global),
     activePanel(nullptr) {
     title = Text(global.cache.get<Font>("font"),
                  global.cache.get<Shader>("shader"),
@@ -44,6 +45,9 @@ Title::Title(Global& global) :
 }
 
 GameState* Title::update(float dt) {
+    backgroundPosition.x += dt * 10.0f;
+    backgroundPosition.y = -(float)global.height * 0.45f;
+
     return GameState::update(dt);
 }
 
@@ -51,6 +55,8 @@ void Title::shutdown() { }
 
 void Title::draw() {
     Mat4f projection = orthographic(0, 0, (float)global.width, (float)global.height);
+
+    background.draw(projection, backgroundPosition);
 
     title.draw(projection);
     menu.draw(projection);

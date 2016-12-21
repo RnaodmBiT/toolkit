@@ -22,8 +22,15 @@ void loadResources(ResourceCollection& resources) {
                            "data/shaders/shape.vert",
                            "data/shaders/shape.frag");
 
-    resources.load<Font>("font",
-                         "data/fonts/caviar.ttf");
+    resources.load<Shader>("scrolling",
+                           "data/shaders/shape.vert",
+                           "data/shaders/scrolling.frag");
+
+    resources.load<Font>("font", "data/fonts/caviar.ttf");
+
+    resources.load<Texture>("background0", "data/backgrounds/mountains-back.png");
+    resources.load<Texture>("background1", "data/backgrounds/mountains-mid1.png");
+    resources.load<Texture>("background2", "data/backgrounds/mountains-mid2.png");
 
     tk_info("Finished loading resources.");
 }

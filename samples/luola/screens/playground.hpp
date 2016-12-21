@@ -5,6 +5,7 @@
 #include "../managers/ship_manager.hpp"
 #include "../managers/projectile_manager.hpp"
 #include "../camera.hpp"
+#include "../entities/background.hpp"
 
 class Playground : public GameState {
     Client<PlayerInfo> client;
@@ -12,6 +13,7 @@ class Playground : public GameState {
     Camera camera;
     ShipManager ships;
     ProjectileManager projectiles;
+    Background background;
 
     ShipInput playerInput;
     UpdateTimer playerInputTimer;

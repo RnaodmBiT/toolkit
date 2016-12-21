@@ -4,6 +4,7 @@
 #include "../menu/menu.hpp"
 #include "../menu/panel.hpp"
 #include "../menu/text.hpp"
+#include "../entities/background.hpp"
 
 
 class Title : public GameState {
@@ -12,6 +13,9 @@ class Title : public GameState {
 
     Panel join, host, options;
     Panel* activePanel;
+
+    Background background;
+    Vec2f backgroundPosition;
 
     Delegate<int, Vec2i> onClick, onRelease;
     Delegate<Vec2i> onMove;
