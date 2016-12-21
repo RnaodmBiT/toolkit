@@ -15,6 +15,7 @@ Background::Background(Global& global) : global(global) {
 
     for (Texture* layer : layers) {
         layer->setWrapMode(Texture::Wrap, Texture::Clamp);
+        layer->enableMipmap(false);
     }
 }
 

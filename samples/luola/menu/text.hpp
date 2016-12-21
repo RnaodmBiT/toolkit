@@ -16,7 +16,7 @@ public:
 
     Text(Font* font, Shader* shader, const Vec2f& position, const std::string& text, int size) :
         font(font), shader(shader), position(position), texture(GL_TEXTURE_2D), color{ 1, 1, 1, 1 } {
-        setText(text, size);
+        setText(text, size, true);
         texture.useRedAsAlpha();
     }
 
@@ -36,13 +36,13 @@ public:
         color = c;
     }
 
-    void setText(const std::string& text, int size) {
-        if (cachedText != text && font) {
+    void setText(const std::string& text, int size, bool forceUpdate = false) {
+        if ((cachedText != text && font) || forceUpdate) {
             cachedText = text;
             Bitmap<uint8_t> image = font->renderText(text, size);
             bounds = Vec2f{ (float)image.getWidth(), (float)image.getHeight() };
             shape = Shape::rectangle({ 0, 0 }, bounds);
-            texture.setData(image.getData(), image.getWidth(), image.getHeight(), GL_R8, GL_RED, GL_UNSIGNED_BYTE);
+            texture.setData(image.getData(), image.getWidth(), image.getHeight(), GL_R8, GL_RED, GL_UNSIGNED_BYTE, false);
         }
     }
 

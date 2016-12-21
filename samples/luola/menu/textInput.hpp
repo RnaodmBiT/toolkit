@@ -24,8 +24,7 @@ public:
     TextInput(Global& global, const Vec2f& position, int size) : 
         position(position), size(size), state(Off) {
         shader = global.cache.get<Shader>("shader");
-        text = Text(global.cache.get<Font>("font"),
-                    shader, Vec2f{ 2, -2 }, "", size);
+        text = Text(global.cache.get<Font>("font"), shader, Vec2f{ 2, -2 }, "", size);
         text.setColor({ 0, 0, 0, 1 });
         background = Shape::rectangle({ 0, 0 }, { 200, (float)size + 2 });
 
