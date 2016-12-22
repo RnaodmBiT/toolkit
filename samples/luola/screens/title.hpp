@@ -5,9 +5,11 @@
 #include "../menu/panel.hpp"
 #include "../menu/text.hpp"
 #include "../entities/background.hpp"
+#include "../managers/tween_manager.hpp"
 
 
 class Title : public GameState {
+    TweenManager tweens;
     Text title;
     Menu menu;
 

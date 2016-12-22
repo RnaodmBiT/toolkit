@@ -24,9 +24,9 @@ public:
         colors[DownAndOut] = colors[Up];
     }
 
-    void draw(const Mat4f& projection, const Mat4f& transform = Mat4f()) {
+    void draw(const Mat4f& projection, const Mat4f& transform = Mat4f(), float transparency = 1.0f) {
         label.setColor(colors[state]);
-        label.draw(projection, transform);
+        label.draw(projection, transform, alpha * transparency);
     }
 
     Vec2f getSize() const {

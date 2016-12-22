@@ -65,7 +65,7 @@ public:
         return field;
     }
 
-    void draw(const Mat4f& projection, const Mat4f& transform = Mat4f()) {
+    void draw(const Mat4f& projection, const Mat4f& transform = Mat4f(), float transparency = 1) {
         if (shader) {
             Mat4f trans = transform * translate(position.x, position.y, 0.0f);
 
@@ -80,12 +80,12 @@ public:
 
             shader->apply();
             shader->setUniform("transform", projection * trans);
-            shader->setUniform("tint", colors[state]);
+            shader->setUniform("tint", colors[state] * Vec4f{ 1, 1, 1, transparency * alpha });
             shader->clearTexture("image");
             background.draw();
 
             text.setText(display, size);
-            text.draw(projection, trans);
+            text.draw(projection, trans, transparency);
 
             clearClip();
         }

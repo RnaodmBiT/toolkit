@@ -46,12 +46,12 @@ public:
         }
     }
 
-    void draw(const Mat4f& projection, const Mat4f& transform = Mat4f()) {
+    void draw(const Mat4f& projection, const Mat4f& transform = Mat4f(), float transparency = 1) {
         if (shader) {
             shader->apply();
             shader->setUniform("transform", projection * transform * translate(position.x, position.y, 0.0f));
             shader->setUniform("image", texture);
-            shader->setUniform("tint", color);
+            shader->setUniform("tint", color * Vec4f{ 1, 1, 1, transparency * alpha });
             shape.draw();
         }
     }

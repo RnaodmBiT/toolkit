@@ -9,6 +9,7 @@ Title::Title(Global& global) :
     host(global),
     options(global),
     background(global),
+    tweens(global),
     activePanel(nullptr) {
     title = Text(global.cache.get<Font>("font"),
                  global.cache.get<Shader>("shader"),
@@ -45,6 +46,8 @@ Title::Title(Global& global) :
 }
 
 GameState* Title::update(float dt) {
+    tweens.update();
+
     backgroundPosition.x += dt * 10.0f;
     backgroundPosition.y = -(float)global.height * 0.45f;
 
@@ -61,9 +64,9 @@ void Title::draw() {
     title.draw(projection);
     menu.draw(projection);
 
-    if (activePanel) {
-        activePanel->draw(projection);
-    }
+    join.draw(projection);
+    host.draw(projection);
+    options.draw(projection);
 }
 
 void Title::buildMenu() {
@@ -96,6 +99,8 @@ void Title::buildJoinPanel() {
         global.remote = address->getText();
         setNextState(new Playground(global));
     };
+
+    join.setAlpha(0);
 }
 
 void Title::buildHostPanel() {
@@ -113,16 +118,28 @@ void Title::buildHostPanel() {
         global.server.reset(new GameServer(global));
         setNextState(new Playground(global));
     };
+
+    host.setAlpha(0);
 }
 
 void Title::buildOptionsPanel() {
     options.create("Options", { 170, 150 });
+    options.setAlpha(0);
 }
 
 void Title::showPanel(Panel& panel) {
+    Panel* active = activePanel;
+
     if (activePanel == &panel) {
+        tweens.create(0.2f, Easing::quadraticOut, [=] (float x) {
+            active->setAlpha(1 - x); 
+        });
         activePanel = nullptr;
     } else {
-        activePanel = &panel;
+        if (active) {
+            tweens.create(0.2f, Easing::quadraticOut, [=] (float x) { active->setAlpha(1 - x); });
+        }
+        active = activePanel = &panel;
+        tweens.create(0.2f, Easing::quadraticOut, [=] (float x) { active->setAlpha(x); });
     }
 }
