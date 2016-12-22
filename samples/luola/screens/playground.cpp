@@ -10,11 +10,9 @@ Playground::Playground(Global& global) :
     ships(global),
     projectiles(global),
     background(global) {
-    client.connect(global.remote, 2514, { global.playerName });
-
     Cursor::set(Cursor::Crosshair);
 
-    client.connect(global.remote, 2514, { "Player" });
+    client.connect(global.remote, 2514, { global.playerName });
     client.onMessageReceived.attach(onMessageReceived, [this] (const Host::Packet& data) {
         handleMessage(data);
     });
