@@ -15,7 +15,7 @@ Remove the elements from this list as they are implemented.
 
   Need to figure out how to make cool unique weapons.
 
-- Teams //Started
+- Teams //Finished
 
   Ships need to have different colours. It would also be sweet to see names over ships
 
@@ -23,6 +23,6 @@ Remove the elements from this list as they are implemented.
 
   Players should be able to toggle between keyboard/mouse aiming
 
-- Camera //Started
+- Camera //Finished
 
   A proper game camera needs to be implemented. I imagine a camera that focuses ahead of the players ship based on speed and direction.
