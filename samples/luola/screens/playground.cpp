@@ -12,8 +12,6 @@ Playground::Playground(Global& global) :
     client.connect(global.remote, 2514, { global.playerName });
 
     Cursor::set(Cursor::Crosshair);
-
-    client.connect(global.remote, 2514, { "Player" });
     client.onMessageReceived.attach(onMessageReceived, [this] (const Host::Packet& data) {
         handleMessage(data);
     });
@@ -34,7 +32,6 @@ GameState* Playground::update(float dt) {
         global.server->update(dt);
     }
     client.pollEvents();
-
     ships.update(dt);
     projectiles.update(dt);
 
@@ -48,7 +45,7 @@ GameState* Playground::update(float dt) {
 
 void Playground::draw() {
     Mat4f projection = camera.projection();
-    ships.draw(projection);
+    ships.draw(projection, client.players);
     projectiles.draw(projection);
 }
 

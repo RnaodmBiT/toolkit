@@ -1,6 +1,8 @@
 #pragma once
 #include <unordered_map>
 #include "../entities/ship.hpp"
+#include "player_table.hpp"
+#include "../player_info.hpp"
 
 struct Global;
 
@@ -21,7 +23,7 @@ public:
     Ship* get(int id);
 
     void update(float dt);
-    void draw(const Mat4f& projection);
+    void draw(const Mat4f& projection, tk::net::PlayerTable<PlayerInfo> players);
 
     iterator begin();
     iterator end();

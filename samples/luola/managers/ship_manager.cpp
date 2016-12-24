@@ -1,4 +1,5 @@
 #include "ship_manager.hpp"
+#include "../menu/text.hpp"
 
 ShipManager::ShipManager(Global& global) : global(global), id(0) {}
 
@@ -25,9 +26,19 @@ void ShipManager::update(float dt) {
     }
 }
 
-void ShipManager::draw(const Mat4f& projection) {
+void ShipManager::draw(const Mat4f& projection, tk::net::PlayerTable<PlayerInfo> players) {
     for (auto& pair : ships) {
         pair.second.draw(projection);
+    }
+    Text ship_text = Text(global.cache.get<Font>("font"), global.cache.get<Shader>("shader"), Vec2f{ 0,0 }, "name", 15);
+    for (int i = 0; i < players.playerList.size(); i++) {
+        int current = players.playerList[i].info.ship;
+        if (ships.count(current)) {
+            std::string name = players.playerList[i].info.name;
+            ship_text.setPosition(Vec2f{ -(float)(name.length() * 3.5), -35 } +ships.at(current).getPosition());
+            ship_text.setText(name, 15);
+            ship_text.draw(projection);
+        }
     }
 }
 
