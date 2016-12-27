@@ -22,6 +22,10 @@ GameServer::GameServer(Global& global) :
     });
 }
 
+GameServer::~GameServer() {
+    server.disconnect();
+}
+
 void GameServer::update(float dt) {
     server.pollEvents();
 

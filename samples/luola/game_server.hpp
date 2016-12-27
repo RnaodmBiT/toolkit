@@ -33,6 +33,7 @@ class GameServer {
 public:
 
     GameServer(Global& global);
+    ~GameServer();
 
     void update(float dt);
 
