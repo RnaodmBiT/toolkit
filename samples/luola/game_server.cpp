@@ -53,7 +53,7 @@ void GameServer::handleMessage(int id, const Host::Packet& data) {
 }
 
 void GameServer::handlePlayerConnect(int id) {
-    int ship = ships.spawn({ 0, -400 }, -pi / 2);
+    int ship = ships.spawn(id, { 0, -400 }, -pi / 2);
     PlayerInfo* player = server.getPlayer(id);
     player->ship = ship;
     server.updatePlayerTable(); // this pushes the updates player info to all players

@@ -1,9 +1,7 @@
 #pragma once
-#include <core.hpp>
-#include <graphics.hpp>
+#include "../includes.hpp"
+#include "../menu/text.hpp"
 
-using namespace tk::core;
-using namespace tk::graphics;
 
 struct Global;
 
@@ -25,31 +23,34 @@ class Ship {
     Vec2f position, velocity;
     float rotation, drag, mass, reloadTime;
     ShipInput input;
-    int team;
+    int team, owner;
     Shape shape;
+    Text playerName;
     Shader* shader;
     friend tk::core::convert<Ship>;
 public:
-    Ship(Global& global, const Vec2f& position, float rotation, int team, Vec4f color);
+    Ship(Global& global, const Vec2f& position, float rotation, int team, int owner, Vec4f color);
 
     void setInput(const ShipInput& input);
 
     void update(float dt);
     void draw(const Mat4f& projection);
 
-    Mat4f getTransform() const;
     Vec2f getDirection() const;
     float getRotation() const;
     Vec2f getPosition() const;
     Vec2f getVelocity() const;
     ShipInput getInput() const;
     int getTeam() const;
+    int getOwner() const;
 
     void thrust(float strength, float dt);
     void rotate(float speed, float dt);
 
     bool canShoot() const;
     void resetReloadTime();
+
+    void setPlayerName(const std::string& name);
 };
 
 namespace tk {
@@ -57,11 +58,11 @@ namespace tk {
         template <>
         struct convert<Ship> {
             void serialize(Blob& blob, const Ship& ship) {
-                tk::core::serialize(blob, ship.position, ship.velocity, ship.rotation, ship.input, ship.team);
+                tk::core::serialize(blob, ship.position, ship.velocity, ship.rotation, ship.input, ship.team, ship.owner);
             }
 
             void deserialize(Blob::const_iterator& it, Ship& ship) {
-                tk::core::deserialize(it, ship.position, ship.velocity, ship.rotation, ship.input, ship.team);
+                tk::core::deserialize(it, ship.position, ship.velocity, ship.rotation, ship.input, ship.team, ship.owner);
             }
         };
 

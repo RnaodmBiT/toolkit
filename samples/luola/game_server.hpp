@@ -1,12 +1,9 @@
 #pragma once
-#include <core.hpp>
-#include <net.hpp>
+#include "includes.hpp"
 #include "player_info.hpp"
 #include "managers/ship_manager.hpp"
 #include "managers/projectile_manager.hpp"
 
-using namespace tk::core;
-using namespace tk::net;
 
 struct Global;
 

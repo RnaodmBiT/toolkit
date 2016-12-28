@@ -30,6 +30,8 @@ void Projectile::update(float dt) {
 void Projectile::draw(const Mat4f& projection) {
     shader->apply();
     shader->setUniform("transform", projection * getTransform());
+    shader->setUniform("tint", Vec4f{ 1, 1, 1, 1 });
+    shader->clearTexture("image");
     shape.draw();
 }
 

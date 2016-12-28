@@ -2,14 +2,17 @@
 #include "../shapes.hpp"
 #include "../physics.hpp"
 
-Ship::Ship(Global& global, const Vec2f& position, float rotation, int team, Vec4f color) :
+Ship::Ship(Global& global, const Vec2f& position, float rotation, int team, int owner, Vec4f color) :
     position(position),
     rotation(rotation),
     drag(0.005f),
     mass(1),
     team(team),
+    owner(owner),
     shape(Shapes::createShipShape(color)) {
     shader = global.cache.get<Shader>("shader");
+    playerName = Text(global.cache.get<Font>("font"),
+                      shader, { 0, 0 }, "", 15);
 }
 
 void Ship::setInput(const ShipInput& shipInput) {
@@ -53,14 +56,17 @@ void Ship::update(float dt) {
 
 void Ship::draw(const Mat4f& projection) {
     shader->apply();
-    shader->setUniform("transform", projection * getTransform());
+
+    Mat4f translation = translate(position.x, position.y, 0.0f);
+    Mat4f spin = ::rotate(rotation, { 0, 0, 1 });
+
+    shader->setUniform("transform", projection * translation * spin);
     shader->setUniform("tint", Vec4f{ 1, 1, 1, 1 });
     shader->clearTexture("image");
     shape.draw();
-}
 
-Mat4f Ship::getTransform() const {
-    return translate(position.x, position.y, 0.0f) * ::rotate(rotation, { 0, 0, 1 });
+    Vec2f offset = -playerName.getSize() * 0.5f - Vec2f{ 0, 20 };
+    playerName.draw(projection * translation, translate(offset.x, offset.y, 0.0f));
 }
 
 Vec2f Ship::getDirection() const {
@@ -83,6 +89,10 @@ int Ship::getTeam() const {
     return team;
 }
 
+int Ship::getOwner() const {
+    return owner;
+}
+
 ShipInput Ship::getInput() const {
     return input;
 }
@@ -101,4 +111,8 @@ bool Ship::canShoot() const {
 
 void Ship::resetReloadTime() {
     reloadTime = 0.2f; // 5 Hz
+}
+
+void Ship::setPlayerName(const std::string& name) {
+    playerName.setText(name, 15);
 }

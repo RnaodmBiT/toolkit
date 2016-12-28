@@ -17,8 +17,8 @@ public:
 
     ShipManager(Global& global);
 
-    int spawn(const Vec2f& position, float rotation);
-    Ship* spawnWithID(int id, const Vec2f& position, float rotation);
+    int spawn(int owner, const Vec2f& position, float rotation);
+    Ship* spawnWithID(int id, int owner, const Vec2f& position, float rotation);
 
     Ship* get(int id);
 
@@ -47,7 +47,7 @@ namespace tk {
                     tk::core::deserialize(it, id);
                     Ship* ship = ships.get(id);
                     if (ship == nullptr) {
-                        ship = ships.spawnWithID(id, { 0, 0 }, 0);
+                        ship = ships.spawnWithID(id, -1, { 0, 0 }, 0);
                     }
                     tk::core::deserialize(it, *ship);
                 }

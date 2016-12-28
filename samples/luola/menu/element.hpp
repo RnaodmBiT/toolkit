@@ -1,5 +1,5 @@
 #pragma once
-#include "../global.hpp"
+#include "../includes.hpp"
 
 class Element {
     bool isMouseInside;

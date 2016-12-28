@@ -1,5 +1,5 @@
 #pragma once
-#include "../global.hpp"
+#include "../includes.hpp"
 #include "element.hpp"
 
 class Text : public Element {

@@ -1,19 +1,7 @@
 #pragma once
-
-#include <core.hpp>
-#include <graphics.hpp>
-#include <net.hpp>
-#include <memory>
-#include <chrono>
-
+#include "includes.hpp"
 #include "managers/input_manager.hpp"
 #include "game_server.hpp"
-
-using namespace tk::core;
-using namespace tk::graphics;
-using namespace tk::net;
-
-typedef std::chrono::high_resolution_clock Clock;
 
 struct Settings {
     Vec2i resolution;

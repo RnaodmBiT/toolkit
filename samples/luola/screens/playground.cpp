@@ -77,6 +77,15 @@ void Playground::handleMessage(const Host::Packet& data) {
 
 void Playground::handleShipUpdate(Host::Packet::const_iterator& it) {
     deserialize(it, ships);
+
+    for (auto& idShip : ships) {
+        Ship& ship = idShip.second;
+        int owner = ship.getOwner();
+        PlayerInfo* player = client.getPlayer(owner);
+        if (owner >= 0 && player) {
+            ship.setPlayerName(player->name);
+        }
+    }
 }
 
 void Playground::handleProjectileUpdate(Host::Packet::const_iterator& it) {
