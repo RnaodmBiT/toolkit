@@ -21,8 +21,8 @@ void Projectile::update(float dt) {
         velocity -= velocity.normalized() * (force * dt / mass);
     }
 
-    if (position.y > 500) {
-        position.y = 500;
+    if (position.y > 0) {
+        position.y = 0;
         velocity.y = 0;
     }
 }

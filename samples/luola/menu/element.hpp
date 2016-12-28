@@ -4,13 +4,16 @@
 class Element {
     bool isMouseInside;
 
+protected:
+    float alpha;
+
 public:
-    Element() : isMouseInside(false) { }
+    Element() : isMouseInside(false), alpha(1) { }
     virtual ~Element() { }
 
     virtual Vec2f getPosition() const { return{ 0, 0 }; }
     virtual Vec2f getSize() const { return{ 0, 0 }; }
-    virtual void draw(const Mat4f& projection, const Mat4f& transform = Mat4f()) { }
+    virtual void draw(const Mat4f& projection, const Mat4f& transform = Mat4f(), float alpha = 1) { }
 
     void mouseMove(Vec2f mouse) {
         bool inside = isInside(mouse);
@@ -29,6 +32,10 @@ public:
 
     void mouseUp() {
         onRelease(isMouseInside);
+    }
+
+    void setAlpha(float a) {
+        alpha = a;
     }
 
     bool isInside(Vec2f position) {

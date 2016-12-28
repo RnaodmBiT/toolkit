@@ -45,8 +45,8 @@ void Ship::update(float dt) {
         velocity -= velocity.normalized() * (force * dt / mass);
     }
 
-    if (position.y > 500) {
-        position.y = 500;
+    if (position.y > 0) {
+        position.y = 0;
         velocity.y = 0;
     }
 }
@@ -54,6 +54,8 @@ void Ship::update(float dt) {
 void Ship::draw(const Mat4f& projection) {
     shader->apply();
     shader->setUniform("transform", projection * getTransform());
+    shader->setUniform("tint", Vec4f{ 1, 1, 1, 1 });
+    shader->clearTexture("image");
     shape.draw();
 }
 

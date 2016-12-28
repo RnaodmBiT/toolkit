@@ -24,15 +24,14 @@ public:
     TextInput(Global& global, const Vec2f& position, int size) : 
         position(position), size(size), state(Off) {
         shader = global.cache.get<Shader>("shader");
-        text = Text(global.cache.get<Font>("font"),
-                    shader, Vec2f{ 2, -2 }, "", size);
+        text = Text(global.cache.get<Font>("font"), shader, Vec2f{ 2, -2 }, "", size);
         text.setColor({ 0, 0, 0, 1 });
         background = Shape::rectangle({ 0, 0 }, { 200, (float)size + 2 });
 
-        colors[Off] = { 0.5f, 0.5f, 0.5f, 1.0f };
-        colors[Active] = { 0.7f, 0.7f, 0.7f, 1.0f };
+        colors[Off] = { 0.8f, 0.8f, 0.8f, 0.4f };
+        colors[Active] = { 0.9f, 0.9f, 0.9f, 1.0f };
         colors[Over] = { 1.0f, 1.0f, 1.0f, 1.0f };
-        colors[Down] = { 0.3f, 0.3f, 0.3f, 1.0f };
+        colors[Down] = { 0.7f, 0.7f, 0.7f, 1.0f };
         colors[ActiveAndOut] = colors[Active];
         colors[DownAndOut] = colors[Off];
 
@@ -66,7 +65,7 @@ public:
         return field;
     }
 
-    void draw(const Mat4f& projection, const Mat4f& transform = Mat4f()) {
+    void draw(const Mat4f& projection, const Mat4f& transform = Mat4f(), float transparency = 1) {
         if (shader) {
             Mat4f trans = transform * translate(position.x, position.y, 0.0f);
 
@@ -81,12 +80,12 @@ public:
 
             shader->apply();
             shader->setUniform("transform", projection * trans);
-            shader->setUniform("tint", colors[state]);
+            shader->setUniform("tint", colors[state] * Vec4f{ 1, 1, 1, transparency * alpha });
             shader->clearTexture("image");
             background.draw();
 
             text.setText(display, size);
-            text.draw(projection, trans);
+            text.draw(projection, trans, transparency);
 
             clearClip();
         }

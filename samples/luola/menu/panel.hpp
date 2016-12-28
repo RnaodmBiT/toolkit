@@ -14,6 +14,7 @@ class Panel {
 
     Vec2f offset;
     float spacing;
+    float alpha;
 
     Text title;
     std::vector<std::unique_ptr<Element>> elements;
@@ -28,7 +29,7 @@ public:
         shader = global.cache.get<Shader>("shader");
         background = Shape::rectangle(Vec2f(), { (float)global.width - position.x - 50,
                                                  (float)global.height - position.y - 50 });
-        color = { 0.03f, 0.03f, 0.03f, 1.0f };
+        color = { 0, 0, 0, 0.1f };
         title = Text(global.cache.get<Font>("font"), shader,
                      { 20, 20 }, heading, 30);
 
@@ -39,15 +40,19 @@ public:
         Mat4f transform = translate(position.x, position.y, 0.0f);
         shader->apply();
         shader->setUniform("transform", projection * transform);
-        shader->setUniform("tint", color);
+        shader->setUniform("tint", color * Vec4f{ 1, 1, 1, alpha });
         shader->clearTexture("image");
         background.draw();
 
-        title.draw(projection, transform);
+        title.draw(projection, transform, alpha);
 
         for (auto& element : elements) {
-            element->draw(projection, transform);
+            element->draw(projection, transform, alpha);
         }
+    }
+
+    void setAlpha(float a) {
+        alpha = a;
     }
 
     Button* addButton(const std::string& label, int size) {

@@ -2,5 +2,5 @@
 #include "global.hpp"
 
 namespace {
-    const Vec2f gravity = { 0, 200 };
+    const Vec2f gravity = { 0, 100 };
 }
