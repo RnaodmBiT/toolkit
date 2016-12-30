@@ -1,5 +1,5 @@
 #include "title.hpp"
-#include "playground.hpp"
+#include "lobby.hpp"
 #include "../menu/cursor.hpp"
 
 Title::Title(Global& global) : 
@@ -154,6 +154,6 @@ void Title::connectToServer(const std::string& address, const std::string& name)
     global.remote = address;
     
     global.client->onConnectedToServer.attach(onConnectedToGame, [&] () {
-        setNextState(new Playground(global));
+        setNextState(new Lobby(global));
     });
 }
