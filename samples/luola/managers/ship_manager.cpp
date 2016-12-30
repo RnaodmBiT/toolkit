@@ -26,7 +26,7 @@ void ShipManager::update(float dt) {
     }
 }
 
-void ShipManager::draw(const Mat4f& projection, tk::net::PlayerTable<PlayerInfo> players) {
+void ShipManager::draw(const Mat4f& projection) {
     for (auto& pair : ships) {
         pair.second.draw(projection);
     }

@@ -8,8 +8,6 @@
 #include "../entities/background.hpp"
 
 class Playground : public GameState {
-    Client<PlayerInfo> client;
-
     Camera camera;
     ShipManager ships;
     ProjectileManager projectiles;

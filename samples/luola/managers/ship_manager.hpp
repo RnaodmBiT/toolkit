@@ -23,7 +23,7 @@ public:
     Ship* get(int id);
 
     void update(float dt);
-    void draw(const Mat4f& projection, tk::net::PlayerTable<PlayerInfo> players);
+    void draw(const Mat4f& projection);
 
     iterator begin();
     iterator end();

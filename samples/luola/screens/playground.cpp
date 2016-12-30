@@ -12,8 +12,7 @@ Playground::Playground(Global& global) :
     background(global) {
 
     Cursor::set(Cursor::Crosshair);
-    client.connect(global.remote, 2514, { global.playerName });
-    client.onMessageReceived.attach(onMessageReceived, [this] (const Host::Packet& data) {
+    global.client->onMessageReceived.attach(onMessageReceived, [this] (const Host::Packet& data) {
         handleMessage(data);
     });
 
@@ -32,7 +31,7 @@ GameState* Playground::update(float dt) {
     if (global.server) {
         global.server->update(dt);
     }
-    client.pollEvents();
+    global.client->pollEvents();
     ships.update(dt);
     projectiles.update(dt);
 
@@ -50,12 +49,12 @@ void Playground::draw() {
 
     background.draw(screen, camera.position);
 
-    ships.draw(projection, client.players);
+    ships.draw(projection);
     projectiles.draw(projection);
 }
 
 void Playground::shutdown() {
-    client.disconnect();
+    global.client->disconnect();
     if (global.server) {
         global.server.reset();
     }
@@ -81,7 +80,7 @@ void Playground::handleShipUpdate(Host::Packet::const_iterator& it) {
     for (auto& idShip : ships) {
         Ship& ship = idShip.second;
         int owner = ship.getOwner();
-        PlayerInfo* player = client.getPlayer(owner);
+        PlayerInfo* player = global.client->getPlayer(owner);
         if (owner >= 0 && player) {
             ship.setPlayerName(player->name);
         }
@@ -93,7 +92,7 @@ void Playground::handleProjectileUpdate(Host::Packet::const_iterator& it) {
 }
 
 void Playground::handlePlayerInput() {
-    PlayerInfo* info = client.getPlayer();
+    PlayerInfo* info = global.client->getPlayer();
     if (!info) {
         return;
     }
@@ -110,11 +109,11 @@ void Playground::handlePlayerInput() {
     Vec2f mousePosition = camera.screenToWorld(global, { (float)global.input.getMousePosition().x, (float)global.input.getMousePosition().y });
     playerInput.targetRotation = angleBetween(mousePosition, ship->getPosition());
 
-    client.send(false, (uint8_t)PlayerInput, playerInput);
+    global.client->send(false, (uint8_t)PlayerInput, playerInput);
 }
 
 void Playground::updateCamera(float dt) {
-    PlayerInfo* player = client.getPlayer();
+    PlayerInfo* player = global.client->getPlayer();
     if (player) {
         Ship* ship = ships.get(player->ship);
         if (ship) {

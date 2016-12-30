@@ -15,6 +15,7 @@ struct Global {
     std::string playerName;
     std::string remote;
     std::unique_ptr<GameServer> server;
+    std::unique_ptr<Client<PlayerInfo>> client;
 
     bool running;
 
