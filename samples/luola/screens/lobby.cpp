@@ -125,9 +125,11 @@ void Lobby::updateTeamLists() {
 
     for (int i = red; i < redTeam.size(); ++i) {
         redTeam[i]->setText("  -", 16);
+        redTeam[i]->setColor({ 1, 0.3f, 0.3f, 1 });
     }
 
     for (int i = blue; i < blueTeam.size(); ++i) {
         blueTeam[i]->setText("  -", 16);
+        blueTeam[i]->setColor({ 0.3f, 0.3f, 1, 1 });
     }
 }

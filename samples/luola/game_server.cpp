@@ -56,13 +56,9 @@ void GameServer::handleMessage(int id, const Host::Packet& data) {
 }
 
 void GameServer::handlePlayerConnect(int id) {
-    Team playerTeam = getAppropriateTeam();
-
-    int ship = ships.spawn(id, { 0, -400 }, -pi / 2, playerTeam);
     PlayerInfo* player = server.getPlayer(id);
-    player->ship = ship;
-    player->team = playerTeam;
-    server.updatePlayerTable(); // this pushes the updates player info to all players
+    player->team = getAppropriateTeam();
+    server.updatePlayerTable();
 }
 
 void GameServer::handlePlayerDisconnect(int id) {
