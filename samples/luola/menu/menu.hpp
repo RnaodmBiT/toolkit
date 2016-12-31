@@ -19,6 +19,10 @@ public:
         return button;
     }
 
+    void addSpace(float space) {
+        offset.y += space + spacing;
+    }
+
     void setPosition(const Vec2f& pos) {
         position = pos;
     }

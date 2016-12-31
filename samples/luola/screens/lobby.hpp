@@ -17,6 +17,9 @@ class Lobby : public GameState {
 
     Delegate<int, Vec2i> onClick, onRelease;
     Delegate<Vec2i> onMove;
+    Delegate<> onDisconnectedFromServer;
+
+    Menu menu;
 
     Text* addText(const std::string& text, int size, const Vec2f& position, const Vec4f& color);
     Button* addButton(const std::string& text, int size, const Vec2f& position);

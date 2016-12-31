@@ -2,15 +2,18 @@
 #include "playground.hpp"
 #include "../menu/cursor.hpp"
 #include "../messages.hpp"
+#include "title.hpp"
 
 Lobby::Lobby(Global& global) :
     GameState(global),
-    tweens(global) {
+    tweens(global),
+    menu(global) {
 
     Cursor::set(Cursor::Arrow);
 
     global.input.onMouseUp.attach(onRelease, [&] (int button, Vec2i position) {
         if (button == SDL_BUTTON_LEFT) {
+            menu.mouseUp();
             for (auto& ptr : elements) {
                 ptr->mouseUp();
             }
@@ -19,6 +22,7 @@ Lobby::Lobby(Global& global) :
 
     global.input.onMouseDown.attach(onClick, [&] (int button, Vec2i position) {
         if (button == SDL_BUTTON_LEFT) {
+            menu.mouseDown();
             for (auto& ptr : elements) {
                 ptr->mouseDown();
             }
@@ -27,9 +31,14 @@ Lobby::Lobby(Global& global) :
 
     global.input.onMouseMove.attach(onMove, [&] (Vec2i position) {
         Vec2f pos{ (float)position.x, (float)position.y };
+        menu.mouseMove(pos);
         for (auto& ptr : elements) {
             ptr->mouseMove(pos);
         }
+    });
+
+    global.client->onServerDisconnected.attach(onDisconnectedFromServer, [&] () {
+        setNextState(new Title(global));
     });
 
     buildLobby();
@@ -54,6 +63,7 @@ void Lobby::shutdown() {
 void Lobby::draw() {
     Mat4f projection = orthographic(0, 0, (float)global.width, (float)global.height);
 
+    menu.draw(projection);
     for (auto& ptr : elements) {
         ptr->draw(projection);
     }
@@ -63,6 +73,24 @@ void Lobby::buildLobby() {
     addText("Lobby", 40, { 50, 50 }, { 1, 1, 1, 1 });
 
     buildPlayerList();
+
+    menu.addButton("Change Team", 20)->onClick = [&] () {
+        global.client->send(true, (uint8_t)PlayerChangeTeam);
+    };
+
+    menu.addSpace(20);
+
+    if (global.server) {
+        menu.addButton("Start", 20)->onClick = [&] () {
+            // global.server->startGame();
+        };
+    }
+
+    menu.addButton("Disconnect", 20)->onClick = [&] () {
+        setNextState(new Title(global));
+    };
+
+    menu.setPosition({ 50, (float)global.height - 50 - menu.getSize().y });
 }
 
 void Lobby::buildPlayerList() {
@@ -78,11 +106,6 @@ void Lobby::buildPlayerList() {
         blueTeam.push_back(blue);
         redTeam.push_back(red);
     }
-
-    Button* swapTeam = addButton("Change Team", 18, position + Vec2f{ 0, 240 });
-    swapTeam->onClick = [&] () {
-        global.client->send(true, (uint8_t)PlayerChangeTeam);
-    };
 }
 
 Text* Lobby::addText(const std::string& text, int size, const Vec2f& position, const Vec4f& color) {

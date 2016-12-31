@@ -19,6 +19,8 @@ Title::Title(Global& global) :
     buildMenu();
     Cursor::set(Cursor::Arrow);
 
+    backgroundPosition = { 0, -(float)global.height * 0.45f };
+
     global.input.onMouseUp.attach(onRelease, [&] (int button, Vec2i position) {
         if (button == SDL_BUTTON_LEFT) {
             menu.mouseUp();
@@ -56,7 +58,6 @@ GameState* Title::update(float dt) {
     tweens.update();
 
     backgroundPosition.x += dt * 10.0f;
-    backgroundPosition.y = -(float)global.height * 0.45f;
 
     return GameState::update(dt);
 }
