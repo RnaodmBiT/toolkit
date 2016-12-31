@@ -28,11 +28,13 @@ void ProjectileManager::removeProjectile(int id) {
     projectiles.erase(id);
 }
 
-void ProjectileManager::checkCollisions(ShipManager* ship_man, float dt) {
-    for (auto& ship_pair : *ship_man) {
-        for (auto& proj_pair : projectiles) {
-            if (bullet_collision(&ship_pair.second, &proj_pair.second, dt)) {
-                removeProjectile(proj_pair.first);
+void ProjectileManager::checkCollisions(ShipManager& ships) {
+    for (auto& ship : ships) {
+        for (auto it = projectiles.begin(); it != projectiles.end(); ) {
+            if (bulletCollision(ship.second, it->second)) {
+                it = projectiles.erase(it);
+            } else {
+                ++it;
             }
         }
     }

@@ -16,7 +16,7 @@ public:
 
     typedef std::unordered_map<int, Projectile>::iterator iterator;
     ProjectileManager(Global& global);
-    void checkCollisions(ShipManager* ship_man, float dt);
+
     int spawn(const Vec2f& position, const Vec2f& shipVelocity, float rotation);
     Projectile* spawnWithID(int id, const Vec2f& position, const Vec2f& shipVelocity, float rotation);
 
@@ -25,6 +25,8 @@ public:
     void removeProjectile(int id);
     void update(float dt);
     void draw(const Mat4f& projection);
+
+    void checkCollisions(ShipManager& ships);
 
     iterator begin();
     iterator end();

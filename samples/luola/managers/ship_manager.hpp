@@ -46,19 +46,23 @@ namespace tk {
             void deserialize(Blob::const_iterator& it, ShipManager& ships) {
                 int count, id;
                 tk::core::deserialize(it, count);
-                std::unordered_set<int> recieved_ids;
+                std::unordered_set<int> recievedIds;
+
                 for (int i = 0; i < count; ++i) {
                     tk::core::deserialize(it, id);
-                    recieved_ids.emplace(id);
+                    recievedIds.emplace(id);
                     Ship* ship = ships.get(id);
                     if (ship == nullptr) {
                         ship = ships.spawnWithID(id, -1, { 0, 0 }, 0);
                     }
                     tk::core::deserialize(it, *ship);
                 }
-                for (auto& ship : ships) {
-                    if (recieved_ids.count(ship.first) == 0) {
-                        ships.removeShip(ship.first);
+
+                for (auto it = ships.begin(); it != ships.end(); ) {
+                    if (recievedIds.count(it->first) == 0) {
+                        it = ships.ships.erase(it);
+                    } else {
+                        it++;
                     }
                 }
             }

@@ -31,12 +31,14 @@ void GameServer::update(float dt) {
     server.pollEvents();
 
     ships.update(dt);
-    ships.checkHealth();
+
     projectiles.update(dt);
-    projectiles.checkCollisions(&ships, dt);
+    projectiles.checkCollisions(ships);
+
+    ships.checkHealth();
 
     shootBullets();
-    
+
     while (updateTimer.update()) {
         // Broadcast the game state to all clients
         server.broadcast(false, (uint8_t)ShipUpdate, ships);

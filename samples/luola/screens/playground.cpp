@@ -33,8 +33,11 @@ GameState* Playground::update(float dt) {
         global.server->update(dt);
     }
     client.pollEvents();
+
     ships.update(dt);
+
     projectiles.update(dt);
+    projectiles.checkCollisions(ships);
 
     while (playerInputTimer.update()) {
         handlePlayerInput();

@@ -37,9 +37,11 @@ void ShipManager::draw(const Mat4f& projection, tk::net::PlayerTable<PlayerInfo>
 }
 
 void ShipManager::checkHealth() {
-    for (auto& ship : ships) {
-        if (ship.second.getHealth() <= 0) {
-            removeShip(ship.first);
+    for (auto it = ships.begin(); it != ships.end(); ) {
+        if (it->second.getHealth() <= 0) {
+            it = ships.erase(it);
+        } else {
+            it++;
         }
     }
 }
