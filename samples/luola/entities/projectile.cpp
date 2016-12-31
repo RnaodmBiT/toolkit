@@ -3,7 +3,7 @@
 #include "../physics.hpp"
 
 Projectile::Projectile(Global& global, const Vec2f& position, const Vec2f& shipVelocity, float rotation) :
-    position(position),
+    position(position + Vec2f{ std::cos(rotation), std::sin(rotation) } * 4.0f),
     velocity(shipVelocity),
     drag(0.001f),
     mass(1),
@@ -36,4 +36,8 @@ void Projectile::draw(const Mat4f& projection) {
 Mat4f Projectile::getTransform() const {
     float rotation = std::atan2(velocity.y, velocity.x);
     return translate(position.x, position.y, 0.0f) * ::rotate(rotation, { 0, 0, 1 });
+}
+
+Vec2f Projectile::getPosition() {
+    return position;
 }

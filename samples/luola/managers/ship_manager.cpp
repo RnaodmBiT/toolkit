@@ -20,6 +20,10 @@ Ship* ShipManager::get(int id) {
     return ships.count(id) ? &ships.at(id) : nullptr;
 }
 
+void ShipManager::removeShip(int id) {
+    ships.erase(id);
+}
+
 void ShipManager::update(float dt) {
     for (auto& pair : ships) {
         pair.second.update(dt);

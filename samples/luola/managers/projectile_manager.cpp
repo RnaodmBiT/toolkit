@@ -1,4 +1,5 @@
 #include "projectile_manager.hpp"
+#include "../physics.hpp"
 
 ProjectileManager::ProjectileManager(Global& global) : global(global), id(0) { }
 
@@ -23,8 +24,30 @@ void ProjectileManager::update(float dt) {
     }
 }
 
+void ProjectileManager::removeProjectile(int id) {
+    projectiles.erase(id);
+}
+
+void ProjectileManager::checkCollisions(ShipManager* ship_man, float dt) {
+    for (auto& ship_pair : *ship_man) {
+        for (auto& proj_pair : projectiles) {
+            if (bullet_collision(&ship_pair.second, &proj_pair.second, dt)) {
+                removeProjectile(proj_pair.first);
+            }
+        }
+    }
+}
+
 void ProjectileManager::draw(const Mat4f& projection) {
     for (auto& pair : projectiles) {
         pair.second.draw(projection);
     }
+}
+
+ProjectileManager::iterator ProjectileManager::begin() {
+    return projectiles.begin();
+}
+
+ProjectileManager::iterator ProjectileManager::end() {
+    return projectiles.end();
 }

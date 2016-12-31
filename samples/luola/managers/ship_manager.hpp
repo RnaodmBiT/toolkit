@@ -22,6 +22,7 @@ public:
 
     Ship* get(int id);
 
+    void removeShip(int id);
     void update(float dt);
     void draw(const Mat4f& projection, tk::net::PlayerTable<PlayerInfo> players);
 
@@ -43,13 +44,20 @@ namespace tk {
             void deserialize(Blob::const_iterator& it, ShipManager& ships) {
                 int count, id;
                 tk::core::deserialize(it, count);
+                std::unordered_set<int> recieved_ids;
                 for (int i = 0; i < count; ++i) {
                     tk::core::deserialize(it, id);
+                    recieved_ids.emplace(id);
                     Ship* ship = ships.get(id);
                     if (ship == nullptr) {
                         ship = ships.spawnWithID(id, { 0, 0 }, 0);
                     }
                     tk::core::deserialize(it, *ship);
+                }
+                for (auto& ship : ships) {
+                    if (recieved_ids.count(ship.first) == 0) {
+                        ships.removeShip(ship.first);
+                    }
                 }
             }
         };
