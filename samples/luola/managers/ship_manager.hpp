@@ -1,5 +1,6 @@
 #pragma once
 #include <unordered_map>
+#include <unordered_set>
 #include "../entities/ship.hpp"
 #include "player_table.hpp"
 #include "../player_info.hpp"
@@ -22,6 +23,7 @@ public:
 
     Ship* get(int id);
 
+    void checkHealth();
     void removeShip(int id);
     void update(float dt);
     void draw(const Mat4f& projection, tk::net::PlayerTable<PlayerInfo> players);

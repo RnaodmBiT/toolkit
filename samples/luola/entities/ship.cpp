@@ -9,6 +9,7 @@ Ship::Ship(Global& global, const Vec2f& position, float rotation, int team, Vec4
     mass(1),
     team(team),
     shape(Shapes::createShipShape(color)) {
+    health = 30;
     shader = global.cache.get<Shader>("shader");
 }
 
@@ -89,6 +90,10 @@ void Ship::thrust(float strength, float dt) {
     velocity += getDirection() * (strength * dt / mass);
 }
 
+void Ship::takeDamage(int damage) {
+    health -= damage;
+}
+
 void Ship::rotate(float speed, float dt) {
     rotation += speed * dt;
 }
@@ -99,4 +104,8 @@ bool Ship::canShoot() const {
 
 void Ship::resetReloadTime() {
     reloadTime = 0.2f; // 5 Hz
+}
+
+int Ship::getHealth() const {
+    return health;
 }

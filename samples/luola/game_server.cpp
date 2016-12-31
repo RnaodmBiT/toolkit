@@ -27,6 +27,7 @@ void GameServer::update(float dt) {
     server.pollEvents();
 
     ships.update(dt);
+    ships.checkHealth();
     projectiles.update(dt);
     projectiles.checkCollisions(&ships, dt);
 
