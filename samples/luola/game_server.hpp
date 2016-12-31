@@ -25,6 +25,8 @@ class GameServer {
 
     void handlePlayerInput(int id, Host::Packet::const_iterator& it);
 
+    Team getAppropriateTeam();
+
     void shootBullets();
 
 public:

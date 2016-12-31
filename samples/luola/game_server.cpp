@@ -56,6 +56,7 @@ void GameServer::handlePlayerConnect(int id) {
     int ship = ships.spawn(id, { 0, -400 }, -pi / 2);
     PlayerInfo* player = server.getPlayer(id);
     player->ship = ship;
+    player->team = getAppropriateTeam();
     server.updatePlayerTable(); // this pushes the updates player info to all players
 }
 
@@ -83,4 +84,18 @@ void GameServer::shootBullets() {
             projectiles.spawn(ship.getPosition(), ship.getVelocity(), ship.getRotation());
         }
     }
+}
+
+Team GameServer::getAppropriateTeam() {
+    int red = 0, blue = 0;
+    for (int player : server.getPlayerIDs()) {
+        PlayerInfo* info = server.getPlayer(player);
+        if (info->team == Red) {
+            red++;
+        } else {
+            blue++;
+        }
+    }
+
+    return blue <= red ? Blue : Red;
 }

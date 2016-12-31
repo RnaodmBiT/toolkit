@@ -15,7 +15,8 @@ struct ShipInput {
         left(false),
         right(false),
         shoot(false),
-        keyboard(false) { }
+        keyboard(false),
+        targetRotation(0) { }
 
 };
 

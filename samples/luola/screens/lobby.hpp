@@ -11,13 +11,18 @@
 class Lobby : public GameState {
     TweenManager tweens;
     std::vector<std::unique_ptr<Element>> elements;
+    std::vector<Text*> blueTeam;
+    std::vector<Text*> redTeam;
 
     Delegate<int, Vec2i> onClick, onRelease;
     Delegate<Vec2i> onMove;
 
-    void addText(const std::string& text, int size, const Vec2f& position, const Vec4f& color);
+    Text* addText(const std::string& text, int size, const Vec2f& position, const Vec4f& color);
 
     void buildLobby();
+    void buildPlayerList();
+
+    void updateTeamLists();
 
 public:
 

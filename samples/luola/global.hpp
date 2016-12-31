@@ -34,6 +34,15 @@ struct Global {
         running = false;
     }
 
+    void updateNetwork(float dt) {
+        if (server) {
+            server->update(dt);
+        }
+        if (client) {
+            client->pollEvents();
+        }
+    }
+
     float time() {
         Clock::duration delta = clock.now() - gameStart;
         return (float)std::chrono::duration_cast<std::chrono::microseconds>(delta).count() / 1e6f;
