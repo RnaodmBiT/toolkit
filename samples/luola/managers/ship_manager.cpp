@@ -1,17 +1,23 @@
 #include "ship_manager.hpp"
 #include "../menu/text.hpp"
 
-ShipManager::ShipManager(Global& global) : global(global), id(0) {}
+ShipManager::ShipManager(Global& global) : global(global), id(0) { }
 
-int ShipManager::spawn(int owner, const Vec2f& position, float rotation) {
-    spawnWithID(id, owner, position, rotation);
+int ShipManager::spawn(int owner, const Vec2f& position, float rotation, Team team) {
+    spawnWithID(id, owner, position, rotation, team);
     return id++;
 }
 
-Ship* ShipManager::spawnWithID(int id, int owner, const Vec2f& position, float rotation) {
+Ship* ShipManager::spawnWithID(int id, int owner, const Vec2f& position, float rotation, Team team) {
     tk_assert(ships.count(id) == 0, "Ship with ID already exists!");
-    int team = id % 2;
-    Vec4f color = Vec4f{(float)team, 0, (float)!team, 1};
+
+    Vec4f color{ 1, 1, 1, 1 };
+    if (team == Team::Red) {
+        color = { 1, 0, 0, 1 };
+    } else if (team == Team::Blue) {
+        color = { 0, 0, 1, 1 };
+    }
+
     ships.emplace(id, Ship(global, position, rotation, team, owner, color));
     return &ships.at(id);
 }

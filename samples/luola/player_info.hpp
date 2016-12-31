@@ -3,6 +3,7 @@
 #include <core.hpp>
 
 enum Team {
+    None,
     Blue,
     Red,
 };

@@ -2,7 +2,7 @@
 #include "../shapes.hpp"
 #include "../physics.hpp"
 
-Ship::Ship(Global& global, const Vec2f& position, float rotation, int team, int owner, Vec4f color) :
+Ship::Ship(Global& global, const Vec2f& position, float rotation, Team team, uint8_t owner, Vec4f color) :
     position(position),
     rotation(rotation),
     drag(0.005f),
@@ -85,11 +85,11 @@ Vec2f Ship::getVelocity() const {
     return velocity;
 }
 
-int Ship::getTeam() const {
+Team Ship::getTeam() const {
     return team;
 }
 
-int Ship::getOwner() const {
+uint8_t Ship::getOwner() const {
     return owner;
 }
 
