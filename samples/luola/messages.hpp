@@ -5,4 +5,6 @@ enum Message {
     ProjectileUpdate,
 
     PlayerInput,
+
+    PlayerChangeTeam,
 };

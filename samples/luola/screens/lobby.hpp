@@ -4,6 +4,7 @@
 #include "../menu/menu.hpp"
 #include "../menu/panel.hpp"
 #include "../menu/text.hpp"
+#include "../menu/button.hpp"
 #include "../entities/background.hpp"
 #include "../managers/tween_manager.hpp"
 
@@ -18,6 +19,7 @@ class Lobby : public GameState {
     Delegate<Vec2i> onMove;
 
     Text* addText(const std::string& text, int size, const Vec2f& position, const Vec4f& color);
+    Button* addButton(const std::string& text, int size, const Vec2f& position);
 
     void buildLobby();
     void buildPlayerList();

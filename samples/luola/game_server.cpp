@@ -49,6 +49,9 @@ void GameServer::handleMessage(int id, const Host::Packet& data) {
     case PlayerInput:
         handlePlayerInput(id, it);
         break;
+    case PlayerChangeTeam:
+        handlePlayerChangeTeam(id);
+        break;
     }
 }
 
@@ -75,6 +78,13 @@ void GameServer::handlePlayerInput(int id, Host::Packet::const_iterator& it) {
         deserialize(it, input);
         ship->setInput(input);
     }
+}
+
+void GameServer::handlePlayerChangeTeam(int id) {
+    PlayerInfo* player = server.getPlayer(id);
+    tk_assert(player, "Invalid player ID received from client");
+    player->team = player->team == Red ? Blue : Red;
+    server.updatePlayerTable();
 }
 
 void GameServer::shootBullets() {

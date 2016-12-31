@@ -1,6 +1,7 @@
 #include "lobby.hpp"
 #include "playground.hpp"
 #include "../menu/cursor.hpp"
+#include "../messages.hpp"
 
 Lobby::Lobby(Global& global) :
     GameState(global),
@@ -10,15 +11,25 @@ Lobby::Lobby(Global& global) :
 
     global.input.onMouseUp.attach(onRelease, [&] (int button, Vec2i position) {
         if (button == SDL_BUTTON_LEFT) {
+            for (auto& ptr : elements) {
+                ptr->mouseUp();
+            }
         }
     });
 
     global.input.onMouseDown.attach(onClick, [&] (int button, Vec2i position) {
         if (button == SDL_BUTTON_LEFT) {
+            for (auto& ptr : elements) {
+                ptr->mouseDown();
+            }
         }
     });
 
     global.input.onMouseMove.attach(onMove, [&] (Vec2i position) {
+        Vec2f pos{ (float)position.x, (float)position.y };
+        for (auto& ptr : elements) {
+            ptr->mouseMove(pos);
+        }
     });
 
     buildLobby();
@@ -68,6 +79,10 @@ void Lobby::buildPlayerList() {
         redTeam.push_back(red);
     }
 
+    Button* swapTeam = addButton("Change Team", 18, position + Vec2f{ 0, 240 });
+    swapTeam->onClick = [&] () {
+        global.client->send(true, (uint8_t)PlayerChangeTeam);
+    };
 }
 
 Text* Lobby::addText(const std::string& text, int size, const Vec2f& position, const Vec4f& color) {
@@ -75,6 +90,12 @@ Text* Lobby::addText(const std::string& text, int size, const Vec2f& position, c
     Shader* shader = global.cache.get<Shader>("shader");
     Text* element = new Text(font, shader, position, text, size);
     element->setColor(color);
+    elements.emplace_back(element);
+    return element;
+}
+
+Button* Lobby::addButton(const std::string& text, int size, const Vec2f& position) {
+    Button* element = new Button(global, position, text, size);
     elements.emplace_back(element);
     return element;
 }

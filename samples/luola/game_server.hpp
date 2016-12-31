@@ -24,6 +24,7 @@ class GameServer {
     void handlePlayerDisconnect(int id);
 
     void handlePlayerInput(int id, Host::Packet::const_iterator& it);
+    void handlePlayerChangeTeam(int id);
 
     Team getAppropriateTeam();
 
