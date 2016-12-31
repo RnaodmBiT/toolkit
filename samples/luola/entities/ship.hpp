@@ -23,7 +23,8 @@ class Ship {
     Vec2f position, velocity;
     float rotation, drag, mass, reloadTime;
     ShipInput input;
-    int team, owner;
+    int team, owner, health;
+
     Shape shape;
     Text playerName;
     Shader* shader;
@@ -32,6 +33,7 @@ public:
     Ship(Global& global, const Vec2f& position, float rotation, int team, int owner, Vec4f color);
 
     void setInput(const ShipInput& input);
+    void takeDamage(int damage);
 
     void update(float dt);
     void draw(const Mat4f& projection);
@@ -43,6 +45,7 @@ public:
     ShipInput getInput() const;
     int getTeam() const;
     int getOwner() const;
+    int getHealth() const;
 
     void thrust(float strength, float dt);
     void rotate(float speed, float dt);
@@ -58,11 +61,11 @@ namespace tk {
         template <>
         struct convert<Ship> {
             void serialize(Blob& blob, const Ship& ship) {
-                tk::core::serialize(blob, ship.position, ship.velocity, ship.rotation, ship.input, ship.team, ship.owner);
+                tk::core::serialize(blob, ship.position, ship.velocity, ship.rotation, ship.input, ship.team, ship.owner, ship.health);
             }
 
             void deserialize(Blob::const_iterator& it, Ship& ship) {
-                tk::core::deserialize(it, ship.position, ship.velocity, ship.rotation, ship.input, ship.team, ship.owner);
+                tk::core::deserialize(it, ship.position, ship.velocity, ship.rotation, ship.input, ship.team, ship.owner, ship.health);
             }
         };
 

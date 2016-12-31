@@ -20,6 +20,10 @@ Ship* ShipManager::get(int id) {
     return ships.count(id) ? &ships.at(id) : nullptr;
 }
 
+void ShipManager::removeShip(int id) {
+    ships.erase(id);
+}
+
 void ShipManager::update(float dt) {
     for (auto& pair : ships) {
         pair.second.update(dt);
@@ -29,6 +33,14 @@ void ShipManager::update(float dt) {
 void ShipManager::draw(const Mat4f& projection, tk::net::PlayerTable<PlayerInfo> players) {
     for (auto& pair : ships) {
         pair.second.draw(projection);
+    }
+}
+
+void ShipManager::checkHealth() {
+    for (auto& ship : ships) {
+        if (ship.second.getHealth() <= 0) {
+            removeShip(ship.first);
+        }
     }
 }
 

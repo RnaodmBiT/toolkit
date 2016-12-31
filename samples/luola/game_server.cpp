@@ -1,6 +1,7 @@
 #include "game_server.hpp"
 #include "messages.hpp"
 #include "global.hpp"
+#include "physics.hpp"
 
 GameServer::GameServer(Global& global) : 
     global(global), 
@@ -30,7 +31,9 @@ void GameServer::update(float dt) {
     server.pollEvents();
 
     ships.update(dt);
+    ships.checkHealth();
     projectiles.update(dt);
+    projectiles.checkCollisions(&ships, dt);
 
     shootBullets();
     

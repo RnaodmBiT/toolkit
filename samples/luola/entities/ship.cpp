@@ -10,6 +10,7 @@ Ship::Ship(Global& global, const Vec2f& position, float rotation, int team, int 
     team(team),
     owner(owner),
     shape(Shapes::createShipShape(color)) {
+    health = 30;
     shader = global.cache.get<Shader>("shader");
     playerName = Text(global.cache.get<Font>("font"),
                       shader, { 0, 0 }, "", 15);
@@ -101,6 +102,10 @@ void Ship::thrust(float strength, float dt) {
     velocity += getDirection() * (strength * dt / mass);
 }
 
+void Ship::takeDamage(int damage) {
+    health -= damage;
+}
+
 void Ship::rotate(float speed, float dt) {
     rotation += speed * dt;
 }
@@ -115,4 +120,8 @@ void Ship::resetReloadTime() {
 
 void Ship::setPlayerName(const std::string& name) {
     playerName.setText(name, 15);
+}
+
+int Ship::getHealth() const {
+    return health;
 }

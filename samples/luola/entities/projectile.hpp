@@ -19,6 +19,7 @@ public:
 
     void update(float dt);
     void draw(const Mat4f& projection);
+    Vec2f getPosition();
 
     Mat4f getTransform() const;
 };
