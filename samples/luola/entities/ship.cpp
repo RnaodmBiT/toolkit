@@ -8,11 +8,16 @@ Ship::Ship(Global& global, const Vec2f& position, float rotation, Team team, uin
     drag(0.005f),
     mass(1),
     team(team),
-    owner(owner),
-    shape(Shapes::createShipShape(color)) {
+    owner(owner) {
+
     shader = global.cache.get<Shader>("shader");
     playerName = Text(global.cache.get<Font>("font"),
                       shader, { 0, 0 }, "", 15);
+}
+
+void Ship::createGraphics() {
+    Vec4f color = team == Red ? Vec4f{ 1, 0, 0, 1 } : Vec4f{ 0, 0, 1, 1 };
+    shape = Shapes::createShipShape(color);
 }
 
 void Ship::setInput(const ShipInput& shipInput) {

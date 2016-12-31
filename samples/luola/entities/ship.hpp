@@ -33,6 +33,8 @@ class Ship {
 public:
     Ship(Global& global, const Vec2f& position, float rotation, Team team, uint8_t owner, Vec4f color);
 
+    void createGraphics();
+
     void setInput(const ShipInput& input);
 
     void update(float dt);

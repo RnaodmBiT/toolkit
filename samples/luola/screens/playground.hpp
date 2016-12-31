@@ -18,6 +18,7 @@ class Playground : public GameState {
 
     Delegate<int> onKeyDown;
     Delegate<const Host::Packet&> onMessageReceived;
+    Delegate<> onDisconnectedFromServer;
 
     void handleMessage(const Host::Packet& data);
     void handleShipUpdate(Host::Packet::const_iterator& data);

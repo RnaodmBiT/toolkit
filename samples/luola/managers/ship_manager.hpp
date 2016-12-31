@@ -50,6 +50,7 @@ namespace tk {
                         ship = ships.spawnWithID(id, -1, { 0, 0 }, 0, Team::None);
                     }
                     tk::core::deserialize(it, *ship);
+                    ship->createGraphics();
                 }
             }
         };

@@ -37,8 +37,21 @@ Lobby::Lobby(Global& global) :
         }
     });
 
-    global.client->onServerDisconnected.attach(onDisconnectedFromServer, [&] () {
-        setNextState(new Title(global));
+    if (!global.server) {
+        global.client->onServerDisconnected.attach(onDisconnectedFromServer, [&] () {
+            setNextState(new Title(global));
+        });
+    }
+
+    global.client->onMessageReceived.attach(onMessageReceived, [&] (const Host::Packet& packet) {
+        uint8_t type;
+        Host::Packet::const_iterator it = packet.begin();
+        deserialize(it, type);
+        switch (type) {
+        case StartGame:
+            setNextState(new Playground(global));
+            break;
+        }
     });
 
     buildLobby();
@@ -53,12 +66,7 @@ GameState* Lobby::update(float dt) {
     return GameState::update(dt);
 }
 
-void Lobby::shutdown() {
-    global.client->disconnect();
-    if (global.server) {
-        global.server.reset();
-    }
-}
+void Lobby::shutdown() { }
 
 void Lobby::draw() {
     Mat4f projection = orthographic(0, 0, (float)global.width, (float)global.height);
@@ -82,11 +90,16 @@ void Lobby::buildLobby() {
 
     if (global.server) {
         menu.addButton("Start", 20)->onClick = [&] () {
-            // global.server->startGame();
+            global.server->startGame();
         };
     }
 
     menu.addButton("Disconnect", 20)->onClick = [&] () {
+        global.client.reset();
+        if (global.server) {
+            global.server.reset();
+        }
+
         setNextState(new Title(global));
     };
 
@@ -124,6 +137,10 @@ Button* Lobby::addButton(const std::string& text, int size, const Vec2f& positio
 }
 
 void Lobby::updateTeamLists() {
+    if (!global.client) {
+        return;
+    }
+
     int red = 0, blue = 0;
     for (int player : global.client->getPlayerIDs()) {
         PlayerInfo* info = global.client->getPlayer(player);

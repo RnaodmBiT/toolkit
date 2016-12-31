@@ -16,6 +16,12 @@ Playground::Playground(Global& global) :
         handleMessage(data);
     });
 
+    if (!global.server) {
+        global.client->onServerDisconnected.attach(onDisconnectedFromServer, [&] () {
+            setNextState(new Title(global));
+        });
+    }
+
     global.input.onKeyDown.attach(onKeyDown, [&] (int key) {
         if (key == SDLK_ESCAPE) {
             setNextState(new Title(global));
@@ -50,7 +56,12 @@ void Playground::draw() {
     projectiles.draw(projection);
 }
 
-void Playground::shutdown() { }
+void Playground::shutdown() {
+    global.client->disconnect();
+    if (global.server) {
+        global.server.reset();
+    }
+}
 
 void Playground::handleMessage(const Host::Packet& data) {
     Host::Packet::const_iterator it = data.begin();

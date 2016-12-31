@@ -18,6 +18,7 @@ class Lobby : public GameState {
     Delegate<int, Vec2i> onClick, onRelease;
     Delegate<Vec2i> onMove;
     Delegate<> onDisconnectedFromServer;
+    Delegate<const Host::Packet&> onMessageReceived;
 
     Menu menu;
 
