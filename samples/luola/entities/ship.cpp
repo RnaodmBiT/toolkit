@@ -2,18 +2,23 @@
 #include "../shapes.hpp"
 #include "../physics.hpp"
 
-Ship::Ship(Global& global, const Vec2f& position, float rotation, int team, int owner, Vec4f color) :
+Ship::Ship(Global& global, const Vec2f& position, float rotation, Team team, uint8_t owner, Vec4f color) :
     position(position),
     rotation(rotation),
     drag(0.005f),
     mass(1),
     team(team),
-    owner(owner),
-    shape(Shapes::createShipShape(color)) {
-    health = 30;
+    health(30),
+    owner(owner) {
+
     shader = global.cache.get<Shader>("shader");
     playerName = Text(global.cache.get<Font>("font"),
                       shader, { 0, 0 }, "", 15);
+}
+
+void Ship::createGraphics() {
+    Vec4f color = team == Red ? Vec4f{ 1, 0, 0, 1 } : Vec4f{ 0, 0, 1, 1 };
+    shape = Shapes::createShipShape(color);
 }
 
 void Ship::setInput(const ShipInput& shipInput) {
@@ -86,11 +91,11 @@ Vec2f Ship::getVelocity() const {
     return velocity;
 }
 
-int Ship::getTeam() const {
+Team Ship::getTeam() const {
     return team;
 }
 
-int Ship::getOwner() const {
+uint8_t Ship::getOwner() const {
     return owner;
 }
 

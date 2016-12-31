@@ -46,19 +46,22 @@ namespace tk {
             void deserialize(Blob::const_iterator& it, ProjectileManager& projectiles) {
                 int count, id;
                 tk::core::deserialize(it, count);
-                std::unordered_set<int> recieved_ids;
+                std::unordered_set<int> recievedIds;
                 for (int i = 0; i < count; ++i) {
                     tk::core::deserialize(it, id);
-                    recieved_ids.emplace(id);
+                    recievedIds.emplace(id);
                     Projectile* projectile = projectiles.get(id);
                     if (projectile == nullptr) {
                         projectile = projectiles.spawnWithID(id, { 0, 0 }, { 0, 0 }, 0);
                     }
                     tk::core::deserialize(it, *projectile);
                 }
-                for (auto& proj : projectiles) {
-                    if (recieved_ids.count(proj.first) == 0) {
-                        projectiles.removeProjectile(proj.first);
+
+                for (auto it = projectiles.begin(); it != projectiles.end(); ) {
+                    if (recievedIds.count(it->first) == 0) {
+                        it = projectiles.projectiles.erase(it);
+                    } else {
+                        it++;
                     }
                 }
             }

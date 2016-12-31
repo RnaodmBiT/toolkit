@@ -1,5 +1,5 @@
 #include "title.hpp"
-#include "playground.hpp"
+#include "lobby.hpp"
 #include "../menu/cursor.hpp"
 
 Title::Title(Global& global) : 
@@ -18,6 +18,8 @@ Title::Title(Global& global) :
 
     buildMenu();
     Cursor::set(Cursor::Arrow);
+
+    backgroundPosition = { 0, -(float)global.height * 0.45f };
 
     global.input.onMouseUp.attach(onRelease, [&] (int button, Vec2i position) {
         if (button == SDL_BUTTON_LEFT) {
@@ -46,10 +48,16 @@ Title::Title(Global& global) :
 }
 
 GameState* Title::update(float dt) {
+    if (global.server) {
+        global.server->update(0.0f);
+    }
+    if (global.client) {
+        global.client->pollEvents();
+    }
+
     tweens.update();
 
     backgroundPosition.x += dt * 10.0f;
-    backgroundPosition.y = -(float)global.height * 0.45f;
 
     return GameState::update(dt);
 }
@@ -95,9 +103,7 @@ void Title::buildJoinPanel() {
 
     join.addSpace(20);
     join.addButton("Connect", 20)->onClick = [&, name, address] () {
-        global.playerName = name->getText();
-        global.remote = address->getText();
-        setNextState(new Playground(global));
+        connectToServer(address->getText(), name->getText());
     };
 
     join.setAlpha(0);
@@ -112,11 +118,8 @@ void Title::buildHostPanel() {
 
     host.addSpace(20);
     host.addButton("Start", 20)->onClick = [&, name] () {
-        global.playerName = name->getText();
-        global.remote = "127.0.0.1";
-
         global.server.reset(new GameServer(global));
-        setNextState(new Playground(global));
+        connectToServer("127.0.0.1", name->getText());
     };
 
     host.setAlpha(0);
@@ -142,4 +145,16 @@ void Title::showPanel(Panel& panel) {
         active = activePanel = &panel;
         tweens.create(0.2f, Easing::quadraticOut, [=] (float x) { active->setAlpha(x); });
     }
+}
+
+void Title::connectToServer(const std::string& address, const std::string& name) {
+    global.client.reset(new Client<PlayerInfo>());
+    global.client->connect(address, 2514, { name });
+
+    global.playerName = name;
+    global.remote = address;
+    
+    global.client->onConnectedToServer.attach(onConnectedToGame, [&] () {
+        setNextState(new Lobby(global));
+    });
 }

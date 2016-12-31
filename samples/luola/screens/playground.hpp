@@ -1,6 +1,6 @@
 #pragma once
 
-
+#include "../includes.hpp"
 #include "../global.hpp"
 #include "../managers/ship_manager.hpp"
 #include "../managers/projectile_manager.hpp"
@@ -8,8 +8,6 @@
 #include "../entities/background.hpp"
 
 class Playground : public GameState {
-    Client<PlayerInfo> client;
-
     Camera camera;
     ShipManager ships;
     ProjectileManager projectiles;
@@ -20,6 +18,7 @@ class Playground : public GameState {
 
     Delegate<int> onKeyDown;
     Delegate<const Host::Packet&> onMessageReceived;
+    Delegate<> onDisconnectedFromServer;
 
     void handleMessage(const Host::Packet& data);
     void handleShipUpdate(Host::Packet::const_iterator& data);

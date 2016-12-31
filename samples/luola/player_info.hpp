@@ -2,9 +2,16 @@
 #include <string>
 #include <core.hpp>
 
+enum Team {
+    None,
+    Blue,
+    Red,
+};
+
 struct PlayerInfo {
     std::string name;
     int ship;
+    Team team;
 };
 
 namespace tk {
@@ -12,11 +19,13 @@ namespace tk {
         template <>
         struct tk::core::convert<PlayerInfo> {
             void serialize(Blob& blob, const PlayerInfo& info) {
-                tk::core::serialize(blob, info.name, info.ship);
+                tk::core::serialize(blob, info.name, info.ship, (uint8_t)info.team);
             }
 
             void deserialize(Blob::const_iterator& it, PlayerInfo& info) {
-                tk::core::deserialize(it, info.name, info.ship);
+                uint8_t team;
+                tk::core::deserialize(it, info.name, info.ship, team);
+                info.team = (Team)team;
             }
         };
     }

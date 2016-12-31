@@ -1,7 +1,7 @@
 #pragma once
 #include "../includes.hpp"
 #include "../menu/text.hpp"
-
+#include "../player_info.hpp"
 
 struct Global;
 
@@ -15,7 +15,8 @@ struct ShipInput {
         left(false),
         right(false),
         shoot(false),
-        keyboard(false) { }
+        keyboard(false),
+        targetRotation(0) { }
 
 };
 
@@ -23,14 +24,17 @@ class Ship {
     Vec2f position, velocity;
     float rotation, drag, mass, reloadTime;
     ShipInput input;
-    int team, owner, health;
-
+    Team team;
+    uint8_t owner;
+    int health;
     Shape shape;
     Text playerName;
     Shader* shader;
     friend tk::core::convert<Ship>;
 public:
-    Ship(Global& global, const Vec2f& position, float rotation, int team, int owner, Vec4f color);
+    Ship(Global& global, const Vec2f& position, float rotation, Team team, uint8_t owner, Vec4f color);
+
+    void createGraphics();
 
     void setInput(const ShipInput& input);
     void takeDamage(int damage);
@@ -43,9 +47,9 @@ public:
     Vec2f getPosition() const;
     Vec2f getVelocity() const;
     ShipInput getInput() const;
-    int getTeam() const;
-    int getOwner() const;
     int getHealth() const;
+    Team getTeam() const;
+    uint8_t getOwner() const;
 
     void thrust(float strength, float dt);
     void rotate(float speed, float dt);
@@ -60,12 +64,15 @@ namespace tk {
     namespace core {
         template <>
         struct convert<Ship> {
+
             void serialize(Blob& blob, const Ship& ship) {
-                tk::core::serialize(blob, ship.position, ship.velocity, ship.rotation, ship.input, ship.team, ship.owner, ship.health);
+                tk::core::serialize(blob, ship.position, ship.velocity, ship.rotation, ship.input, (uint8_t)ship.team, ship.owner, ship.health);
             }
 
             void deserialize(Blob::const_iterator& it, Ship& ship) {
-                tk::core::deserialize(it, ship.position, ship.velocity, ship.rotation, ship.input, ship.team, ship.owner, ship.health);
+                uint8_t team;
+                tk::core::deserialize(it, ship.position, ship.velocity, ship.rotation, ship.input, team, ship.owner, ship.health);
+                ship.team = (Team)team;
             }
         };
 

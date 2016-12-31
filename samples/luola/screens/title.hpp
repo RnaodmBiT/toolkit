@@ -21,6 +21,7 @@ class Title : public GameState {
 
     Delegate<int, Vec2i> onClick, onRelease;
     Delegate<Vec2i> onMove;
+    Delegate<> onConnectedToGame;
 
     void buildMenu();
     void buildJoinPanel();
@@ -28,6 +29,8 @@ class Title : public GameState {
     void buildOptionsPanel();
 
     void showPanel(Panel& panel);
+
+    void connectToServer(const std::string& address, const std::string& playerName);
 
 public:
 

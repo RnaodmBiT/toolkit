@@ -18,15 +18,15 @@ public:
 
     ShipManager(Global& global);
 
-    int spawn(int owner, const Vec2f& position, float rotation);
-    Ship* spawnWithID(int id, int owner, const Vec2f& position, float rotation);
+    int spawn(int owner, const Vec2f& position, float rotation, Team team);
+    Ship* spawnWithID(int id, int owner, const Vec2f& position, float rotation, Team team);
 
     Ship* get(int id);
 
     void checkHealth();
     void removeShip(int id);
     void update(float dt);
-    void draw(const Mat4f& projection, tk::net::PlayerTable<PlayerInfo> players);
+    void draw(const Mat4f& projection);
 
     iterator begin();
     iterator end();
@@ -53,9 +53,10 @@ namespace tk {
                     recievedIds.emplace(id);
                     Ship* ship = ships.get(id);
                     if (ship == nullptr) {
-                        ship = ships.spawnWithID(id, -1, { 0, 0 }, 0);
+                        ship = ships.spawnWithID(id, -1, { 0, 0 }, 0, Team::None);
                     }
                     tk::core::deserialize(it, *ship);
+                    ship->createGraphics();
                 }
 
                 for (auto it = ships.begin(); it != ships.end(); ) {

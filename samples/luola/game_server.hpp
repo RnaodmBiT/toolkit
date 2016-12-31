@@ -10,6 +10,8 @@ struct Global;
 class GameServer {
     Global& global;
 
+    bool inProgress;
+
     Server<PlayerInfo> server;
     UpdateTimer updateTimer;
 
@@ -24,8 +26,12 @@ class GameServer {
     void handlePlayerDisconnect(int id);
 
     void handlePlayerInput(int id, Host::Packet::const_iterator& it);
+    void handlePlayerChangeTeam(int id);
+
+    Team getAppropriateTeam();
 
     void shootBullets();
+    void spawnShip(int player, Vec2f position);
 
 public:
 
@@ -33,5 +39,7 @@ public:
     ~GameServer();
 
     void update(float dt);
+
+    void startGame();
 
 };

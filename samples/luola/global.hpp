@@ -15,6 +15,7 @@ struct Global {
     std::string playerName;
     std::string remote;
     std::unique_ptr<GameServer> server;
+    std::unique_ptr<Client<PlayerInfo>> client;
 
     bool running;
 
@@ -31,6 +32,15 @@ struct Global {
 
     void quit() {
         running = false;
+    }
+
+    void updateNetwork(float dt) {
+        if (server) {
+            server->update(dt);
+        }
+        if (client) {
+            client->pollEvents();
+        }
     }
 
     float time() {
