@@ -54,9 +54,10 @@ namespace tk {
                     Ship* ship = ships.get(id);
                     if (ship == nullptr) {
                         ship = ships.spawnWithID(id, -1, { 0, 0 }, 0, Team::None);
+                        ship->createGraphics();
                     }
+
                     tk::core::deserialize(it, *ship);
-                    ship->createGraphics();
                 }
 
                 for (auto it = ships.begin(); it != ships.end(); ) {
