@@ -21,15 +21,34 @@ struct ShipInput {
 };
 
 class Ship {
-    Vec2f position, velocity;
-    float rotation, drag, mass, reloadTime;
-    ShipInput input;
+    Global& global;
+
+    // The current state of the ship, used for general calculations and rendering
+    struct State {
+        Vec2f position, velocity;
+        float rotation;
+        ShipInput input;
+    } state;
+
+    // Client side prediction variables
+    float clientTruthTime;
+    State clientTruth;
+    std::vector<std::pair<float, ShipInput>> clientInputs;
+
+    // Ship properties that dont need client side prediction
+    float drag, mass, reloadTime;
+    int health;
+
     Team team;
     uint8_t owner;
-    int health;
+
+    // Graphics members
     Shape shape;
     Text playerName;
     Shader* shader;
+
+    void clearOldClientInputs();
+
     friend tk::core::convert<Ship>;
 public:
     Ship(Global& global, const Vec2f& position, float rotation, Team team, uint8_t owner, Vec4f color);
@@ -37,9 +56,11 @@ public:
     void createGraphics();
 
     void setInput(const ShipInput& input);
-    void takeDamage(int damage);
+    void setClientInput(const ShipInput& input);
 
-    void update(float dt);
+    void serverUpdate(float dt);
+    void clientUpdate(float dt);
+
     void draw(const Mat4f& projection);
 
     Vec2f getDirection() const;
@@ -54,6 +75,8 @@ public:
     void thrust(float strength, float dt);
     void rotate(float speed, float dt);
 
+    void takeDamage(int damage);
+
     bool canShoot() const;
     void resetReloadTime();
 
@@ -66,13 +89,28 @@ namespace tk {
         struct convert<Ship> {
 
             void serialize(Blob& blob, const Ship& ship) {
-                tk::core::serialize(blob, ship.position, ship.velocity, ship.rotation, ship.input, (uint8_t)ship.team, ship.owner, ship.health);
+                tk::core::serialize(blob, 
+                                    ship.state.position,
+                                    ship.state.velocity,
+                                    ship.state.rotation,
+                                    ship.state.input,
+                                    (uint8_t)ship.team,
+                                    ship.owner,
+                                    ship.health);
             }
 
             void deserialize(Blob::const_iterator& it, Ship& ship) {
                 uint8_t team;
-                tk::core::deserialize(it, ship.position, ship.velocity, ship.rotation, ship.input, team, ship.owner, ship.health);
+                tk::core::deserialize(it, 
+                                      ship.clientTruth.position,
+                                      ship.clientTruth.velocity,
+                                      ship.clientTruth.rotation,
+                                      ship.clientTruth.input,
+                                      team,
+                                      ship.owner,
+                                      ship.health);
                 ship.team = (Team)team;
+                ship.clearOldClientInputs();
             }
         };
 

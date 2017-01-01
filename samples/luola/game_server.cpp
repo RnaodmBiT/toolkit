@@ -5,7 +5,7 @@
 
 GameServer::GameServer(Global& global) : 
     global(global), 
-    updateTimer(20),
+    updateTimer(10),
     ships(global),
     projectiles(global),
     inProgress(false) {
@@ -32,7 +32,7 @@ GameServer::~GameServer() {
 void GameServer::update(float dt) {
     server.pollEvents();
 
-    ships.update(dt);
+    ships.serverUpdate(dt);
 
     projectiles.update(dt);
     projectiles.checkCollisions(ships);

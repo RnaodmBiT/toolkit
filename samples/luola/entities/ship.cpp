@@ -3,13 +3,15 @@
 #include "../physics.hpp"
 
 Ship::Ship(Global& global, const Vec2f& position, float rotation, Team team, uint8_t owner, Vec4f color) :
-    position(position),
-    rotation(rotation),
+    global(global),
     drag(0.005f),
     mass(1),
     team(team),
     health(30),
     owner(owner) {
+
+    state.position = position;
+    state.rotation = rotation;
 
     shader = global.cache.get<Shader>("shader");
     playerName = Text(global.cache.get<Font>("font"),
@@ -21,24 +23,27 @@ void Ship::createGraphics() {
     shape = Shapes::createShipShape(color);
 }
 
-void Ship::setInput(const ShipInput& shipInput) {
-    input = shipInput;
+void Ship::setInput(const ShipInput& input) {
+    state.input = input;
 }
 
-void Ship::update(float dt) {
-    if (input.thrust) {
+void Ship::setClientInput(const ShipInput& input) {
+    clientInputs.emplace_back(global.time(), input);
+}
+
+void Ship::serverUpdate(float dt) {
+    if (state.input.thrust) {
         thrust(500, dt);
     }
-    if (input.keyboard) {
-        if (input.left) {
+    if (state.input.keyboard) {
+        if (state.input.left) {
             rotate(-4, dt);
         }
-        if (input.right) {
+        if (state.input.right) {
             rotate(4, dt);
         }
-    }
-    else {
-        float delta = wrapAngle(input.targetRotation - getRotation()) / dt;
+    } else {
+        float delta = wrapAngle(state.input.targetRotation - getRotation()) / dt;
         if (std::abs(delta) > 4) {
             delta = sign(delta) * 4;
         }
@@ -46,25 +51,42 @@ void Ship::update(float dt) {
     }
 
     reloadTime -= dt;
-    velocity += gravity * dt;
-    position += velocity * dt;
+    state.velocity += gravity * dt;
+    state.position += state.velocity * dt;
 
-    float force = velocity.lengthSquared() * drag;
+    float force = state.velocity.lengthSquared() * drag;
     if (force > 0) {
-        velocity -= velocity.normalized() * (force * dt / mass);
+        state.velocity -= state.velocity.normalized() * (force * dt / mass);
     }
 
-    if (position.y > 0) {
-        position.y = 0;
-        velocity.y = 0;
+    if (state.position.y > 0) {
+        state.position.y = 0;
+        state.velocity.y = 0;
     }
+}
+
+void Ship::clientUpdate(float dt) {
+    state = clientTruth;
+    float now = global.time();
+    int input = 0;
+    int counter = 0;
+    for (float time = clientTruthTime + dt; time < now; time += dt) {
+        if (input < clientInputs.size() && time >= clientInputs[input].first) {
+            setInput(clientInputs[input++].second);
+        }
+
+        serverUpdate(dt);
+        counter++;
+    }
+
+    tk_info(format("Client updated %% times", counter));
 }
 
 void Ship::draw(const Mat4f& projection) {
     shader->apply();
 
-    Mat4f translation = translate(position.x, position.y, 0.0f);
-    Mat4f spin = ::rotate(rotation, { 0, 0, 1 });
+    Mat4f translation = translate(state.position.x, state.position.y, 0.0f);
+    Mat4f spin = ::rotate(state.rotation, { 0, 0, 1 });
 
     shader->setUniform("transform", projection * translation * spin);
     shader->setUniform("tint", Vec4f{ 1, 1, 1, 1 });
@@ -76,19 +98,19 @@ void Ship::draw(const Mat4f& projection) {
 }
 
 Vec2f Ship::getDirection() const {
-    return{ std::cos(rotation), std::sin(rotation) };
+    return{ std::cos(state.rotation), std::sin(state.rotation) };
 }
 
 float Ship::getRotation() const {
-    return rotation;
+    return state.rotation;
 }
 
 Vec2f Ship::getPosition() const {
-    return position;
+    return state.position;
 }
 
 Vec2f Ship::getVelocity() const {
-    return velocity;
+    return state.velocity;
 }
 
 Team Ship::getTeam() const {
@@ -100,11 +122,11 @@ uint8_t Ship::getOwner() const {
 }
 
 ShipInput Ship::getInput() const {
-    return input;
+    return state.input;
 }
 
 void Ship::thrust(float strength, float dt) {
-    velocity += getDirection() * (strength * dt / mass);
+    state.velocity += getDirection() * (strength * dt / mass);
 }
 
 void Ship::takeDamage(int damage) {
@@ -112,7 +134,7 @@ void Ship::takeDamage(int damage) {
 }
 
 void Ship::rotate(float speed, float dt) {
-    rotation += speed * dt;
+    state.rotation += speed * dt;
 }
 
 bool Ship::canShoot() const {
@@ -120,7 +142,7 @@ bool Ship::canShoot() const {
 }
 
 void Ship::resetReloadTime() {
-    reloadTime = 0.2f; // 5 Hz
+    reloadTime = 0.2f;
 }
 
 void Ship::setPlayerName(const std::string& name) {
@@ -129,4 +151,11 @@ void Ship::setPlayerName(const std::string& name) {
 
 int Ship::getHealth() const {
     return health;
+}
+
+void Ship::clearOldClientInputs() {
+    clientTruthTime = global.time();
+    while (clientInputs.size() && clientInputs[0].first < clientTruthTime) {
+        clientInputs.erase(clientInputs.begin());
+    }
 }

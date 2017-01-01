@@ -25,7 +25,10 @@ public:
 
     void checkHealth();
     void removeShip(int id);
-    void update(float dt);
+
+    void serverUpdate(float dt);
+    void clientUpdate(float dt);
+
     void draw(const Mat4f& projection);
 
     iterator begin();
@@ -44,6 +47,7 @@ namespace tk {
             }
 
             void deserialize(Blob::const_iterator& it, ShipManager& ships) {
+                tk_info("Deserializing ships");
                 int count, id;
                 tk::core::deserialize(it, count);
                 std::unordered_set<int> recievedIds;

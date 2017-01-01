@@ -36,7 +36,7 @@ Playground::Playground(Global& global) :
 GameState* Playground::update(float dt) {
     global.updateNetwork(dt);
 
-    ships.update(dt);
+    ships.clientUpdate(dt);
 
     projectiles.update(dt);
     projectiles.checkCollisions(ships);
@@ -116,6 +116,7 @@ void Playground::handlePlayerInput() {
     playerInput.targetRotation = angleBetween(mousePosition, ship->getPosition());
 
     global.client->send(false, (uint8_t)PlayerInput, playerInput);
+    ship->setClientInput(playerInput);
 }
 
 void Playground::updateCamera(float dt) {

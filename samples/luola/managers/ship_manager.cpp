@@ -30,9 +30,15 @@ void ShipManager::removeShip(int id) {
     ships.erase(id);
 }
 
-void ShipManager::update(float dt) {
+void ShipManager::serverUpdate(float dt) {
     for (auto& pair : ships) {
-        pair.second.update(dt);
+        pair.second.serverUpdate(dt);
+    }
+}
+
+void ShipManager::clientUpdate(float dt) {
+    for (auto& pair : ships) {
+        pair.second.clientUpdate(dt);
     }
 }
 
