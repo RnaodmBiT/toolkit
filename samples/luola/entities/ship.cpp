@@ -9,11 +9,14 @@ Ship::Ship(Global& global, const Vec2f& position, float rotation, Team team, uin
     mass(1),
     team(team),
     health(30),
-    owner(owner) {
+    owner(owner),
+    primary(0),
+    secondary(2) {
 
     shader = global.cache.get<Shader>("shader");
     playerName = Text(global.cache.get<Font>("font"),
                       shader, { 0, 0 }, "", 15);
+    
 }
 
 void Ship::createGraphics() {
@@ -45,7 +48,8 @@ void Ship::update(float dt) {
         rotate(delta, dt);
     }
 
-    reloadTime -= dt;
+    primaryReloadTime -= dt;
+    secondaryReloadTime -= dt;
     velocity += gravity * dt;
     position += velocity * dt;
 
@@ -115,12 +119,20 @@ void Ship::rotate(float speed, float dt) {
     rotation += speed * dt;
 }
 
-bool Ship::canShoot() const {
-    return reloadTime <= 0;
+bool Ship::canShootPrimary() const {
+    return primaryReloadTime <= 0;
 }
 
-void Ship::resetReloadTime() {
-    reloadTime = 0.2f; // 5 Hz
+bool Ship::canShootSecondary() const {
+    return secondaryReloadTime <= 0;
+}
+
+void Ship::resetPrimaryReload() {
+    primaryReloadTime = projectileTypes[primary].reloadtime; // 5 Hz
+}
+
+void Ship::resetSecondaryReload() {
+    secondaryReloadTime = projectileTypes[secondary].reloadtime;
 }
 
 void Ship::setPlayerName(const std::string& name) {
@@ -129,4 +141,16 @@ void Ship::setPlayerName(const std::string& name) {
 
 int Ship::getHealth() const {
     return health;
+}
+
+int Ship::getPrimary() {
+    return primary;
+}
+
+int Ship::getSecondary() {
+    return secondary;
+}
+
+void Ship::force(Vec2f momentum) {
+    velocity += momentum;
 }

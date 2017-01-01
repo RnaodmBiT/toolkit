@@ -3,6 +3,7 @@
 #include "../entities/projectile.hpp"
 #include "ship_manager.hpp"
 #include <unordered_set>
+#include "projectile_manager.hpp"
 
 struct Global;
 
@@ -17,8 +18,8 @@ public:
     typedef std::unordered_map<int, Projectile>::iterator iterator;
     ProjectileManager(Global& global);
 
-    int spawn(const Vec2f& position, const Vec2f& shipVelocity, float rotation);
-    Projectile* spawnWithID(int id, const Vec2f& position, const Vec2f& shipVelocity, float rotation);
+    int spawn(const Vec2f& position, const Vec2f& shipVelocity, float rotation, int type);
+    Projectile* spawnWithID(int id, const Vec2f& position, const Vec2f& shipVelocity, float rotation, int type);
 
     Projectile* get(int id);
 
@@ -52,7 +53,7 @@ namespace tk {
                     recievedIds.emplace(id);
                     Projectile* projectile = projectiles.get(id);
                     if (projectile == nullptr) {
-                        projectile = projectiles.spawnWithID(id, { 0, 0 }, { 0, 0 }, 0);
+                        projectile = projectiles.spawnWithID(id, { 0, 0 }, { 0, 0 }, 0, 0);
                     }
                     tk::core::deserialize(it, *projectile);
                 }

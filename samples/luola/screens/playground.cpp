@@ -110,7 +110,8 @@ void Playground::handlePlayerInput() {
     playerInput.thrust = global.input.isKeyDown(SDLK_w);
     playerInput.left = global.input.isKeyDown(SDLK_a);
     playerInput.right = global.input.isKeyDown(SDLK_d);
-    playerInput.shoot = global.input.isButtonDown(SDL_BUTTON_LEFT);
+    playerInput.shootPrimary = global.input.isButtonDown(SDL_BUTTON_LEFT);
+    playerInput.shootSecondary = global.input.isButtonDown(SDL_BUTTON_RIGHT);
 
     Vec2f mousePosition = camera.screenToWorld(global, { (float)global.input.getMousePosition().x, (float)global.input.getMousePosition().y });
     playerInput.targetRotation = angleBetween(mousePosition, ship->getPosition());

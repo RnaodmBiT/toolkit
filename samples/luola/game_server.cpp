@@ -103,10 +103,15 @@ void GameServer::handlePlayerChangeTeam(int id) {
 void GameServer::shootBullets() {
     for (auto& pair : ships) {
         Ship& ship = pair.second;
-        if (ship.getInput().shoot && ship.canShoot()) {
-            ship.resetReloadTime();
+        if (ship.getInput().shootPrimary && ship.canShootPrimary()) {
+            ship.resetPrimaryReload();
 
-            projectiles.spawn(ship.getPosition(), ship.getVelocity(), ship.getRotation());
+            projectiles.spawn(ship.getPosition(), ship.getVelocity(), ship.getRotation(), 0);
+        }
+        if (ship.getInput().shootSecondary && ship.canShootSecondary()) {
+            ship.resetSecondaryReload();
+
+            projectiles.spawn(ship.getPosition(), ship.getVelocity(), ship.getRotation(), 2);
         }
     }
 }

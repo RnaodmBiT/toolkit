@@ -3,14 +3,14 @@
 
 ProjectileManager::ProjectileManager(Global& global) : global(global), id(0) { }
 
-int ProjectileManager::spawn(const Vec2f& position, const Vec2f& shipVelocity, float rotation) {
-    spawnWithID(id, position, shipVelocity, rotation);
+int ProjectileManager::spawn(const Vec2f& position, const Vec2f& shipVelocity, float rotation, int type) {
+    spawnWithID(id, position, shipVelocity, rotation, type);
     return id++;
 }
 
-Projectile* ProjectileManager::spawnWithID(int id, const Vec2f& position, const Vec2f& shipVelocity, float rotation) {
+Projectile* ProjectileManager::spawnWithID(int id, const Vec2f& position, const Vec2f& shipVelocity, float rotation, int type) {
     tk_assert(projectiles.count(id) == 0, "Projectile with ID already exists!");
-    projectiles.emplace(id, Projectile(global, position, shipVelocity, rotation));
+    projectiles.emplace(id, Projectile(global, position, shipVelocity, rotation, type));
     return &projectiles.at(id);
 }
 
