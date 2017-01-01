@@ -47,7 +47,6 @@ namespace tk {
             }
 
             void deserialize(Blob::const_iterator& it, ShipManager& ships) {
-                tk_info("Deserializing ships");
                 int count, id;
                 tk::core::deserialize(it, count);
                 std::unordered_set<int> recievedIds;

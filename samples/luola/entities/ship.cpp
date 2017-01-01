@@ -67,19 +67,17 @@ void Ship::serverUpdate(float dt) {
 
 void Ship::clientUpdate(float dt) {
     state = clientTruth;
-    float now = global.time();
+    clientUpdates++;
     int input = 0;
     int counter = 0;
-    for (float time = clientTruthTime + dt; time < now; time += dt) {
-        if (input < clientInputs.size() && time >= clientInputs[input].first) {
+    for (int i = 0; i < clientUpdates; ++i) {
+        if (input < clientInputs.size() && clientTruthTime + dt * clientUpdates >= clientInputs[input].first) {
             setInput(clientInputs[input++].second);
         }
 
         serverUpdate(dt);
         counter++;
     }
-
-    tk_info(format("Client updated %% times", counter));
 }
 
 void Ship::draw(const Mat4f& projection) {
@@ -155,6 +153,7 @@ int Ship::getHealth() const {
 
 void Ship::clearOldClientInputs() {
     clientTruthTime = global.time();
+    clientUpdates = 0;
     while (clientInputs.size() && clientInputs[0].first < clientTruthTime) {
         clientInputs.erase(clientInputs.begin());
     }

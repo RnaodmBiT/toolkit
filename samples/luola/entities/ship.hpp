@@ -31,6 +31,7 @@ class Ship {
     } state;
 
     // Client side prediction variables
+    int clientUpdates;
     float clientTruthTime;
     State clientTruth;
     std::vector<std::pair<float, ShipInput>> clientInputs;
