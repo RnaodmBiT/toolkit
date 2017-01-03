@@ -5,10 +5,12 @@
 
 GameServer::GameServer(Global& global) : 
     global(global), 
-    updateTimer(10),
+    updateTimer((float)global.tickRate),
     ships(global),
     projectiles(global),
     inProgress(false) {
+
+    gameTick = 0;
 
     server.start(2514);
 
@@ -42,8 +44,8 @@ void GameServer::update(float dt) {
     shootBullets();
 
     while (updateTimer.update()) {
-        server.broadcast(false, (uint8_t)ShipUpdate, ships);
-        server.broadcast(false, (uint8_t)ProjectileUpdate, projectiles);
+        gameTick++;
+        server.broadcast(false, (uint8_t)GameUpdate, gameTick, ships, projectiles);
     }
 }
 

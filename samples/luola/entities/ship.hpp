@@ -92,26 +92,26 @@ namespace tk {
             void serialize(Blob& blob, const Ship& ship) {
                 tk::core::serialize(blob, 
                                     ship.state.position,
+                                    ship.state.rotation/*,
                                     ship.state.velocity,
-                                    ship.state.rotation,
                                     ship.state.input,
                                     (uint8_t)ship.team,
                                     ship.owner,
-                                    ship.health);
+                                    ship.health*/);
             }
 
             void deserialize(Blob::const_iterator& it, Ship& ship) {
-                uint8_t team;
+                //uint8_t team;
                 tk::core::deserialize(it, 
                                       ship.clientTruth.position,
+                                      ship.clientTruth.rotation/*,
                                       ship.clientTruth.velocity,
-                                      ship.clientTruth.rotation,
                                       ship.clientTruth.input,
                                       team,
                                       ship.owner,
-                                      ship.health);
-                ship.team = (Team)team;
-                ship.clearOldClientInputs();
+                                      ship.health*/);
+                /*ship.team = (Team)team;
+                ship.clearOldClientInputs();*/
             }
         };
 

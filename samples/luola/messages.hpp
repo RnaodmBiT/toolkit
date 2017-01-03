@@ -1,8 +1,7 @@
 #pragma once
 
 enum Message {
-    ShipUpdate,
-    ProjectileUpdate,
+    GameUpdate,
 
     PlayerInput,
     PlayerChangeTeam,

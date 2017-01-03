@@ -11,6 +11,7 @@ struct Global {
     Settings settings;
     ResourceCollection cache;
     InputManager input;
+    int tickRate;
 
     std::string playerName;
     std::string remote;
@@ -26,6 +27,7 @@ struct Global {
         width(settings.resolution.x),
         height(settings.resolution.y),
         running(true),
+        tickRate(20),
         remote("localhost") { 
         gameStart = clock.now();
     }

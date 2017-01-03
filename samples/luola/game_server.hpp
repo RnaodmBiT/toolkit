@@ -11,6 +11,7 @@ class GameServer {
     Global& global;
 
     bool inProgress;
+    int gameTick;
 
     Server<PlayerInfo> server;
     UpdateTimer updateTimer;

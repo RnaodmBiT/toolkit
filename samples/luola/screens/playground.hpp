@@ -7,11 +7,28 @@
 #include "../camera.hpp"
 #include "../entities/background.hpp"
 
+struct ShipState {
+    int tick;
+    Vec2f position;
+    float rotation;
+};
+
+struct ClientShip {
+    std::vector<ShipState> history;
+    ShipState render;
+};
+
 class Playground : public GameState {
     Camera camera;
-    ShipManager ships;
-    ProjectileManager projectiles;
     Background background;
+
+    Shape shipShape;
+    Shader* shader;
+
+    std::unordered_map<int, ClientShip> ships;
+
+    int latestServerTick, previousTick, clientTick;
+    UpdateTimer gameUpdateTimer;
 
     ShipInput playerInput;
     UpdateTimer playerInputTimer;
@@ -21,8 +38,7 @@ class Playground : public GameState {
     Delegate<> onDisconnectedFromServer;
 
     void handleMessage(const Host::Packet& data);
-    void handleShipUpdate(Host::Packet::const_iterator& data);
-    void handleProjectileUpdate(Host::Packet::const_iterator& data);
+    void handleGameUpdate(Host::Packet::const_iterator& data);
 
     void handlePlayerInput();
 

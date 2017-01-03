@@ -11,6 +11,7 @@ class ShipManager {
     Global& global;
     std::unordered_map<int, Ship> ships;
     int id;
+
     friend tk::core::convert<ShipManager>;
 public:
 
@@ -47,6 +48,7 @@ namespace tk {
             }
 
             void deserialize(Blob::const_iterator& it, ShipManager& ships) {
+                /*
                 int count, id;
                 tk::core::deserialize(it, count);
                 std::unordered_set<int> recievedIds;
@@ -70,6 +72,7 @@ namespace tk {
                         it++;
                     }
                 }
+                */
             }
         };
     }

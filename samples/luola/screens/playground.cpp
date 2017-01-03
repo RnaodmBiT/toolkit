@@ -7,9 +7,13 @@
 Playground::Playground(Global& global) :
     GameState(global),
     playerInputTimer(30),
-    ships(global),
-    projectiles(global),
+    gameUpdateTimer((float)global.tickRate),
     background(global) {
+
+    shader = global.cache.get<Shader>("shader");
+    shipShape = Shapes::createShipShape({ 1, 1, 1, 1 });
+
+    clientTick = previousTick = latestServerTick = 0;
 
     Cursor::set(Cursor::Crosshair);
     global.client->onMessageReceived.attach(onMessageReceived, [this] (const Host::Packet& data) {
@@ -36,13 +40,19 @@ Playground::Playground(Global& global) :
 GameState* Playground::update(float dt) {
     global.updateNetwork(dt);
 
-    ships.clientUpdate(dt);
-
-    projectiles.update(dt);
-    projectiles.checkCollisions(ships);
-
     while (playerInputTimer.update()) {
         handlePlayerInput();
+    }
+
+    while (gameUpdateTimer.update()) {
+        previousTick = clientTick;
+        if (clientTick < latestServerTick - 2) {
+            clientTick += 2;
+        } else if (clientTick < latestServerTick) {
+            clientTick++;
+        }
+
+        tk_info(format("Client %%, Previous %%, Server %%", clientTick, previousTick, latestServerTick));
     }
 
     updateCamera(dt);
@@ -55,8 +65,35 @@ void Playground::draw() {
 
     background.draw(screen, camera.position);
 
-    ships.draw(projection);
-    projectiles.draw(projection);
+    for (auto& pair : ships) {
+        ClientShip& ship = pair.second;
+
+        int start = 0, end = 0;
+        for (int i = 0; i < ship.history.size(); ++i) {
+            if (ship.history[i].tick <= previousTick) {
+                start = i;
+            }
+            if (ship.history[i].tick <= clientTick) {
+                end = i;
+            }
+        }
+
+        float interpolation = 0.0f;
+        if (start != end) {
+            interpolation = gameUpdateTimer.progress() / gameUpdateTimer.period();
+        }
+
+        Vec2f position = lerp(ship.history[start].position, ship.history[end].position, interpolation);
+        float rotation = lerp(ship.history[start].rotation, ship.history[end].rotation, interpolation);
+
+        shader->apply();
+        shader->clearTexture("image");
+        shader->setUniform("tint", Vec4f{ 1, 1, 1, 1 });
+        shader->setUniform("transform", projection * translate(position.x, position.y, 0.0f) * rotate(rotation, { 0, 0, 1 }));
+        shipShape.draw();
+
+        ship.render = { 0, position, rotation };
+    }
 }
 
 void Playground::shutdown() {
@@ -71,41 +108,55 @@ void Playground::handleMessage(const Host::Packet& data) {
     uint8_t type;
     deserialize(it, type);
     switch (type) {
-    case ShipUpdate:
-        handleShipUpdate(it);
-        break;
-    case ProjectileUpdate:
-        handleProjectileUpdate(it);
+    case GameUpdate:
+        handleGameUpdate(it);
         break;
     }
 }
 
-void Playground::handleShipUpdate(Host::Packet::const_iterator& it) {
-    deserialize(it, ships);
+void Playground::handleGameUpdate(Host::Packet::const_iterator& it) {
+    deserialize(it, latestServerTick);
 
-    for (auto& idShip : ships) {
-        Ship& ship = idShip.second;
-        int owner = ship.getOwner();
-        PlayerInfo* player = global.client->getPlayer(owner);
-        if (owner >= 0 && player) {
-            ship.setPlayerName(player->name);
+    if (clientTick == previousTick && previousTick == 0) {
+        clientTick = previousTick = latestServerTick;
+    }
+
+    int shipCount;
+    deserialize(it, shipCount);
+
+    std::unordered_set<int> receivedShips;
+
+    for (int i = 0; i < shipCount; ++i) {
+        int id;
+        deserialize(it, id);
+        receivedShips.insert(id);
+
+        ships[id].history.push_back({ latestServerTick });
+        ShipState& state = ships[id].history.back();
+
+        deserialize(it, state.position, state.rotation);
+
+        while (ships[i].history.size() && ships[i].history.front().tick < previousTick) {
+            ships[i].history.erase(ships[i].history.begin());
+        }
+    }
+
+    for (auto it = ships.begin(); it != ships.end(); ) {
+        if (receivedShips.count(it->first) == 0) {
+            it = ships.erase(it);
+        } else {
+            ++it;
         }
     }
 }
 
-void Playground::handleProjectileUpdate(Host::Packet::const_iterator& it) {
-    deserialize(it, projectiles);
-}
-
 void Playground::handlePlayerInput() {
     PlayerInfo* info = global.client->getPlayer();
-    if (!info) {
+    if (!info || ships.count(info->ship) == 0) {
         return;
     }
-    Ship* ship = ships.get(info->ship);
-    if (!ship) {
-        return;
-    }
+
+    ShipState& ship = ships.at(info->ship).render;
 
     playerInput.thrust = global.input.isKeyDown(SDLK_w);
     playerInput.left = global.input.isKeyDown(SDLK_a);
@@ -113,18 +164,15 @@ void Playground::handlePlayerInput() {
     playerInput.shoot = global.input.isButtonDown(SDL_BUTTON_LEFT);
 
     Vec2f mousePosition = camera.screenToWorld(global, { (float)global.input.getMousePosition().x, (float)global.input.getMousePosition().y });
-    playerInput.targetRotation = angleBetween(mousePosition, ship->getPosition());
+    playerInput.targetRotation = angleBetween(mousePosition, ship.position);
 
     global.client->send(false, (uint8_t)PlayerInput, playerInput);
-    ship->setClientInput(playerInput);
 }
 
 void Playground::updateCamera(float dt) {
     PlayerInfo* player = global.client->getPlayer();
-    if (player) {
-        Ship* ship = ships.get(player->ship);
-        if (ship) {
-            camera.lerpTo(ship->getPosition() + ship->getVelocity() * 0.5f, 0.99f, dt);
-        }
+    if (player && ships.count(player->ship)) {
+        ShipState& ship = ships.at(player->ship).render;
+        camera.lerpTo(ship.position, 0.99f, dt);
     }
 }
