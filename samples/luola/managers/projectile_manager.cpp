@@ -18,9 +18,9 @@ Projectile* ProjectileManager::get(int id) {
     return projectiles.count(id) ? &projectiles.at(id) : nullptr;
 }
 
-void ProjectileManager::update(float dt) {
+void ProjectileManager::update(float dt, ShipManager& ships) {
     for (auto& pair : projectiles) {
-        pair.second.update(dt);
+        pair.second.update(dt, ships);
     }
 }
 

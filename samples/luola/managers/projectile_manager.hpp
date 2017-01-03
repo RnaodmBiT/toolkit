@@ -24,7 +24,7 @@ public:
     Projectile* get(int id);
 
     void removeProjectile(int id);
-    void update(float dt);
+    void update(float dt, ShipManager& ships);
     void draw(const Mat4f& projection);
 
     void checkCollisions(ShipManager& ships);

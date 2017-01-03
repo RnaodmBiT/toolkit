@@ -34,7 +34,7 @@ void GameServer::update(float dt) {
 
     ships.update(dt);
 
-    projectiles.update(dt);
+    projectiles.update(dt, ships);
     projectiles.checkCollisions(ships);
 
     ships.checkHealth();
@@ -106,12 +106,19 @@ void GameServer::shootBullets() {
         if (ship.getInput().shootPrimary && ship.canShootPrimary()) {
             ship.resetPrimaryReload();
 
-            projectiles.spawn(ship.getPosition(), ship.getVelocity(), ship.getRotation(), 0);
+            projectiles.spawn(ship.getPosition(), ship.getVelocity(), ship.getRotation(), ship.getPrimary());
         }
         if (ship.getInput().shootSecondary && ship.canShootSecondary()) {
             ship.resetSecondaryReload();
+            if (ship.getSecondary() == 1) {
+                int shot_id = projectiles.spawn(ship.getPosition(), ship.getVelocity(), ship.getRotation(), ship.getSecondary());
+                projectiles.get(shot_id)->setTarget(ship.getInput().targetShip);
+            }
+            else {
+                projectiles.spawn(ship.getPosition(), ship.getVelocity(), ship.getRotation(), ship.getSecondary());
+            }
+            
 
-            projectiles.spawn(ship.getPosition(), ship.getVelocity(), ship.getRotation(), 2);
         }
     }
 }

@@ -11,7 +11,7 @@ Ship::Ship(Global& global, const Vec2f& position, float rotation, Team team, uin
     health(30),
     owner(owner),
     primary(0),
-    secondary(2) {
+    secondary(1) {
 
     shader = global.cache.get<Shader>("shader");
     playerName = Text(global.cache.get<Font>("font"),

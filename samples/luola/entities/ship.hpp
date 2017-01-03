@@ -10,6 +10,7 @@ struct ShipInput {
 
     bool thrust, left, right, shootPrimary, shootSecondary, keyboard;
     float targetRotation;
+    int targetShip;
 
     ShipInput() :
         thrust(false),
@@ -18,6 +19,7 @@ struct ShipInput {
         shootPrimary(false),
         shootSecondary(false),
         keyboard(false),
+        targetShip(-1),
         targetRotation(0) { }
 
 };
@@ -89,13 +91,13 @@ namespace tk {
         struct convert<ShipInput> {
             void serialize(Blob& blob, const ShipInput& input) {
                 uint8_t bitfield = (input.thrust ? 1 : 0) | (input.left ? 2 : 0) | (input.right ? 4 : 0) | (input.shootPrimary ? 8 : 0) | (input.shootSecondary ? 16 : 0) | (input.keyboard ? 32 : 0);
-                tk::core::serialize(blob, bitfield, input.targetRotation);
+                tk::core::serialize(blob, bitfield, input.targetShip, input.targetRotation);
             }
 
             void deserialize(Blob::const_iterator& it, ShipInput& input) {
                 uint8_t bitfield;
 
-                tk::core::deserialize(it, bitfield, input.targetRotation);
+                tk::core::deserialize(it, bitfield, input.targetShip, input.targetRotation);
                 input.thrust = (bitfield & 1) > 0;
                 input.left = (bitfield & 2) > 0;
                 input.right = (bitfield & 4) > 0;

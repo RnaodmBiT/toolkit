@@ -38,7 +38,7 @@ GameState* Playground::update(float dt) {
 
     ships.update(dt);
 
-    projectiles.update(dt);
+    projectiles.update(dt, ships);
     projectiles.checkCollisions(ships);
 
     while (playerInputTimer.update()) {
@@ -113,7 +113,23 @@ void Playground::handlePlayerInput() {
     playerInput.shootPrimary = global.input.isButtonDown(SDL_BUTTON_LEFT);
     playerInput.shootSecondary = global.input.isButtonDown(SDL_BUTTON_RIGHT);
 
+    int id = -1;
+    float min_distance = 0;
     Vec2f mousePosition = camera.screenToWorld(global, { (float)global.input.getMousePosition().x, (float)global.input.getMousePosition().y });
+    for (auto& ship : ships) {
+        Vec2f localPosition = ship.second.getPosition() - camera.position;
+        localPosition -= Vec2f{ (float)global.width / 2 , (float)global.height / 2 };
+        float distance = localPosition.length();
+        if (min_distance == 0 || distance < min_distance) {
+            min_distance = distance;
+            id = ship.first;
+        }
+
+    }
+    //if (id == info->ship) {
+    //    id = -1;
+    //}
+    playerInput.targetShip = id;
     playerInput.targetRotation = angleBetween(mousePosition, ship->getPosition());
 
     global.client->send(false, (uint8_t)PlayerInput, playerInput);
